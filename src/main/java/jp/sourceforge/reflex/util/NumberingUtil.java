@@ -21,21 +21,8 @@ public class NumberingUtil {
 	 * @param num 番号
 	 * @return 加算後の番号
 	 */
-	public static long correct(long num) {
+	public static long collect(long num) {
 		return num + 1;
-	}
-	
-	/**
-	 * 指定された範囲の中でランダムな値を返します.
-	 * @param start 範囲開始
-	 * @param end 範囲終了
-	 * @return ランダムな数値
-	 */
-	public static int random(int start, int end) {
-		int m = start - 1;
-		int n = end + 1;
-		double i = Math.floor(Math.random() * (m - n + 1)) + n;
-		return (int)i;
 	}
 
 }
