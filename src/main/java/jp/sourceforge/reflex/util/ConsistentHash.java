@@ -2,13 +2,14 @@ package jp.sourceforge.reflex.util;
 
 import java.util.Collection;
 import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 public class ConsistentHash<T> {
 
 	private final HashFunction hashFunction;
 	private final int numberOfReplicas;
-	private final SortedMap<Integer, T> circle = new TreeMap<Integer, T>();
+	//private final SortedMap<Integer, T> circle = new TreeMap<Integer, T>();
+	private final SortedMap<Integer, T> circle = new ConcurrentSkipListMap<Integer, T>();
 
 	public ConsistentHash(HashFunction hashFunction, int numberOfReplicas,
 			Collection<T> nodes) {

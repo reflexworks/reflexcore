@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 public class Requester {
 	
 	public static final String ENCODING = "UTF-8";
+	private static final int ERROR_STATUS = 400;
 	protected Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	/**
@@ -38,7 +39,13 @@ public class Requester {
 		}
 		
 		HttpURLConnection http = request(urlStr, method, inputData, property);
-		write(http.getInputStream(), out);
+		InputStream in = null;
+		if (http.getResponseCode() >= ERROR_STATUS) {
+			in = http.getErrorStream();
+		} else {
+			in = http.getInputStream();
+		}
+		write(in, out);
 	}
 	
 	/**
@@ -58,7 +65,13 @@ public class Requester {
 		}
 		
 		HttpURLConnection http = requestString(urlStr, method, inputDataStr, property);
-		write(http.getInputStream(), out);
+		InputStream in = null;
+		if (http.getResponseCode() >= ERROR_STATUS) {
+			in = http.getErrorStream();
+		} else {
+			in = http.getInputStream();
+		}
+		write(in, out);
 	}
 
 	/**
