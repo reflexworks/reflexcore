@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="VTECH">
+	<bannerLeft>
+		<name>Virtual Technology</name>
+		<src>./images/vteclogosmall.jpg</src>
+		<href>http://www.virtual-tech.net/</href>
+	</bannerLeft>
+	<bannerRight>
+		<name>Reflex</name>
+		<src>./images/moji.jpg</src>
+		<href>http://reflex.sourceforge.jp/</href>
+	</bannerRight>
+	<publishDate position="navigation-bottom" format="yyyy-MM-dd HH:mm"/>
+ <skin>
+	  	 <groupId>jp.sourceforge.reflex</groupId>
+  		 <artifactId>vtecskin</artifactId>
+ 		 <version>1.0-SNAPSHOT</version>
+  </skin>
+ <body>
+    <links>
+      <item name="SourceForge Reflex" href="http://reflex.sourceforge.jp/" />
+    </links>
+
+    <menu name="Links">
+      <item name="Top" href="index.html"/>
+      <item name="Topics" href="topics.html"/>
+      <item name="Map" href="map.html"/>
+      <item name="About us" href="aboutus.html"/>
+      <item name="blog" href="blog.html"/>
+    </menu>
+
+    <menu name="Reflex">
+      <item name="Overview" href="reflexoverview.html"/>
+      <item name="Reflex Core Module" href="reflexcore.html"/>
+      <item name="Reflex Core Sample" href="reflexcoresample.html"/>
+      <item name="Reflex JSON" href="reflexjson.html"/>
+      <item name="Reflex JSON Sample" href="reflexjsonsample.html"/>
+      <item name="Reflex iText" href="reflexitext.html"/>
+    </menu>
+
+    <menu name="Others">
+      <item name="Google Calendar JSON" href="googlejson.html"/>
+    </menu>
+  
+  </body>
+  	
+  	
+</project>

@@ -1,0 +1,868 @@
+                                    ------
+                                    Reflex JSON
+                                    ------
+                                    S.Takezaki
+                                    ------
+                                    2007/6/25
+
+
+Reflex JSONの概要
+
+*  Reflex JSON(0.6-SNAPSHOT)
+
+	[[1]] Reflex Coreの一つの機能でJavaBeanのDataObjectをJSONにシリアライズできます。
+
+	[[2]] 使い方は、entityとwriterを与えて呼ぶだけです。entityは階層構造を持つBeanを想定しています。{{{reflexcoresample.html} ReflexCoreSample}}
+	
+	[[3]] Seasar2のDAOのDTOをJSONにすることもできます。DAOはgetter/setterに関心があり、Reflexはプロパティそのものに関心があります。
+	シリアラズしたいプロパティだけpublicにすればOKです。また、final修飾子のプロパティは無視されますので、アノテーションにも影響しません。
+
+	[[4]] JSONからJavaBeanに変換するデシリアライザーを利用することができます。内部的には一度、JSONからXMLに変換しています。JSON in Java（http://www.json.org/java/）を使用しています。
+
+
+*  Reflex JSON(0.7-SNAPSHOT)
+
+	[[1]] 二次元配列に対応しました。
+	二次元配列を扱う場合、プロパティ名_$$colの項目をfinal intで定義して下さい。
+	値には配列の要素数を設定します。また要素名は定義せず、テキストノード（_$$text）としてください。
+	{{{reflexjsonsample.html} ReflexJSONSample}}
+
+* インターフェース
+
+	
+-------
+
+package jp.sourceforge.reflex;
+
+import java.io.Reader;
+import java.io.Writer;
+
+public interface EntityMapper {
+
+	// BeanからJSONへのシリアライズ（マーシャル）メソッド
+	public void toJSON(Object entity, Writer writer);
+
+	public String toJSON(Object entity);
+
+	// JSONからBeanへのデシリアライズ（アンマーシャル）メソッド
+	public Object fromJSON(String json) throws JSONException;
+
+	public Object fromJSON(Reader json) throws JSONException;
+
+}
+
+-------
+
+* 実装（シリアライザーの抜粋）
+
+-------
+
+/**
+*
+*  Copyright (c) 2003-2006, Virtual Technology All Rights Reserved
+*  Licensed Materials - Property of Virtual Technology
+*
+*  Redistribution and use in source and binary forms, with or without
+*  modification, are permitted provided that the following conditions are met:
+*
+*  Redistributions of source code must retain the above copyright notice, this list of
+*  conditions and the following disclaimer. Redistributions in binary form must reproduce
+*  the above copyright notice, this list of conditions and the following disclaimer in
+*  the documentation and/or other materials provided with the distribution.
+*
+*  Neither the name of Reflex nor the names of its contributors may be used to endorse
+*  or promote products derived from this software without specific prior written
+*  permission.
+*
+*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+*  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+*  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+*  SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+*  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+*  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+*  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+*  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+*  DAMAGE.
+* 
+*
+*/
+
+package jp.sourceforge.reflex.core;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier; 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.EmptyStackException;
+import java.util.List;
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
+/**
+ * JSONSerializerクラス
+ * 
+ * @author Takezaki
+ *
+ */
+public class JSONSerializer implements EntityMapper
+{
+
+	public String Q = "\""; // Quote
+	
+    /** (non-Javadoc)
+     * @see jp.co.toshiba.tza.t2.calendar.service.EntityMapper#toJSON(java.lang.Object)
+     * @param entity
+     *          Object
+     *@return writer.toString();
+     */
+    public String toJSON(Object entity)
+    {
+        Writer writer = new StringWriter();
+        marshal(entity, writer);
+        return writer.toString();
+    }
+
+    /** (non-Javadoc)
+     * @see jp.co.toshiba.tza.t2.calendar.service.EntityMapper#toJSON(java.lang.Object, java.io.Writer)
+     * @param entity
+     *         Object
+     * @param writer
+     *         Writer
+     */
+    public void toJSON(Object entity, Writer writer)
+    {
+        marshal(entity, writer);
+    }
+
+    public Object fromJSON(String json) {
+		// please use RXStream
+        throw new UnsupportedOperationException();
+	}
+
+	public Object fromJSON(Reader json) {
+		// please use RXStream
+        throw new UnsupportedOperationException();
+	}
+
+    /** (non-Javadoc)
+     * @see jp.co.toshiba.tza.t2.calendar.service.EntityMapper#fromXML(java.lang.String)
+     * @param xml
+     *         String
+     * @return nothing
+     *          nothing
+     */
+    public Object fromXML(String xml)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /** (non-Javadoc)
+     * @see jp.co.toshiba.tza.t2.calendar.service.EntityMapper#fromXML(java.io.Reader)
+     * @param  xml
+     *         Reader
+     * @return nothing
+     *          nothing
+     */
+    public Object fromXML(Reader xml)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /** (non-Javadoc)
+     * @see jp.co.toshiba.tza.t2.calendar.service.EntityMapper#toXML(java.lang.Object)
+     * @param  entity
+     * 　　　　Object　　　　　
+     * @return nothing
+     *          nothing
+     */
+    public String toXML(Object entity)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /** (non-Javadoc)
+     * @see jp.co.toshiba.tza.t2.calendar.service.EntityMapper#toXML(java.lang.Object, java.io.Writer)
+     * @param entity
+     *         Object
+     * @param writer
+     *         Writer
+     */
+    public void toXML(Object entity, Writer writer)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * @param source
+     *         Object
+     * @param out
+     *         Writer
+     *  marshal       
+     */
+    public void marshal(Object source, Writer out)
+    {
+
+        try {
+        	out.append('{');
+        	JSONContext context = new JSONContext(out,this.Q);
+        	context.push(context.HASH);
+            marshal(context, source);
+        	out.append('}');
+            out.flush();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param field
+     * 　　　　Field　
+     * @return
+     *         boolean
+     */
+    private boolean isList(Field field)
+    {
+        if (Modifier.isFinal(field.getModifiers()))
+            return false;
+        return (field.getType().getName().equals("java.util.List"));
+    }
+
+    /**
+     * @param field
+     * 　　　　Field
+     * @return
+     *        boolean
+     */
+    private boolean isString(Field field)
+    {
+        if (Modifier.isFinal(field.getModifiers()))
+            return false;
+        return (field.getType().getName().equals("java.lang.String"));
+    }
+
+    /**
+     * @param field
+     * 　　　　Field
+     * @return
+     *        boolean
+     */
+    private boolean isInt(Field field)
+    {
+        if (Modifier.isFinal(field.getModifiers()))
+            return false;
+        return (field.getType().getName().equals("int"));
+    }
+
+    /**
+     * @param field
+     * 　　　　Field
+     * @return
+     *         boolean
+     */
+    private boolean isDate(Field field)
+    {
+        if (Modifier.isFinal(field.getModifiers()))
+            return false;
+        return (field.getType().getName().equals("java.util.Date"));
+    }
+
+    /**
+     * @param field
+     * 　　　　Field
+     * @return
+     *        boolean
+     */
+    private boolean isRealClass(Field field)
+    {
+        if (Modifier.isFinal(field.getModifiers()))
+            return false;
+        String validname = field.getType().getName();
+        Object obj;
+        try {
+            obj = Class.forName(validname).newInstance();
+            return (obj != null);
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    /**
+     * @param context
+     *         JSONContext
+     * @param source
+     *         Object
+     * @throws IOException
+     *          exception
+     * @throws IllegalArgumentException
+     *          exception
+     * @throws IllegalAccessException
+     *          exception
+     */
+    public void marshal(JSONContext context, Object source) throws IOException,
+            IllegalArgumentException, IllegalAccessException
+    {
+
+        int mode;
+ 
+        Field[] fields = source.getClass().getFields();
+
+        context.printClassName(source);
+        context.pushout();
+
+        for (int fn = 0; fn < fields.length; fn++) {
+
+            if (fields[fn].get(source) == null)
+                continue;
+
+            if (isList(fields[fn])) {
+                List list = (List)fields[fn].get(source);
+
+                boolean isArray = false;
+                int arrayCol = 0;
+                
+                if (list != null) {
+
+                	//配列かどうかのチェック
+                	if (list.size() > 0) {
+                		Object objTmp = list.get(0);
+                		Field[] fldTmp = objTmp.getClass().getFields();
+                		for (int t = 0; t < fldTmp.length; t++) {
+                            if ("_$$col".equals(fldTmp[t].getName())) {
+	                			//配列
+                            	isArray = true;
+                            	arrayCol = ((Integer)fldTmp[t].get(objTmp)).intValue();
+                            }
+                		}
+                	}
+                 	
+                    for (int ln = 0; ln < list.size(); ln++) {
+
+                        if (list.get(ln) instanceof String) {
+
+                            context.outcomma();
+                            context.outprint(this.Q + list.get(ln) + this.Q);
+
+                        } else {
+                            context.outcomma();
+                            if ((list.size() > 0)) {
+
+                            	if (isArray) {
+                                	if (ln > 0) {
+                                        if (ln == list.size() - 1) {
+                                        	if (arrayCol == 0) {
+                                        		mode = context.ARRAY2E0;
+                                        	} else if (ln%arrayCol == 0) {
+                                        		mode = context.ARRAY2CE;
+                                        	} else {
+                                        		mode = context.ARRAY2E;
+                                        	}
+                                        } else {
+                                        	if (arrayCol == 0) {
+                                                mode = context.ARRAY2;
+                                        	} else if (arrayCol == 1) {
+                                        		mode = context.ARRAY2CSE;
+                                        	} else if (ln%arrayCol == 0) {
+                                        		mode = context.ARRAY2SC;
+                                        	} else if (ln%arrayCol == arrayCol-1) {
+                                        		mode = context.ARRAY2EC;
+                                        	} else {
+                                                mode = context.ARRAY2;
+                                        	}
+                                        }
+                                    } else {
+                                        if (list.size() == 1) {
+                                        	if (arrayCol == 0) {
+                                        		mode = context.ARRAY2SE0;
+                                        	} else {
+                                        		mode = context.ARRAY2SE;
+                                        	}
+                                        } else if (arrayCol == 0) {
+                                    		mode = context.ARRAY2S0;
+                                        } else if (arrayCol == 1) {
+                                    		mode = context.ARRAY2CS;
+                                        } else {
+                                            mode = context.ARRAY2S;
+                                        }
+                                    }
+
+                            	} else {
+	                            	if (ln > 0) {
+	                                    if (ln == list.size() - 1) {
+	                                        mode = context.ARRAYE;
+	                                    } else {
+                                    		mode = context.ARRAY;
+                                    	}
+                                    } else {
+	                                    if (list.size() == 1) {
+	                                        mode = context.ARRAYSE;
+	                                    } else {
+	                                        mode = context.ARRAYS;
+	                                    }
+                                    }
+                                }
+                            } else {
+                                mode = context.HASH;
+                            }
+                            context.push(mode);
+                            this.marshal(context, list.get(ln));
+                        }
+                    }
+                }
+
+            } else if (isString(fields[fn])) {
+
+                String string = (String)fields[fn].get(source);
+                context.outcomma();
+                if ("_$$text".equals(fields[fn].getName())) {
+                    context.outprint(this.Q + string + this.Q);
+                } else {
+                	context.out(fields[fn].getName(), string);
+                }
+
+            } else if (isInt(fields[fn])) {
+                int i = ((Integer)fields[fn].get(source)).intValue();
+                context.outcomma();
+                context.out(fields[fn].getName(), i);
+
+            } else if (isDate(fields[fn])) {
+
+                Date date = (Date)fields[fn].get(source);
+                String string = context.dateformat(date);
+
+                context.outcomma();
+                context.out(fields[fn].getName(), string);
+
+            } else if (isRealClass(fields[fn])) {
+                Object child = fields[fn].get(source);
+                if (child != null) {
+                    mode = context.HASH;
+                    context.push(mode);
+                    context.outcomma();
+                    this.marshal(context, child);
+                }
+            }
+
+        }
+
+        context.popout();
+
+    }
+
+}
+    
+/**
+ * @author Takezaki
+ *
+ */
+public class JSONContext
+{
+
+    /**
+     * bit1 is on
+     */
+    public final int STARTMARK = 0x02;
+
+    /**
+     * bit2 is on
+     */
+    public final int ENDMARK = 0x04;
+
+    /**
+     * bit0 is on
+     */
+    public final int HASKEY = 0x01;
+
+    /**
+     * bit0 is off
+     */
+    public final int ARRAY = 0; // [
+
+    /**
+     * bit0 is on (it means 'has key')
+     */
+    public final int HASH = 1; // {
+
+    /**
+     * bit1 is on (it also has a key)
+     */
+    public final int ARRAYS = 3;
+
+    /**
+     * bit2 is on
+     */
+    public final int ARRAYE = 4;
+
+    /**
+     * bit0,1,2 is on(it also has a key)
+     */
+    public final int ARRAYSE = 7;
+
+    /**
+     * bit0 is off (Two-dimensional array)
+     */
+    public final int ARRAY2 = 96;
+
+    /**
+     * bit1 is on (it also has a key) (Two-dimensional array)
+     */
+    public final int ARRAY2S = 107;
+
+    /**
+     * bit0,1,2 is on(it also has a key) (Two-dimensional array)
+     */
+    public final int ARRAY2SE = 103;
+
+    /**
+     * bit0,1,2 is on(it also has a key) (One-dimensional array)
+     */
+    public final int ARRAY2SE0 = 111;
+
+    /**
+     * bit0,1,2 is on(it also has a key) (Two-dimensional array)
+     */
+    public final int ARRAY2CS = 119;
+
+    /**
+     * bit1 is on (it also has a key) (One-dimensional array)
+     */
+    public final int ARRAY2S0 = 115;
+
+    /**
+     * bit1,2 is on (Two-dimensional array)
+     */
+    public final int ARRAY2CE = 102;
+
+    /**
+     * bit1,2 is on bit1,2 is on (Two-dimensional array)
+     */
+    public final int ARRAY2CSE = 110;
+
+    /**
+     * bit1 is on (Two-dimensional array)
+     */
+    public final int ARRAY2SC = 106;
+
+    /**
+     * bit2 is on (Two-dimensional array)
+     */
+    public final int ARRAY2E = 108;
+
+    /**
+     * bit2 is on (Two-dimensional array)
+     */
+    public final int ARRAY2EC = 116;
+
+    /**
+     * bit2 is on (One-dimensional array)
+     */
+    public final int ARRAY2E0 = 124;
+    
+    
+    /**
+     * separator = { "[", "]", "{", "}" };
+     * String
+     */
+    private final String[] separator = {
+            "[", "]", "{", "}"
+    };
+
+    /**
+     * stack = new Stack();
+     * Stack
+     */
+    private Stack stack = new Stack();
+
+    /**
+     * out;
+     * Writer
+     */
+    private Writer out;
+
+    /**
+     * lastout;
+     * String
+     */
+    private String lastout;
+
+    // Date/Time ISO8601 TIME ZONE FORMAT 2006-02-10T10:00Z.
+    // for use: String string = XX.isoformat.format(date);
+    private SimpleDateFormat isoformat = new SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:ssZZ");
+
+    /**
+     * @return
+     * int   
+     */
+    public int mode()
+    {
+        try {
+            return ((Integer)this.stack.peek()).intValue();
+        } catch (EmptyStackException e) {
+            return -1;
+        }
+    }
+
+    /**
+     * Quoate
+     *         
+     */
+    public String Q;
+
+    /**
+     * @param out
+     *         Write
+     */
+    public JSONContext(Writer out,String quate)
+    {
+        this.out = out;
+        this.Q = quate;
+    }
+
+    /**
+     * @return
+     * String
+     */
+    public String getLastout()
+    {
+        return lastout;
+    }
+
+    /**
+     * @return
+     * boolean
+     */
+    public boolean hasKey()
+    {
+        return (this.mode() & HASKEY) > 0;
+    }
+
+    /**
+     * @param value
+     *        int
+     * @return
+     * String
+     */
+    public String getSeparator(int value)
+    {
+        return separator[(value & 0x01) * 2 + 1];
+    }
+
+    /**
+     * @return
+     * boolean
+     */
+    public boolean isHash()
+    {
+        return (this.mode() & 0x01) == 1;
+    }
+
+    /**
+     * @param mode
+     *         int
+     */
+    public void push(int mode)
+    {
+        this.stack.push(new Integer(mode));
+    }
+
+    /**
+     * @throws IOException
+     * pushout
+     */
+    public void pushout() throws IOException
+    {
+        if ((this.mode() & STARTMARK) > 0)
+            this.outprint(separator[ARRAY]);
+        if (this.mode() == ARRAY2S || this.mode() == ARRAY2SE || this.mode() == ARRAY2CS)
+            this.outprint(separator[ARRAY]);
+        if (this.mode() < ARRAY2)
+        	this.outprint(separator[HASH * 2]);
+    }
+
+    /**
+     * @throws IOException
+     * popout
+     */
+    public void popout() throws IOException
+    {
+        int lastmode = ((Integer)this.stack.pop()).intValue();
+
+        if (lastmode < ARRAY2)
+        	this.outprint(separator[HASH * 2 + 1]);
+        if ((lastmode & ENDMARK) > 0)
+            this.outprint(separator[ARRAY + 1]);
+        if (lastmode == ARRAY2E || lastmode == ARRAY2CE || lastmode == ARRAY2SE)
+            this.outprint(separator[ARRAY + 1]);
+    }
+
+    /**
+     * @param source
+     *         Object
+     * @throws IOException
+     * printClassName      
+     */
+    public void printClassName(Object source) throws IOException
+    {
+
+        if (hasKey()) {
+            String classname = fld2node(source.getClass().getName());
+//                    .toLowerCase());
+
+            classname = classname.substring(classname.lastIndexOf(".") + 1);
+            classname = classname.substring(0, 1).toLowerCase() + classname.substring(1);
+            
+            this.outprint(this.Q
+                    + classname
+                    + this.Q+" : ");
+        }
+    }
+
+    /**
+     * @param value
+     *         Object
+     * @throws IOException
+     *          exception
+     */
+    public void outprint(Object value) throws IOException
+    {
+        lastout = "" + value;
+        out.write("" + value);
+    }
+
+    /**
+     * @throws IOException
+     *          exception
+     * outcomma
+     */
+    public void outcomma() throws IOException
+    {
+    	//if (!lastout.equals("[") && !lastout.equals("{"))
+        if (!lastout.equals("[") && !lastout.equals("{") && !lastout.equals(","))
+            this.outprint(",");
+    }
+
+    /**
+     * @param key
+     *         String
+     * @param value
+     *         String
+     * @throws IOException
+     *          exception
+     */
+    public void out(String key, String value) throws IOException
+    {
+        if (value != null) {
+            this.outprint(this.Q + fld2node(key) + this.Q+" : " + this.Q + escape(value) + this.Q);
+        }
+    }
+
+    /**
+     * @param key
+     *         String
+     * @param value
+     *         int
+     * @throws IOException
+     *          exception
+     */
+    public void out(String key, int value) throws IOException
+    {
+        this.outprint(this.Q + fld2node(key) + this.Q+" : " + value);
+    }
+
+    /**
+     * xorPlural() {
+     */
+    public void xorPlural()
+    {
+        int mode = ((Integer)this.stack.pop()).intValue();
+        mode = mode ^ 0x2;
+        this.stack.push(new Integer(mode));
+    }
+
+    /**
+     * @param src
+     *         String
+     * @return
+     * String
+     */
+    private String escape(String src)
+    {
+
+        String tgt1 = replace(src, ":", "\\\\:");
+        tgt1 = replace(tgt1, "\\{", "\\\\{");
+        tgt1 = replace(tgt1, "\\}", "\\\\}");
+        tgt1 = replace(tgt1, ",", "\\,");
+        tgt1 = replace(tgt1, "\\[", "\\\\[");
+        tgt1 = replace(tgt1, "\\]", "\\\\]");
+        tgt1 = replace(tgt1, "\n", "\\\\n");         // Modified 2008/4/23
+
+        return tgt1;
+    }
+
+    /**
+     * @param date
+     *         Date
+     * @return
+     * String
+     */
+    public String dateformat(Date date)
+    {
+
+        return isoformat.format(date);
+
+    }
+
+    /**
+     * @param fld
+     *         String
+     * @return
+     * String
+     */
+    public String fld2node(String fld)
+    {
+
+        String temp = fld.replace('$', ':');
+        String node = replace(temp, "__", "-");
+
+        return node;
+
+    }
+
+    // for Java 1.4 users
+    /**
+     * @param org
+     *         String
+     * @param src
+     *         String
+     * @param tgt
+     *         String
+     * @return
+     * String
+     */
+    public String replace(String org, String src, String tgt)
+    {
+
+        if (org == null)
+            return null;
+        Pattern pattern = Pattern.compile(src);
+        Matcher matcher = pattern.matcher(org);
+        return matcher.replaceAll(tgt);
+
+    }
+
+}
+
+-------
+
+     

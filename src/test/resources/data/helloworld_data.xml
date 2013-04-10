@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<helloWorld>
+  <greeting>Hello World</greeting>
+  <aaa>Hello AAA</aaa>
+  <bbb>
+    <bbb1>Hello BBB1</bbb1>
+    <bbb2>Hello BBB2</bbb2>
+  </bbb>
+</helloWorld>

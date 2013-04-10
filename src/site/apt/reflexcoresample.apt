@@ -1,0 +1,276 @@
+                                    ------
+                                    Reflex Core Module
+                                    ------
+                                    S.Takezaki
+                                    ------
+                                    2009/5/30
+
+
+サンプルプログラム　
+
+*  インターフェース (EntityMapper)
+
+-------
+
+package jp.sourceforge.reflex;
+
+import java.io.Reader;
+import java.io.Writer;
+
+public interface EntityMapper {
+
+	// BeanからJSONへのシリアライズ（マーシャル）メソッド
+	public String toJSON(Object entity);
+	public void toJSON(Object entity, Writer writer);
+
+	// BeanからXMLへのシリアライズ（マーシャル）メソッド
+	public String toXML(Object entity);
+	public void toXML(Object entity, Writer writer);
+
+	// XMLからBeanへのデシリアライズ（アンマーシャル）メソッド
+	public Object fromXML(String xml);
+	public Object fromXML(Reader xml);
+
+}
+
+-------
+
+*  メイン (ReflexCoreTest)
+
+-------
+
+package jp.sourceforge.reflex;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import jp.sourceforge.reflex.core.RXStream;
+import model.Content;
+import model.Login;
+import model.Nsbean;
+import model.RequestHdr;
+import model2.Nsbean2;
+
+public class ReflexCoreTest {
+
+	public static void main(String[] args) {
+
+
+		// モデルビーンのパッケージ名を指定してmapperをnewする
+		EntityMapper mapper = new RXStream("model");
+
+		// 子要素が多重度０，１の例。この場合は普通にクラス名を使う
+		Login login = new Login();
+		login.requestHdr = new RequestHdr();
+
+		login.requestHdr.clientID = "clientid";
+		login.requestHdr.ver = "version";
+		login.requestHdr.ver_$title = "xmlns1"; // 属性の指定は必ずStringで
+
+		// XMLにシリアライズ
+		String toXML = mapper.toXML(login);
+		System.out.println("\n【XML(0,1)　シリアライズテスト】:");
+		System.out.println(toXML);
+
+		// JSONにシリアライズ
+		String toJSON = mapper.toJSON(login);
+		System.out.println("\n【JSON(0,1)　シリアライズテスト】:");
+		System.out.println(toJSON);
+
+		// 子要素が多重度０，∞で存在する場合でかつtextnodeを含む場合の例
+		login = new Login();
+		
+		Content id = new Content();
+		id.content = "child's entity1";
+		Content id2 = new Content();
+		id2.content = "child's entity2";
+
+		login.content = new ArrayList();
+		login.content.add(id);
+		login.content.add(id2);
+
+		//textnodeは_$$text(予約語)
+		login._$$text = "this is a textnode";
+
+		// XMLにシリアライズ
+		toXML = mapper.toXML(login);
+		System.out.println("\n【XML(0,unbound)　シリアライズテスト】:");
+		System.out.println(toXML);
+
+		// JSONにシリアライズ
+		toJSON = mapper.toJSON(login);
+		System.out.println("\n【JSON(0,unbound1)　シリアライズテスト】:");
+		System.out.println(toJSON);
+
+		// 名前空間が付く場合はMapを指定する
+		// 例）  put("xml namespace","java packagename");
+
+		Map nsmap = new HashMap();
+		nsmap.put("model", ""); 		// ""はデフォルトの名前空間
+		nsmap.put("model2", "nstest2"); // 右のnstest2は名前空間（prefixではない）左はパッケージ名�
+		mapper = new RXStream(nsmap);	// mapをパラメータにしてMapperをnewする
+		
+		// 名前空間 nstestのビーン
+		Nsbean nsbean = new Nsbean();		
+
+		// field名変換
+		// 　　QNAMEの:は$に、-は__に変換される
+		nsbean.minus__fld = " - ⇔ __ " ;
+		nsbean.colon$fld = " : ⇔ $ " ;
+
+		// XMLにシリアライズ
+		toXML = mapper.toXML(nsbean);
+		System.out.println("\n【XML名前空間＆field変換　シリアライズテスト】:");
+		System.out.println("\nNamespace:");
+		System.out.println(toXML);
+
+		// 試しにデシリアリズしてみる
+		Nsbean nsbeannew = (Nsbean) mapper.fromXML(toXML);
+
+		toXML = mapper.toXML(nsbeannew);
+		System.out.println("\n上をデシリアライズ:");
+		System.out.println(toXML);
+
+		// 名前空間 nstest2のビーンを
+		Nsbean2 nsbean2 = new Nsbean2();
+		nsbean2.fld = "test fields";
+
+		// 名前空間 nstestのビーンの子としてセット
+		nsbean.nsbean2 = nsbean2;
+		nsbean._$xmlns$atr1 = "nstest2";   // 親に子の名前空間をつけてprefixにできる
+		
+		// XMLにシリアライズ
+		toXML = mapper.toXML(nsbean);
+		System.out.println("\n【名前空間の異なるnstest2を子要素かつprefixは親で宣言】:");
+		System.out.println(toXML);
+
+		// 試しにデシリアライズしてみる
+		Nsbean nsbeannew2 = (Nsbean) mapper.fromXML(toXML);
+
+		toXML = mapper.toXML(nsbeannew2);
+		System.out.println("\n上をデシリアライズ:");
+		System.out.println(toXML);
+
+	}
+
+}
+
+-------
+
+** ModelBeanの構造
+
+
+[images/reflexsample.jpg] ModelBeans
+
+
+**  Model （model.Login）
+
+-------
+
+package model;
+
+import java.util.List;
+
+public class Login {
+
+	public static String _$xmlns = "ns1";
+
+	public String _$attr;
+
+	public RequestHdr requestHdr;
+
+	public String service;
+
+	public List content;
+
+	public String _$$text;
+
+}
+
+
+-------
+
+**  Model （model.RequestHdr）
+
+-------
+
+package model;
+
+public class RequestHdr {
+
+	public String ver;
+
+	public String ver_$title = "xxx";
+
+	public String clientID;
+
+	public String userID;
+
+	public String password;
+
+}
+
+
+-------
+     
+**  Model （model.Content）
+
+-------
+
+package model;
+
+public class Content {
+
+	public String content;
+
+}
+
+-------
+
+
+
+===================================================================
+
+**  Model （model.Nsbean）
+
+    以下の２つは名前空間テスト用
+
+-------
+
+package model;
+
+import model2.Nsbean2;
+
+public class Nsbean {
+
+	public static String _$xmlns;
+
+	public String _$xmlns$atr1;
+
+	public Nsbean2 nsbean2;
+
+	public String minus__fld;
+
+	public String colon$fld;
+
+}
+
+-------
+     
+**  Model （model2.Nsbean2）
+
+-------
+
+package model2;
+
+public class Nsbean2 {
+
+	public static String _$xmlns = "nstest2";
+
+	public String fld;
+
+}
+
+-------
+     
