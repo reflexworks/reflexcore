@@ -158,6 +158,7 @@ public class Requester {
 	public HttpURLConnection request(String urlStr, String method, InputStream inputData, 
 			Map<String, String> property) throws IOException {
 
+		/*
 		HttpURLConnection http = prepare(urlStr, method, property);
 		if ("GET".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
 		} else {
@@ -182,7 +183,9 @@ public class Requester {
 				}
 			}
 		}
+		*/
 
+		HttpURLConnection http = prepare(urlStr, method, inputData, property);
 		http.getResponseCode();	// ここでサーバに接続
 		
 		return http;
@@ -195,8 +198,10 @@ public class Requester {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, Map<String, String> property) 
+	public HttpURLConnection prepare(String urlStr, String method, 
+			Map<String, String> property) 
 	throws IOException {
+		/*
 		URL url = new URL(urlStr);
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		http.setRequestMethod(method);
@@ -216,8 +221,80 @@ public class Requester {
 			http.connect();
 		}
 		return http;
+		*/
+		return prepare(urlStr, method, (InputStream)null, property);
+	}
+
+	/**
+	 * HTTPリクエスト送信準備
+	 * @param urlStr URL
+	 * @param method method
+	 * @param inputData リクエストデータ
+	 * @param property リクエストヘッダ
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection prepare(String urlStr, String method, 
+			byte[] inputData, Map<String, String> property) 
+	throws IOException {
+		ByteArrayInputStream bin = null;
+		if (inputData != null) {
+			bin = new ByteArrayInputStream(inputData);
+		}
+		return prepare(urlStr, method, bin, property);
 	}
 	
+	/**
+	 * HTTPリクエスト送信準備
+	 * @param urlStr URL
+	 * @param method method
+	 * @param inputData リクエストデータ
+	 * @param property リクエストヘッダ
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection prepare(String urlStr, String method, 
+			InputStream inputData, Map<String, String> property) 
+	throws IOException {
+		URL url = new URL(urlStr);
+		HttpURLConnection http = (HttpURLConnection)url.openConnection();
+		http.setRequestMethod(method);
+		if (property != null && !property.isEmpty()) {
+			Iterator<String> it = property.keySet().iterator();
+			while (it.hasNext()) {
+				String key = it.next();
+				String val = property.get(key);
+				http.setRequestProperty(key, val);
+			}
+		}
+
+		if ("GET".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
+			http.connect();
+		} else {
+			http.setDoOutput(true);
+			http.connect();
+
+			if (inputData != null) {
+				BufferedOutputStream bout = null;
+				try {
+					bout = new BufferedOutputStream(http.getOutputStream());
+					
+					int len = 0;
+					byte[] buffer = new byte[2048];
+					
+					while ((len = inputData.read(buffer)) > -1) {
+						bout.write(buffer, 0, len);
+					}
+					
+				} finally {
+					if (bout != null) {
+						bout.close();
+					}
+				}
+			}
+		}
+		
+		return http;
+	}
+
 	/**
 	 * InputStreamから読み出した内容を、OutputStreamに出力します。
 	 * @param in InputStream
