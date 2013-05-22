@@ -233,7 +233,9 @@ public class Requester {
 		if ("GET".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
 			http.connect();
 		} else {
-			http.setDoOutput(true);
+			if (inputData != null) {
+				http.setDoOutput(true);
+			}
 			http.connect();
 
 			if (inputData != null) {
