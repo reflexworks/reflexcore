@@ -11,6 +11,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -268,7 +269,7 @@ public class Requester {
 	 * @throws IOException
 	 */
 	public void write(InputStream in, OutputStream out) throws IOException {
-		if (in == null) {
+		if (in == null || out == null) {
 			return;
 		}
 		try {
@@ -283,6 +284,38 @@ public class Requester {
 			try {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
+			try {
+				in.close();
+			} catch (Exception e) {}	// Do nothing.
+		}
+	}
+
+	/**
+	 * InputStreamから読み出した内容を、OutputStreamに出力します。
+	 * @param in InputStream
+	 * @param outList OutputStreamのリスト
+	 * @throws IOException
+	 */
+	public void write(InputStream in, List<OutputStream> outList) throws IOException {
+		if (in == null || outList == null || outList.size() == 0) {
+			return;
+		}
+		try {
+			// default buffer size = 8192
+			BufferedInputStream bis = new BufferedInputStream(in);		
+			int size;
+			while ((size = bis.read()) != -1) {
+				for (OutputStream out : outList) {
+					out.write(size);
+				}
+			}
+		
+		} finally {
+			for (OutputStream out : outList) {
+				try {
+					out.close();
+				} catch (Exception e) {}	// Do nothing.
+			}
 			try {
 				in.close();
 			} catch (Exception e) {}	// Do nothing.
