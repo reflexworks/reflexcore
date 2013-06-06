@@ -13,6 +13,10 @@ import java.util.Locale;
 public class DateUtil {
 
 	public static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	// タイムゾーン(+00:00)の正規表現
+	public static String REGEX_TIMEZONE = "[\\+|\\-]([0-1][0-9]|[2][0-3]):[0-5][0-9]";
+	// 時間(HH:mm)の正規表現
+	public static String REGEX_HHMM = "([0-1][0-9]|[2][0-3]):[0-5][0-9]";
 
 	/**
 	 * 指定されたパラメータより日付を作成します
