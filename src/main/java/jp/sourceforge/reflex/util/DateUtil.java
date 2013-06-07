@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 日付・時刻の編集クラス
@@ -13,10 +15,15 @@ import java.util.Locale;
 public class DateUtil {
 
 	public static final String FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+	// GMT
+	public static final String GMT = "GMT";
 	// タイムゾーン(+00:00)の正規表現
-	public static String REGEX_TIMEZONE = "[\\+|\\-]([0-1][0-9]|[2][0-3]):[0-5][0-9]";
+	public static final String REGEX_TIMEZONE = "[\\+|\\-]([0-1][0-9]|[2][0-3]):[0-5][0-9]";
 	// 時間(HH:mm)の正規表現
-	public static String REGEX_HHMM = "([0-1][0-9]|[2][0-3]):[0-5][0-9]";
+	public static final String REGEX_HHMM = "([0-1][0-9]|[2][0-3]):[0-5][0-9]";
+	
+	// 時間(HH:mm)のPattern
+	public static final Pattern PATTERN_HHMM = Pattern.compile(REGEX_HHMM);
 
 	/**
 	 * 指定されたパラメータより日付を作成します
@@ -250,7 +257,7 @@ public class DateUtil {
 			calendar.add(Calendar.DATE, day);
 		}
 		if (hour != 0) {
-			calendar.add(Calendar.HOUR, hour);
+			calendar.add(Calendar.HOUR_OF_DAY, hour);
 		}
 		if (minute != 0) {
 			calendar.add(Calendar.MINUTE, minute);
@@ -264,4 +271,110 @@ public class DateUtil {
 		
 		return calendar.getTime();
 	}
+	
+	/**
+	 * 時間の範囲チェック.
+	 * <p>
+	 * 指定されたdateがstart-endの間かどうかチェックします。
+	 * </p>
+	 * @param date チェックしたい時刻
+	 * @param start 開始時刻。HH:mm形式。
+	 * @param end 終了時刻。HH:mm形式。
+	 * @param timeZone タイムゾーン。nullの場合はデフォルトのタイムゾーン。
+	 * @return 指定された範囲内であればtrueを返却。
+	 */
+	public static boolean isRange(Date date, String start, String end, TimeZone timeZone) {
+		// 入力チェック
+		if (date == null || start == null || end == null) {
+			return false;
+		}
+		Matcher matcher = PATTERN_HHMM.matcher(start);
+		if (!matcher.matches()) {
+			return false;
+		}
+		matcher = PATTERN_HHMM.matcher(end);
+		if (!matcher.matches()) {
+			return false;
+		}
+		if (start.equals(end)) {
+			return false;
+		}
+		if (timeZone == null) {
+			timeZone = TimeZone.getDefault();
+		}
+		
+		Calendar cal = Calendar.getInstance(timeZone);
+		cal.setTime(date);
+
+		boolean isAsc = true;
+		if (start.compareTo(end) > 0) {
+			isAsc = false;
+		}
+		
+		String[] startParts = start.split(":");
+		int startHour = intValue(startParts[0]);
+		int startMinute = intValue(startParts[1]);
+		String[] endParts = end.split(":");
+		int endHour = intValue(endParts[0]);
+		int endMinute = intValue(endParts[1]);
+		
+		// nowと当日のstartを比較。
+		cal.set(Calendar.HOUR_OF_DAY, startHour);
+		cal.set(Calendar.MINUTE, startMinute);
+		Date startToday = cal.getTime();
+
+		if (!startToday.after(date)) {
+			// now >= start の場合
+			cal.setTime(date);
+			if (isAsc) {
+				// (start < end)であれば、nowと当日のendを比較。
+				cal.set(Calendar.HOUR_OF_DAY, endHour);
+				cal.set(Calendar.MINUTE, endMinute);
+			} else {
+				// (start > end)であれば、nowと翌日のendを比較。
+				cal.set(Calendar.DATE, 1);
+				cal.set(Calendar.HOUR_OF_DAY, endHour);
+				cal.set(Calendar.MINUTE, endMinute);
+			}
+			Date endDate = cal.getTime();
+			if (!endDate.before(date)) {
+				// now <= endであれば範囲内。
+				return true;
+			}
+
+		} else {
+			// now < start の場合
+			if (!isAsc) {
+				// (start > end)であれば、nowと前日のstartは now < start なので、
+				// nowと当日のendを比較。
+				cal.setTime(date);
+				cal.set(Calendar.HOUR_OF_DAY, endHour);
+				cal.set(Calendar.MINUTE, endMinute);
+				Date endDate = cal.getTime();
+				if (!endDate.before(date)) {
+					// now <= endであれば範囲内。
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/*
+	 * 先頭の0を除去してint変換
+	 */
+	private static int intValue(String str) {
+		if (str == null) {
+			return 0;
+		}
+		if (str.length() > 1 && str.startsWith("0")) {
+			str = str.substring(1);
+		}
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {}	// Do nothing.
+		return 0;
+	}
+	
 }
