@@ -17,6 +17,9 @@ public class StringUtilsTest {
 
 			System.out.println("trimDoubleQuotes(str3) : '" + StringUtils.trimDoubleQuotes(str3) + "'");
 
+			long lnum = 8988888888888888889L;
+			System.out.println("String.valueOf : " + String.valueOf(lnum));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

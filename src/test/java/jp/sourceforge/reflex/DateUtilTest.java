@@ -2,6 +2,7 @@ package jp.sourceforge.reflex;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import jp.sourceforge.reflex.util.DateUtil;
 
@@ -79,6 +80,14 @@ public class DateUtilTest {
 			System.out.println("test dateはnow+5分より前か : " + date1Def.before(nowAfter5min));
 			System.out.println("test dateはnow-5分より後か : " + date1Def.after(nowBefore5min));
 			
+			// 範囲比較
+			Date now2 = new Date();
+			String start = "19:30";
+			String end = "19:40";
+			//TimeZone timeZone = TimeZone.getTimeZone("GMT+09:00");
+			TimeZone timeZone = TimeZone.getTimeZone("GMT+00:00");
+			
+			System.out.println("isRange = " + DateUtil.isRange(now2, start, end, timeZone));
 
 		} catch (Exception e) {
 			e.printStackTrace();
