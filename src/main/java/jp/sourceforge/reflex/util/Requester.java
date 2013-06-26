@@ -234,9 +234,7 @@ public class Requester {
 		if ("GET".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
 			http.connect();
 		} else {
-			if (inputData != null) {
-				http.setDoOutput(true);
-			}
+			http.setDoOutput(true);	// 後続処理でinputDataを設定する場合があるので、inputDataのnull判定不要。
 			http.connect();
 
 			if (inputData != null) {
