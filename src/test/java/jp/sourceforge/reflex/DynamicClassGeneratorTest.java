@@ -37,14 +37,15 @@ public class DynamicClassGeneratorTest {
 		List<Entity_meta> entity_list = new ArrayList<Entity_meta>();
 		
 		Pattern pattern = Pattern.compile(field_pattern);
-		Stack<String> stack = new Stack<String>();
-		stack.push("");	// root
 		
 		Entity_meta meta = new Entity_meta();
 		Matcher matcher;
-		String parent = null;
+		String parent = "Entry"; // root
 		int level = 0;
-		
+
+		Stack<String> stack = new Stack<String>();
+		stack.push(parent);		// root
+
 		for (String line:entitysrc) {
 		matcher = pattern.matcher(line);
 		
@@ -52,7 +53,7 @@ public class DynamicClassGeneratorTest {
 			if (meta.level!=matcher.group(1).length()) {
 				level = matcher.group(1).length();
 				if (meta.level<level) {
-					parent = meta.self;
+					parent = meta.getSelf();
 					stack.push(parent);
 				}else {
 					for (int i=0;i<meta.level-level+1;i++) {
@@ -66,7 +67,7 @@ public class DynamicClassGeneratorTest {
 
 			meta.self = matcher.group(2);
 			if (matcher.group(5).equals("*")) {
-				meta.type = "List<"+meta.self.substring(0,1).toUpperCase()+meta.self.substring(1).toLowerCase()+">";
+				meta.type = "List<"+meta.getSelf()+">";
 			}else if (matcher.group(4)!=null){				
 				meta.type = matcher.group(4);	// ()の中
 			}else {
