@@ -21,7 +21,7 @@ public class UserInfoTest2 {
 	 */
 	public static void main(String[] args) {
 		try {
-			IResourceMapper rxmapper = new MessagePackMapper("model4");
+			IResourceMapper rxmapper = new MessagePackMapper("model3");
 
 			String json = convertUserinfo(getJsonInfo());
 			
@@ -50,6 +50,9 @@ public class UserInfoTest2 {
 			
 			// MessagePack test
 	        byte[] mbytes = rxmapper.toMessagePack(info);
+	        for(int i=0;i<mbytes.length;i++) { 
+	        	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
+	        } 
 	        Object muserinfo = rxmapper.fromMessagePack(mbytes);
 			
 			System.out.println("=== MessagePack UserInfo ===");
