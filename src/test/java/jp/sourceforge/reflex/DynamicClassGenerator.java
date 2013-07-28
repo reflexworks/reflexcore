@@ -1,15 +1,14 @@
 package jp.sourceforge.reflex;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import model3.sub.SubInfo;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -64,10 +63,23 @@ public class DynamicClassGenerator {
 							+ "() {" + "  return " + meta.self + "; }",
 							cc);
 					cc.addMethod(m);
+					System.out.println(
+							"public void set" + meta.getSelf()
+							+ "("+ meta.type + " "+meta.self +") { this." +meta.self +"=" + meta.self +";}"
+							);
+					m = CtNewMethod.make("public void set" + meta.getSelf()
+							+ "("+ meta.type + " "+meta.self +") { this." +meta.self +"=" + meta.self +";}",
+							cc);
+					cc.addMethod(m);
 				}
 			}
 		}
+/*
+ * 	public void setSubInfo(SubInfo subInfo) {
+		this.subInfo = subInfo;
+	}
 
+ */
 	}
 
 	public List<Entity_meta> getMetalist(String entitysrc[]) {
