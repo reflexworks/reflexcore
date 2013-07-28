@@ -19,13 +19,15 @@ import javassist.NotFoundException;
 public class DynamicClassGenerator {
 
 	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?(\\*?)$";
-
+	private static String type_pattern = "(int|long|float|double|date|boolean)";
+	
 	public void generateClass(String packagename, List<Entity_meta> metalist)
 			throws NotFoundException, CannotCompileException {
 
-		DynamicClassGeneratorTest dc = new DynamicClassGeneratorTest();
 		ClassPool pool = ClassPool.getDefault();
 		pool.importPackage(packagename);
+		pool.importPackage("java.util.Date");
+
 		HashSet<String> classnames = getClassnames(metalist);
 		
 		for (String classname : classnames) {
@@ -77,10 +79,11 @@ public class DynamicClassGenerator {
 	public List<Entity_meta> getMetalist(String entitysrc[]) {
 		List<Entity_meta> metalist = new ArrayList<Entity_meta>();
 		
-		Pattern pattern = Pattern.compile(field_pattern);
+		Pattern patternf = Pattern.compile(field_pattern);
+		Pattern patternt = Pattern.compile(type_pattern);
 		
 		Entity_meta meta = new Entity_meta();
-		Matcher matcher;
+		Matcher matcherf;
 		String classname = "Entry"; // root
 		int level = 0;
 
@@ -88,11 +91,11 @@ public class DynamicClassGenerator {
 		stack.push(classname);		// root
 
 		for (String line:entitysrc) {
-		matcher = pattern.matcher(line);
+		matcherf = patternf.matcher(line);
 		
-		if (matcher.find()) {
-			if (meta.level!=matcher.group(1).length()) {
-				level = matcher.group(1).length();
+		if (matcherf.find()) {
+			if (meta.level!=matcherf.group(1).length()) {
+				level = matcherf.group(1).length();
 				if (meta.level<level) {
 					classname = meta.getSelf();
 					stack.push(classname);
@@ -111,11 +114,20 @@ public class DynamicClassGenerator {
 			meta.level = level;
 			meta.classname = classname;
 
-			meta.self = matcher.group(2);
-			if (matcher.group(5).equals("*")) {
+			meta.self = matcherf.group(2);
+			if (matcherf.group(5).equals("*")) {
 				meta.type = "List<"+meta.getSelf()+">";
-			}else if (matcher.group(4)!=null){				
-				meta.type = matcher.group(4);	// ()の中
+			}else if (matcherf.group(4)!=null){			
+				Matcher matchert = patternt.matcher(matcherf.group(4).toLowerCase());
+				if (matchert.find()) {
+					if (matchert.group(1).equals("date")) {
+						meta.type = "Date";
+					}else {
+						meta.type = matchert.group(1);
+					}
+				}else {
+					meta.type = "String";	// その他
+				}
 			}else {
 				meta.type = "String";	// 省略時
 			}
