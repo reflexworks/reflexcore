@@ -4,7 +4,7 @@ public class Entity_meta {
 
 	public int level;
 	public String type;
-	public String parent;
+	public String classname;
 	public String self;
 
 	public String getSelf() {
