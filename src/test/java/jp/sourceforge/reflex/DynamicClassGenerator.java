@@ -3,8 +3,11 @@ package jp.sourceforge.reflex;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,8 +28,9 @@ public class DynamicClassGenerator {
 
 		DynamicClassGeneratorTest dc = new DynamicClassGeneratorTest();
 		ClassPool pool = ClassPool.getDefault();
+		pool.importPackage(packagename);
 		HashSet<String> classnames = getClassnames(metalist);
-
+		
 		for (String classname : classnames) {
 			String packageclassname = packagename + "." + classname;
 
@@ -34,20 +38,21 @@ public class DynamicClassGenerator {
 			try {
 				cc = pool.get(packageclassname);
 			} catch (NotFoundException ne1) {
+				System.out.println("make:"+packageclassname);
 				cc = pool.makeClass(packageclassname);
-				CtClass cs = pool.get("model.Array");
-				cc.setSuperclass(cs); // superclassの定義
+//				CtClass cs = pool.get("model.Array");
+//				cc.setSuperclass(cs); // superclassの定義
 			}
 
 			for (int i = 0; i < count(metalist, classname); i++) {
 
 				Entity_meta meta = getMetaByClassname(metalist, classname, i);
+				String type = "public " + meta.type + " ";
+				String field = meta.self + ";";
 				try {
-					cc.getDeclaredField(meta.self);
-					System.out.println(meta.self + " is already defined");
+					cc.getDeclaredField(type+field);
+					System.out.println(type+field + " is already defined");
 				} catch (NotFoundException ne2) {
-					String type = "public " + meta.type + " ";
-					String field = meta.self + ";";
 					// CtField f2 = CtField.make("public String _$$text;", cc);
 					// // フィールドの定義
 					System.out.println(type+field);
@@ -121,10 +126,23 @@ public class DynamicClassGenerator {
 	
 	private HashSet<String> getClassnames(List<Entity_meta> metalist) {
 		
-		HashSet<String> classnames = new HashSet<String>();
-		
+		HashSet<String> classnames = new LinkedHashSet<String>();
+		int size = metalist.size();
+
+		int levelmax =0;
 		for(Entity_meta meta:metalist) {
-			classnames.add(meta.classname);
+			if (levelmax<meta.level) {
+				levelmax = meta.level;
+			}
+		}
+		
+		for(int l=levelmax;l>=0;l--) {
+		for(int i=size-1;i>=0;i--) {
+			if (metalist.get(i).level==l) {
+				classnames.add(metalist.get(i).classname);
+			}
+		}
+		
 		}
 		return classnames;
 	}
