@@ -39,8 +39,10 @@ public class DynamicClassGenerator {
 			} catch (NotFoundException ne1) {
 				System.out.println("make:"+packageclassname);
 				cc = pool.makeClass(packageclassname);
-//				CtClass cs = pool.get("model.Array");
-//				cc.setSuperclass(cs); // superclassの定義
+				if (packageclassname.indexOf("Entry")>0) {
+					CtClass cs = pool.get("jp.reflexworks.atom.entry.EntryBase");
+					cc.setSuperclass(cs); // superclassの定義
+				}
 			}
 
 			for (int i = 0; i < count(metalist, classname); i++) {
