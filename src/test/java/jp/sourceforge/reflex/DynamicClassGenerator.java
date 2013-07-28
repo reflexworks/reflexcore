@@ -8,8 +8,6 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import model3.sub.SubInfo;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -74,12 +72,6 @@ public class DynamicClassGenerator {
 				}
 			}
 		}
-/*
- * 	public void setSubInfo(SubInfo subInfo) {
-		this.subInfo = subInfo;
-	}
-
- */
 	}
 
 	public List<Entity_meta> getMetalist(String entitysrc[]) {
