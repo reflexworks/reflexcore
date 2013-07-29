@@ -19,20 +19,24 @@ import javassist.NotFoundException;
 public class DynamicClassGenerator {
 
 	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?(\\*?)$";
-	private static String type_pattern = "(int|long|float|double|date|boolean)";
 	
-	public void generateClass(String packagename, List<Entity_meta> metalist)
+	public HashSet<String> generateClass(String packagename, String entitysrc[])
+			throws NotFoundException, CannotCompileException {
+		return generateClass(packagename, getMetalist(entitysrc));
+	}
+	
+	public HashSet<String> generateClass(String packagename, List<Entity_meta> metalist)
 			throws NotFoundException, CannotCompileException {
 
 		ClassPool pool = ClassPool.getDefault();
 		pool.importPackage(packagename);
 		pool.importPackage("java.util.Date");
-
-		HashSet<String> classnames = getClassnames(metalist);
+		 
+		HashSet<String> classnames = getClassnames(packagename,metalist);
 		
-		for (String classname : classnames) {
-			String packageclassname = packagename + "." + classname;
-
+		for (String packageclassname : classnames) {
+//			String packageclassname = packagename + "." + classname;
+			String classname = packageclassname.replace(packagename + ".", "");
 			CtClass cc;
 			try {
 				cc = pool.get(packageclassname);
@@ -76,13 +80,13 @@ public class DynamicClassGenerator {
 				}
 			}
 		}
+		return classnames;
 	}
 
 	public List<Entity_meta> getMetalist(String entitysrc[]) {
 		List<Entity_meta> metalist = new ArrayList<Entity_meta>();
 		
 		Pattern patternf = Pattern.compile(field_pattern);
-		Pattern patternt = Pattern.compile(type_pattern);
 		
 		Entity_meta meta = new Entity_meta();
 		Matcher matcherf;
@@ -119,16 +123,22 @@ public class DynamicClassGenerator {
 			meta.self = matcherf.group(2);
 			if (matcherf.group(5).equals("*")) {
 				meta.type = "List<"+meta.getSelf()+">";
-			}else if (matcherf.group(4)!=null){			
-				Matcher matchert = patternt.matcher(matcherf.group(4).toLowerCase());
-				if (matchert.find()) {
-					if (matchert.group(1).equals("date")) {
+			}else if (matcherf.group(4)!=null){
+				String typestr = matcherf.group(4).toLowerCase();
+					if (typestr.equals("date")) {
 						meta.type = "Date";
+					}else if (typestr.equals("int")) {
+						meta.type = "Integer";
+					}else if (typestr.equals("long")) {
+						meta.type = "Long";
+					}else if (typestr.equals("float")) {
+						meta.type = "Float";
+					}else if (typestr.equals("double")) {
+						meta.type = "Double";
+					}else if (typestr.equals("boolean")) {
+						meta.type = "Boolean";
 					}else {
-						meta.type = matchert.group(1);
-					}
-				}else {
-					meta.type = "String";	// その他
+						meta.type = "String";	// その他
 				}
 			}else {
 				meta.type = "String";	// 省略時
@@ -142,7 +152,7 @@ public class DynamicClassGenerator {
 
 	}
 	
-	private HashSet<String> getClassnames(List<Entity_meta> metalist) {
+	private HashSet<String> getClassnames(String packagename,List<Entity_meta> metalist) {
 		
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		int size = metalist.size();
@@ -157,7 +167,7 @@ public class DynamicClassGenerator {
 		for(int l=levelmax;l>=0;l--) {
 		for(int i=size-1;i>=0;i--) {
 			if (metalist.get(i).level==l) {
-				classnames.add(metalist.get(i).classname);
+				classnames.add(packagename+"."+metalist.get(i).classname);
 			}
 		}
 		
