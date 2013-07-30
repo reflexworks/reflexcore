@@ -171,7 +171,21 @@ public class Requester {
 	 */
 	public HttpURLConnection request(String urlStr, String method, InputStream inputData, 
 			Map<String, String> property) throws IOException {
-		HttpURLConnection http = prepare(urlStr, method, inputData, property);
+		return request(urlStr, method, inputData, property, -1);
+	}
+	
+	/**
+	 * HTTPリクエスト送信
+	 * @param urlStr URL
+	 * @param method method
+	 * @param inputData POSTデータ
+	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0は無制限とならず、デフォルトになります。
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection request(String urlStr, String method, InputStream inputData, 
+			Map<String, String> property, int timeoutMillis) throws IOException {
+		HttpURLConnection http = prepare(urlStr, method, inputData, property, timeoutMillis);
 		http.getResponseCode();	// ここでサーバに接続
 		
 		return http;
@@ -219,6 +233,21 @@ public class Requester {
 	public HttpURLConnection prepare(String urlStr, String method, 
 			InputStream inputData, Map<String, String> property) 
 	throws IOException {
+		return prepare(urlStr, method, inputData, property, -1);
+	}
+		
+	/**
+	 * HTTPリクエスト送信準備
+	 * @param urlStr URL
+	 * @param method method
+	 * @param inputData リクエストデータ
+	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection prepare(String urlStr, String method, 
+			InputStream inputData, Map<String, String> property, int timeoutMillis) 
+	throws IOException {
 		URL url = new URL(urlStr);
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		http.setRequestMethod(method);
@@ -229,6 +258,10 @@ public class Requester {
 				String val = property.get(key);
 				http.setRequestProperty(key, val);
 			}
+		}
+		if (timeoutMillis > 0) {
+			http.setConnectTimeout(timeoutMillis);
+			http.setReadTimeout(timeoutMillis);
 		}
 
 		if ("GET".equalsIgnoreCase(method) || "DELETE".equalsIgnoreCase(method)) {
