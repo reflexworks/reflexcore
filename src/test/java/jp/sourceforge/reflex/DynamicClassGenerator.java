@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -56,25 +55,25 @@ public class DynamicClassGenerator {
 		pool.importPackage(packagename);
 		pool.importPackage("java.util.Date");
 		 
-		HashSet<String> packageclassnames = getClassnames(packagename,metalist);
+		HashSet<String> classnames = getClassnames(metalist);
 		
-		for (String packageclassname : packageclassnames) {
+		for (String classname : classnames) {
 			CtClass cc;
 			try {
-				cc = pool.get(packageclassname);
+				cc = pool.get(classname);
 			} catch (NotFoundException ne1) {
-				System.out.println("make:"+packageclassname);
-				cc = pool.makeClass(packageclassname);
-				if (packageclassname.indexOf("Entry")>=0) {
+				System.out.println("make:"+classname);
+				cc = pool.makeClass(classname);
+				if (classname.indexOf("Entry")>=0) {
 					CtClass cs = pool.get("jp.reflexworks.atom.entry.EntryBase");
 					cc.setSuperclass(cs); // superclassの定義
 				}
 
 			}
 
-			for (int i = 0; i < count(metalist, packageclassname); i++) {
+			for (int i = 0; i < count(metalist, classname); i++) {
 
-				Meta meta = getMetaByClassname(metalist, packageclassname, i);
+				Meta meta = getMetaByClassname(metalist, classname, i);
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
@@ -103,7 +102,7 @@ public class DynamicClassGenerator {
 				}
 			}
 		}
-		return packageclassnames;
+		return classnames;
 	}
 	
 
@@ -114,9 +113,9 @@ public class DynamicClassGenerator {
 		
 		Meta meta = new Meta();
 		Matcher matcherf;
-		String packageclassname = packagename+".Entry"; // root
+		String classname = packagename+".Entry"; // root
 		Stack<String> stack = new Stack<String>();
-		stack.push(packageclassname);
+		stack.push(classname);
 		int level = 0;
 
 		for (String line:entitysrc) {
@@ -130,17 +129,17 @@ public class DynamicClassGenerator {
 			if (meta.level!=matcherf.group(1).length()) {
 				level = matcherf.group(1).length();
 				if (meta.level<level) {
-					packageclassname = packagename+"."+meta.getSelf();
-					stack.push(packageclassname);
-					meta.type = packageclassname;
+					classname = packagename+"."+meta.getSelf();
+					stack.push(classname);
+					meta.type = classname;
 				}else {
 					stack.pop();
-					packageclassname = stack.peek();
+					classname = stack.peek();
 				}
 			}
 			meta = new Meta();
 			meta.level = level;
-			meta.parent = packageclassname;
+			meta.parent = classname;
 			meta.isEncrypted = false;
 			meta.isIndex = false;
 
@@ -186,7 +185,7 @@ public class DynamicClassGenerator {
 
 	}
 	
-	private HashSet<String> getClassnames(String packagename,List<Meta> metalist) {
+	private HashSet<String> getClassnames(List<Meta> metalist) {
 		
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		int size = metalist.size();
@@ -201,7 +200,6 @@ public class DynamicClassGenerator {
 		for(int l=levelmax;l>=0;l--) {
 		for(int i=size-1;i>=0;i--) {
 			if (metalist.get(i).level==l) {
-//				classnames.add(packagename+"."+metalist.get(i).classname);
 				classnames.add(metalist.get(i).parent);
 			}
 		}
@@ -223,23 +221,23 @@ public class DynamicClassGenerator {
 		return null;
 	}
 
-	private int count(List<Meta> metalist,String packageclassname) {
+	private int count(List<Meta> metalist,String classname) {
 
 		int i =0;
 		for(Meta meta:metalist) {
-			if (meta.parent.equals(packageclassname)) {
+			if (meta.parent.equals(classname)) {
 				i++;
 			}
 		}
 		return i;
 	}
 	
-	public void registClass(Set<String> classNames) {
+	public void registClass(Set<String> classnames) {
 
 		// MessagePackにクラスを登録
-		if (classNames != null) {
+		if (classnames != null) {
 			Set<Class<?>> registSet = new HashSet<Class<?>>();
-			for (String clsName : classNames) {
+			for (String clsName : classnames) {
 				try {
 						Class<?> cls = pool.get(clsName).toClass();
 						if (cls.getName().indexOf("Base")<0) {
