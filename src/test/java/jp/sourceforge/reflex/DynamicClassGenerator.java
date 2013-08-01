@@ -3,6 +3,7 @@ package jp.sourceforge.reflex;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -27,7 +28,7 @@ import javassist.NotFoundException;
 
 public class DynamicClassGenerator {
 
-	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?(\\*?)$";
+	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
 
 	private MessagePack msgpack = new MessagePack();
 	private TemplateRegistry registry; 
@@ -43,11 +44,11 @@ public class DynamicClassGenerator {
 	}
 	
 	public HashSet<String> generateClass(String packagename, String entitysrc[])
-			throws NotFoundException, CannotCompileException {
+			throws NotFoundException, CannotCompileException, ParseException {
 		return generateClass(packagename, getMetalist(entitysrc,packagename));
 	}
 	
-	public HashSet<String> generateClass(String packagename, List<Entity_meta> metalist)
+	public HashSet<String> generateClass(String packagename, List<Meta> metalist)
 			throws NotFoundException, CannotCompileException {
 
 		//ClassPool pool = ClassPool.getDefault();
@@ -72,7 +73,7 @@ public class DynamicClassGenerator {
 
 			for (int i = 0; i < count(metalist, packageclassname); i++) {
 
-				Entity_meta meta = getMetaByClassname(metalist, packageclassname, i);
+				Meta meta = getMetaByClassname(metalist, packageclassname, i);
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
@@ -105,12 +106,12 @@ public class DynamicClassGenerator {
 	}
 	
 
-	public List<Entity_meta> getMetalist(String entitysrc[],String packagename) {
-		List<Entity_meta> metalist = new ArrayList<Entity_meta>();
+	public List<Meta> getMetalist(String entitysrc[],String packagename) throws ParseException {
+		List<Meta> metalist = new ArrayList<Meta>();
 		
 		Pattern patternf = Pattern.compile(field_pattern);
 		
-		Entity_meta meta = new Entity_meta();
+		Meta meta = new Meta();
 		Matcher matcherf;
 		String packageclassname = packagename+".Entry"; // root
 		int level = 0;
@@ -138,14 +139,23 @@ public class DynamicClassGenerator {
 				metalist.add(meta);
 				System.out.println("self="+meta.self+" classname="+meta.classname+" level="+meta.level+" type="+meta.type);
 			}
-			meta = new Entity_meta();
+			meta = new Meta();
 			meta.level = level;
 			meta.classname = packageclassname;
+			meta.isEncrypted = false;
+			meta.isIndex = false;
 
 			meta.self = matcherf.group(2);
 			if (matcherf.group(5).equals("*")) {
 				meta.type = "List<"+meta.getSelf()+">";
-			}else if (matcherf.group(4)!=null){
+			}else { 
+				if (matcherf.group(5).equals("#")) {
+					meta.isIndex = true;
+				}else 
+				if (matcherf.group(5).equals("%")) {
+					meta.isEncrypted = true;
+				}
+				if (matcherf.group(4)!=null){
 				String typestr = matcherf.group(4).toLowerCase();
 					if (typestr.equals("date")) {
 						meta.type = "Date";
@@ -161,10 +171,13 @@ public class DynamicClassGenerator {
 						meta.type = "Boolean";
 					}else {
 						meta.type = "String";	// その他
+					}
+				}else {
+					meta.type = "String";	// 省略時
 				}
-			}else {
-				meta.type = "String";	// 省略時
 			}
+		}else {
+			throw new ParseException("Unexpected Format:"+line,0);
 		}
 		}
 		metalist.add(meta);
@@ -174,13 +187,13 @@ public class DynamicClassGenerator {
 
 	}
 	
-	private HashSet<String> getClassnames(String packagename,List<Entity_meta> metalist) {
+	private HashSet<String> getClassnames(String packagename,List<Meta> metalist) {
 		
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		int size = metalist.size();
 
 		int levelmax =0;
-		for(Entity_meta meta:metalist) {
+		for(Meta meta:metalist) {
 			if (levelmax<meta.level) {
 				levelmax = meta.level;
 			}
@@ -198,9 +211,9 @@ public class DynamicClassGenerator {
 		return classnames;
 	}
 	
-	private Entity_meta getMetaByClassname(List<Entity_meta> metalist,String classname,int i) {
+	private Meta getMetaByClassname(List<Meta> metalist,String classname,int i) {
 
-		for(Entity_meta meta:metalist) {
+		for(Meta meta:metalist) {
 			if (meta.classname.equals(classname)) {
 				i--;
 				if (i<0) {
@@ -211,10 +224,10 @@ public class DynamicClassGenerator {
 		return null;
 	}
 
-	private int count(List<Entity_meta> metalist,String packageclassname) {
+	private int count(List<Meta> metalist,String packageclassname) {
 
 		int i =0;
-		for(Entity_meta meta:metalist) {
+		for(Meta meta:metalist) {
 			if (meta.classname.equals(packageclassname)) {
 				i++;
 			}

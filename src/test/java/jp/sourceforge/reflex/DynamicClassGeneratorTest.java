@@ -2,6 +2,7 @@ package jp.sourceforge.reflex;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,13 +42,13 @@ public class DynamicClassGeneratorTest {
 		"id",
 		"email",
 		"verified_email(Boolean)",
-		"name(Integer)",
-		"given_name(Double)",
+		"name",
+		"given_name",
 		"family_name",
 		"error",
 		" errors*",
-		"  domain(Float)",
-		"  reason(Long)",
+		"  domain",
+		"  reason",
 		"  message",
 		"  locationType",
 		"  location",
@@ -63,7 +64,7 @@ public class DynamicClassGeneratorTest {
 							 "jp.reflexworks.atom.source.Contributor","jp.reflexworks.atom.source.Generator",
 							 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source" };
 	
-	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException {
+	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException {
 
 		
 		ClassPool pool = ClassPool.getDefault();
@@ -91,48 +92,16 @@ public class DynamicClassGeneratorTest {
 		
 		EntryBase entry = getTestEntry(pool);
 		
-		
-		String json = convertUserinfo(getJsonInfo());
-		
-		System.out.println("=== JSON UserInfo ===");
-		System.out.println(json);
-
-		Object info = rxmapper.fromJSON(json);
-
-		System.out.println("=== Object UserInfo ===");
-		System.out.println(info);
-		
-		editUserInfo((Userinfo)info);
-		
-		System.out.println("=== edit UserInfo ===");
-		System.out.println(info);
-
-		String jsonError = convertUserinfo(getJsonError());
-		
-		System.out.println("=== JSON Error ===");
-		System.out.println(jsonError);
-		
-		Object infoError = rxmapper.fromJSON(jsonError);
-		
-		System.out.println("=== Object Error ===");
-		System.out.println(infoError);
-
-
 		// MessagePack test
-        byte[] mbytes = dg.toMessagePack(info);
+        byte[] mbytes = dg.toMessagePack(entry);
         for(int i=0;i<mbytes.length;i++) { 
         	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
         } 
         Object muserinfo = dg.fromMessagePack(mbytes);
 		
-		System.out.println("=== MessagePack UserInfo ===");
+		System.out.println("\n=== MessagePack UserInfo ===");
 		System.out.println(muserinfo);
         
-        mbytes = dg.toMessagePack(infoError);
-        muserinfo = dg.fromMessagePack(mbytes);
-		
-		System.out.println("=== MessagePack Error ===");
-		System.out.println(muserinfo);
 
 	}
 	
@@ -210,9 +179,22 @@ public class DynamicClassGeneratorTest {
 		for (Field fld:flds) {
 			System.out.println("flds:"+fld.getName());
 		}
-		Field id = cc.getField("id");
+		Field f = cc.getField("email");
+		f.set(entry, "email1");
+		f = cc.getField("verified_email");
+		f.set(entry, false);
+		f = cc.getField("name");
+		f.set(entry, "管理者");
+		f = cc.getField("given_name");
+		f.set(entry, "X");
+		f = cc.getField("family_name");
+		f.set(entry, "管理者Y");
+		/*
+		Class cc2 = Class.forName("testm3.Error");
+		Object error = cc2.newInstance();
+		*/
 		
-		id.set(entry, "1");
+		
 		return entry;
 		
 		}catch(Exception e) {
