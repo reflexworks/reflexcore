@@ -1,6 +1,7 @@
 package jp.sourceforge.reflex;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +14,9 @@ import java.util.TreeSet;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
+import javassist.CtClass;
 import javassist.NotFoundException;
+import jp.reflexworks.atom.entry.EntryBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 import jp.sourceforge.reflex.core.ResourceMapper;
 import jp.sourceforge.reflex.util.ClassFinder;
@@ -34,6 +37,7 @@ public class DynamicClassGeneratorTest {
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	public static String entitysrc[] = {
+		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
 		"id",
 		"email",
 		"verified_email(Boolean)",
@@ -63,7 +67,8 @@ public class DynamicClassGeneratorTest {
 
 		
 		ClassPool pool = ClassPool.getDefault();
-
+//        pool.appendSystemPath();
+		
 		DynamicClassGenerator dg = new DynamicClassGenerator(pool);		
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		ClassFinder classFinder = new ClassFinder();
@@ -79,9 +84,13 @@ public class DynamicClassGeneratorTest {
 //		treeSet.addAll(dg.generateClass("testsvc", entitysrc));
 
 		classnames.addAll(dg.generateClass("testm3", entitysrc));
-	
-		IResourceMapper rxmapper2 = new MessagePackMapper(classnames);
+		dg.registClass(classnames);
+		
+//		IResourceMapper rxmapper2 = new MessagePackMapper(classnames);
 		IResourceMapper rxmapper = new ResourceMapper("model3");
+		
+		EntryBase entry = getTestEntry(pool);
+		
 		
 		String json = convertUserinfo(getJsonInfo());
 		
@@ -110,17 +119,17 @@ public class DynamicClassGeneratorTest {
 
 
 		// MessagePack test
-        byte[] mbytes = rxmapper2.toMessagePack(info);
+        byte[] mbytes = dg.toMessagePack(info);
         for(int i=0;i<mbytes.length;i++) { 
         	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
         } 
-        Object muserinfo = rxmapper2.fromMessagePack(mbytes);
+        Object muserinfo = dg.fromMessagePack(mbytes);
 		
 		System.out.println("=== MessagePack UserInfo ===");
 		System.out.println(muserinfo);
         
-        mbytes = rxmapper2.toMessagePack(infoError);
-        muserinfo = rxmapper2.fromMessagePack(mbytes);
+        mbytes = dg.toMessagePack(infoError);
+        muserinfo = dg.fromMessagePack(mbytes);
 		
 		System.out.println("=== MessagePack Error ===");
 		System.out.println(muserinfo);
@@ -190,6 +199,28 @@ public class DynamicClassGeneratorTest {
 		buf.append("}");
 		return buf.toString();
 	}
+	
+	public static EntryBase getTestEntry(ClassPool pool)  {
+		try {
+			
+//		CtClass cc = pool.get("testm3.Error");
+		Class cc = Class.forName("testm3.Entry");
+		EntryBase entry = (EntryBase) cc.newInstance();
+		Field[] flds = cc.getFields();
+		for (Field fld:flds) {
+			System.out.println("flds:"+fld.getName());
+		}
+		Field id = cc.getField("id");
+		
+		id.set(entry, "1");
+		return entry;
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	public static void editUserInfo(Userinfo userInfo) {
 		SubInfo subInfo = new SubInfo();

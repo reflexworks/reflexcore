@@ -1,12 +1,21 @@
 package jp.sourceforge.reflex;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.msgpack.MessagePack;
+import org.msgpack.template.Template;
+import org.msgpack.template.TemplateRegistry;
+import org.msgpack.template.builder.ReflectionTemplateBuilder;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -19,10 +28,18 @@ import javassist.NotFoundException;
 public class DynamicClassGenerator {
 
 	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?(\\*?)$";
+
+	private MessagePack msgpack = new MessagePack();
+	private TemplateRegistry registry; 
+	private ReflectionTemplateBuilder builder; 
 	private ClassPool pool;
 
 	public DynamicClassGenerator(ClassPool pool) throws NotFoundException {
 		this.pool = pool;
+		// msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
+		registry = new TemplateRegistry(null);
+		builder = new ReflectionTemplateBuilder(registry);
+
 	}
 	
 	public HashSet<String> generateClass(String packagename, String entitysrc[])
@@ -206,5 +223,46 @@ public class DynamicClassGenerator {
 		}
 		return i;
 	}
+	
+	public void registClass(Set<String> classNames) {
+
+		// MessagePackにクラスを登録
+		if (classNames != null) {
+			Set<Class<?>> registSet = new HashSet<Class<?>>();
+			for (String clsName : classNames) {
+				try {
+						Class<?> cls = pool.get(clsName).toClass();
+						if (cls.getName().indexOf("Base")<0) {
+							System.out.println("clsName="+clsName);
+						if (cls.getName().equals("testsvc.Entry")) {
+							System.out.println("Entry");
+						}
+						Template template = builder.buildTemplate(cls);
+						registry.register(cls, template);
+						msgpack.register(cls,template);
+						}
+					} catch (CannotCompileException ce) {
+						ce.printStackTrace();
+					} catch (NotFoundException ne) {
+						ne.printStackTrace();
+					}
+//				}
+			}
+		}
+	}
+	
+	public byte[] toMessagePack(Object entity) throws IOException {
+		return msgpack.write(entity);
+	}
+	public void toMessagePack(Object entity, OutputStream out) throws IOException {
+		msgpack.write(out, entity);
+	}
+	public Object fromMessagePack(byte[] msg) throws IOException {
+		return msgpack.read(msg);
+	}
+	public Object fromMessagePack(InputStream msg) throws IOException {
+		return msgpack.read(msg);
+	}
+
 
 }
