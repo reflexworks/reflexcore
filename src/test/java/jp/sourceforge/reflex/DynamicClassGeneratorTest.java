@@ -60,6 +60,7 @@ public class DynamicClassGeneratorTest {
 		"  music",
 		" favorite2",
 		"  food",
+		"   food1",
 		" favorite3",
 		"  food",
 		" hobby*",

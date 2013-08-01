@@ -51,7 +51,6 @@ public class DynamicClassGenerator {
 	public HashSet<String> generateClass(String packagename, List<Meta> metalist)
 			throws NotFoundException, CannotCompileException {
 
-		//ClassPool pool = ClassPool.getDefault();
 		pool.importPackage(packagename);
 		pool.importPackage("java.util.Date");
 		 
@@ -78,23 +77,14 @@ public class DynamicClassGenerator {
 				String field = meta.self + ";";
 				try {
 					cc.getDeclaredField(type+field);
-					System.out.println(type+field + " is already defined");
 				} catch (NotFoundException ne2) {
-					// CtField f2 = CtField.make("public String _$$text;", cc);
 					// // フィールドの定義
-					System.out.println(type+field);
 					CtField f2 = CtField.make(type+field, cc); // フィールドの定義
 					cc.addField(f2);
-					System.out.println(type + "get" + meta.getSelf()
-							+ "() {" + "  return " + meta.self + "; }");
 					CtMethod m = CtNewMethod.make(type + "get" + meta.getSelf()
 							+ "() {" + "  return " + meta.self + "; }",
 							cc);
 					cc.addMethod(m);
-					System.out.println(
-							"public void set" + meta.getSelf()
-							+ "("+ meta.type + " "+meta.self +") { this." +meta.self +"=" + meta.self +";}"
-							);
 					m = CtNewMethod.make("public void set" + meta.getSelf()
 							+ "("+ meta.type + " "+meta.self +") { this." +meta.self +"=" + meta.self +";}",
 							cc);
@@ -122,10 +112,6 @@ public class DynamicClassGenerator {
 		matcherf = patternf.matcher(line);
 		
 		if (matcherf.find()) {
-			if (meta.self!=null) {
-				metalist.add(meta);
-				System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type);
-			}
 			if (meta.level!=matcherf.group(1).length()) {
 				level = matcherf.group(1).length();
 				if (meta.level<level) {
@@ -136,6 +122,10 @@ public class DynamicClassGenerator {
 					stack.pop();
 					classname = stack.peek();
 				}
+			}
+			if (meta.self!=null) {
+				metalist.add(meta);
+				System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type);
 			}
 			meta = new Meta();
 			meta.level = level;
