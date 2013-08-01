@@ -19,16 +19,21 @@ import javassist.NotFoundException;
 public class DynamicClassGenerator {
 
 	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?(\\*?)$";
+	private ClassPool pool;
+
+	public DynamicClassGenerator(ClassPool pool) throws NotFoundException {
+		this.pool = pool;
+	}
 	
 	public HashSet<String> generateClass(String packagename, String entitysrc[])
 			throws NotFoundException, CannotCompileException {
-		return generateClass(packagename, getMetalist(entitysrc));
+		return generateClass(packagename, getMetalist(entitysrc,packagename));
 	}
 	
 	public HashSet<String> generateClass(String packagename, List<Entity_meta> metalist)
 			throws NotFoundException, CannotCompileException {
 
-		ClassPool pool = ClassPool.getDefault();
+		//ClassPool pool = ClassPool.getDefault();
 		pool.importPackage(packagename);
 		pool.importPackage("java.util.Date");
 		 
@@ -43,10 +48,11 @@ public class DynamicClassGenerator {
 			} catch (NotFoundException ne1) {
 				System.out.println("make:"+packageclassname);
 				cc = pool.makeClass(packageclassname);
-				if (packageclassname.indexOf("Entry")>0) {
+				if (packageclassname.indexOf("Entry")>=0) {
 					CtClass cs = pool.get("jp.reflexworks.atom.entry.EntryBase");
 					cc.setSuperclass(cs); // superclassの定義
 				}
+
 			}
 
 			for (int i = 0; i < count(metalist, classname); i++) {
@@ -82,19 +88,20 @@ public class DynamicClassGenerator {
 		}
 		return classnames;
 	}
+	
 
-	public List<Entity_meta> getMetalist(String entitysrc[]) {
+	public List<Entity_meta> getMetalist(String entitysrc[],String packagename) {
 		List<Entity_meta> metalist = new ArrayList<Entity_meta>();
 		
 		Pattern patternf = Pattern.compile(field_pattern);
 		
 		Entity_meta meta = new Entity_meta();
 		Matcher matcherf;
-		String classname = "Entry"; // root
+		String packageclassname = packagename+".Entry"; // root
 		int level = 0;
 
 		Stack<String> stack = new Stack<String>();
-		stack.push(classname);		// root
+		stack.push(packageclassname);		// root
 
 		for (String line:entitysrc) {
 		matcherf = patternf.matcher(line);
@@ -103,12 +110,12 @@ public class DynamicClassGenerator {
 			if (meta.level!=matcherf.group(1).length()) {
 				level = matcherf.group(1).length();
 				if (meta.level<level) {
-					classname = meta.getSelf();
-					stack.push(classname);
-					meta.type = classname;
+					packageclassname = packagename+"."+meta.getSelf();
+					stack.push(packageclassname);
+					meta.type = packageclassname;
 				}else {
 					for (int i=0;i<meta.level-level+1;i++) {
-						classname = stack.pop();
+						packageclassname = stack.pop();
 					}
 				}
 			}
@@ -118,7 +125,7 @@ public class DynamicClassGenerator {
 			}
 			meta = new Entity_meta();
 			meta.level = level;
-			meta.classname = classname;
+			meta.classname = packageclassname;
 
 			meta.self = matcherf.group(2);
 			if (matcherf.group(5).equals("*")) {
@@ -167,7 +174,8 @@ public class DynamicClassGenerator {
 		for(int l=levelmax;l>=0;l--) {
 		for(int i=size-1;i>=0;i--) {
 			if (metalist.get(i).level==l) {
-				classnames.add(packagename+"."+metalist.get(i).classname);
+//				classnames.add(packagename+"."+metalist.get(i).classname);
+				classnames.add(metalist.get(i).classname);
 			}
 		}
 		

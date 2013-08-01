@@ -12,7 +12,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.NotFoundException;
+
 import org.msgpack.MessagePack;
+import org.msgpack.template.Template;
+import org.msgpack.template.TemplateRegistry;
+import org.msgpack.template.builder.ReflectionTemplateBuilder;
+import org.msgpack.template.builder.TemplateBuilder;
 
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
@@ -23,10 +31,13 @@ public class MessagePackMapper extends ResourceMapper {
 	
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private MessagePack msgpack = new MessagePack();
+	private TemplateRegistry registry; 
+	private ReflectionTemplateBuilder builder; 
 
 	public MessagePackMapper(Object jo_packages) {
 		this(jo_packages, false, false);
 	}
+	
 	public MessagePackMapper(Object jo_packages, boolean isCamel) {
 		this(jo_packages, isCamel, false);
 	}
@@ -43,6 +54,11 @@ public class MessagePackMapper extends ResourceMapper {
 		
 		// パッケージ名からクラス一覧を取得
 		ClassFinder classFinder = new ClassFinder();
+		
+		// msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
+		registry = new TemplateRegistry(null);
+		builder = new ReflectionTemplateBuilder(registry);
+
 		Set<String> classNames = null;
 		if (jo_packages != null) {
 			try {
@@ -53,20 +69,43 @@ public class MessagePackMapper extends ResourceMapper {
 					for (Object key : ((Map)jo_packages).keySet()) {
 						classNames.addAll(classFinder.getClassNamesFromPackage((String)key));
 					}
+				}else if (jo_packages instanceof Set) {
+					classNames = (Set<String>) jo_packages;
 				}
 			} catch (IOException e) {
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
+		registClass(classNames);
+	}
+	
+	public void registClass(Set<String> classNames) {
+		ClassPool pool = ClassPool.getDefault();
+
 		// MessagePackにクラスを登録
 		if (classNames != null) {
 			Set<Class<?>> registSet = new HashSet<Class<?>>();
 			for (String clsName : classNames) {
 				try {
-					Class<?> cls = Class.forName(clsName);
-					registClass(cls, registSet);
-				} catch (ClassNotFoundException e) {
-					logger.warning("ClassNotFoundException : " + e.getMessage());
+//					Class<?> cls = Class.forName(clsName);
+//					registClass(cls, registSet);
+//				} catch (ClassNotFoundException e) {
+//					try {
+						Class<?> cls = pool.get(clsName).toClass();
+						if (cls.getName().indexOf("Base")<0) {
+							System.out.println("clsName="+clsName);
+						if (cls.getName().equals("testsvc.Entry")) {
+							System.out.println("Entry");
+						}
+						Template template = builder.buildTemplate(cls);
+						registry.register(cls, template);
+						msgpack.register(cls,template);
+						}
+					} catch (CannotCompileException ce) {
+						logger.warning("CannotCompileException : " + ce.getMessage());
+					} catch (NotFoundException ne) {
+						logger.warning("ClassNotFoundException : " + ne.getMessage());
+//					}
 				}
 			}
 		}
@@ -104,7 +143,7 @@ public class MessagePackMapper extends ResourceMapper {
 			superCls = superCls.getSuperclass();
 		}
 
-		msgpack.register(cls);
+			msgpack.register(cls);
 	}
 	
 	/**
