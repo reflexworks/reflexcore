@@ -54,11 +54,9 @@ public class DynamicClassGenerator {
 		pool.importPackage(packagename);
 		pool.importPackage("java.util.Date");
 		 
-		HashSet<String> classnames = getClassnames(packagename,metalist);
+		HashSet<String> packageclassnames = getClassnames(packagename,metalist);
 		
-		for (String packageclassname : classnames) {
-//			String packageclassname = packagename + "." + classname;
-			String classname = packageclassname.replace(packagename + ".", "");
+		for (String packageclassname : packageclassnames) {
 			CtClass cc;
 			try {
 				cc = pool.get(packageclassname);
@@ -72,9 +70,9 @@ public class DynamicClassGenerator {
 
 			}
 
-			for (int i = 0; i < count(metalist, classname); i++) {
+			for (int i = 0; i < count(metalist, packageclassname); i++) {
 
-				Entity_meta meta = getMetaByClassname(metalist, classname, i);
+				Entity_meta meta = getMetaByClassname(metalist, packageclassname, i);
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
@@ -103,7 +101,7 @@ public class DynamicClassGenerator {
 				}
 			}
 		}
-		return classnames;
+		return packageclassnames;
 	}
 	
 
@@ -213,11 +211,11 @@ public class DynamicClassGenerator {
 		return null;
 	}
 
-	private int count(List<Entity_meta> metalist,String classname) {
+	private int count(List<Entity_meta> metalist,String packageclassname) {
 
 		int i =0;
 		for(Entity_meta meta:metalist) {
-			if (meta.classname.equals(classname)) {
+			if (meta.classname.equals(packageclassname)) {
 				i++;
 			}
 		}
