@@ -37,7 +37,7 @@ public class DynamicClassGeneratorTest {
 
 	public static String NEWLINE = System.getProperty("line.separator");
 
-	public static String entitysrc[] = {
+	public static String entitytempl[] = {
 		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
 		"id",
 		"email",
@@ -52,10 +52,16 @@ public class DynamicClassGeneratorTest {
 		"  message",
 		"  locationType",
 		"  location",
+		" code(int)",
+		" message",
 		"subInfo",
 		" favorite",
 		"  food",
 		"  music",
+		" favorite2",
+		"  food",
+		" favorite3",
+		"  food",
 		" hobby*",
 		"  _$$text"
 	};
@@ -68,7 +74,6 @@ public class DynamicClassGeneratorTest {
 
 		
 		ClassPool pool = ClassPool.getDefault();
-//        pool.appendSystemPath();
 		
 		DynamicClassGenerator dg = new DynamicClassGenerator(pool);		
 		HashSet<String> classnames = new LinkedHashSet<String>();
@@ -80,15 +85,10 @@ public class DynamicClassGeneratorTest {
 		classnames.addAll(atom);
 		atom = classFinder.getClassNamesFromPackage("jp.reflexworks.atom.feed");
 		classnames.addAll(atom);
-		
-//		TreeSet treeSet = new TreeSet<String>(Collections.reverseOrder());
-//		treeSet.addAll(dg.generateClass("testsvc", entitysrc));
 
-		classnames.addAll(dg.generateClass("testm3", entitysrc));
+		classnames.addAll(dg.generateClass("testm3", entitytempl));
 		dg.registClass(classnames);
 		
-//		IResourceMapper rxmapper2 = new MessagePackMapper(classnames);
-		IResourceMapper rxmapper = new ResourceMapper("model3");
 		
 		EntryBase entry = getTestEntry(pool);
 		
@@ -175,10 +175,10 @@ public class DynamicClassGeneratorTest {
 //		CtClass cc = pool.get("testm3.Error");
 		Class cc = Class.forName("testm3.Entry");
 		EntryBase entry = (EntryBase) cc.newInstance();
-		Field[] flds = cc.getFields();
+/*		Field[] flds = cc.getFields();
 		for (Field fld:flds) {
 			System.out.println("flds:"+fld.getName());
-		}
+		}*/
 		Field f = cc.getField("email");
 		f.set(entry, "email1");
 		f = cc.getField("verified_email");
@@ -189,10 +189,20 @@ public class DynamicClassGeneratorTest {
 		f.set(entry, "X");
 		f = cc.getField("family_name");
 		f.set(entry, "管理者Y");
-		/*
+		
 		Class cc2 = Class.forName("testm3.Error");
+		Field[] flds = cc2.getFields();
+		for (Field fld:flds) {
+			System.out.println("flds:"+fld.getName());
+		}
 		Object error = cc2.newInstance();
-		*/
+		f = cc2.getField("code");
+		f.set(error, 100);		
+		f = cc2.getField("message");
+		f.set(error, "Syntax Error");
+		f = cc2.getField("message");
+		f.set(error, "Syntax Error");
+		
 		
 		
 		return entry;

@@ -4,7 +4,7 @@ public class Meta {
 
 	public int level;
 	public String type;
-	public String classname;
+	public String parent;
 	public String self;
 	public boolean isEncrypted;
 	public boolean isIndex;

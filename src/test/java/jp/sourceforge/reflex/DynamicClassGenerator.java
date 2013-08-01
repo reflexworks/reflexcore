@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -114,15 +115,18 @@ public class DynamicClassGenerator {
 		Meta meta = new Meta();
 		Matcher matcherf;
 		String packageclassname = packagename+".Entry"; // root
-		int level = 0;
-
 		Stack<String> stack = new Stack<String>();
-		stack.push(packageclassname);		// root
+		stack.push(packageclassname);
+		int level = 0;
 
 		for (String line:entitysrc) {
 		matcherf = patternf.matcher(line);
 		
 		if (matcherf.find()) {
+			if (meta.self!=null) {
+				metalist.add(meta);
+				System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type);
+			}
 			if (meta.level!=matcherf.group(1).length()) {
 				level = matcherf.group(1).length();
 				if (meta.level<level) {
@@ -130,18 +134,13 @@ public class DynamicClassGenerator {
 					stack.push(packageclassname);
 					meta.type = packageclassname;
 				}else {
-					for (int i=0;i<meta.level-level+1;i++) {
-						packageclassname = stack.pop();
-					}
+					stack.pop();
+					packageclassname = stack.peek();
 				}
-			}
-			if (meta.self!=null) {
-				metalist.add(meta);
-				System.out.println("self="+meta.self+" classname="+meta.classname+" level="+meta.level+" type="+meta.type);
 			}
 			meta = new Meta();
 			meta.level = level;
-			meta.classname = packageclassname;
+			meta.parent = packageclassname;
 			meta.isEncrypted = false;
 			meta.isIndex = false;
 
@@ -181,7 +180,7 @@ public class DynamicClassGenerator {
 		}
 		}
 		metalist.add(meta);
-		System.out.println("self="+meta.self+" classname="+meta.classname+" level="+meta.level+" type="+meta.type);
+		System.out.println("self="+meta.self+" classname="+meta.parent+" level="+meta.level+" type="+meta.type);
 
 		return metalist;
 
@@ -203,7 +202,7 @@ public class DynamicClassGenerator {
 		for(int i=size-1;i>=0;i--) {
 			if (metalist.get(i).level==l) {
 //				classnames.add(packagename+"."+metalist.get(i).classname);
-				classnames.add(metalist.get(i).classname);
+				classnames.add(metalist.get(i).parent);
 			}
 		}
 		
@@ -214,7 +213,7 @@ public class DynamicClassGenerator {
 	private Meta getMetaByClassname(List<Meta> metalist,String classname,int i) {
 
 		for(Meta meta:metalist) {
-			if (meta.classname.equals(classname)) {
+			if (meta.parent.equals(classname)) {
 				i--;
 				if (i<0) {
 					return meta;
@@ -228,7 +227,7 @@ public class DynamicClassGenerator {
 
 		int i =0;
 		for(Meta meta:metalist) {
-			if (meta.classname.equals(packageclassname)) {
+			if (meta.parent.equals(packageclassname)) {
 				i++;
 			}
 		}
