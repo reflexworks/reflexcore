@@ -201,8 +201,9 @@ public class DynamicClassGeneratorTest {
 		f.set(error, 100);		
 		f = cc2.getField("message");
 		f.set(error, "Syntax Error");
-		f = cc2.getField("message");
-		f.set(error, "Syntax Error");
+		
+		f = cc.getField("error");
+		f.set(entry, error);
 		
 		
 		

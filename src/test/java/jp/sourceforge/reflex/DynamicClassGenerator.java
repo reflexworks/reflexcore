@@ -117,7 +117,7 @@ public class DynamicClassGenerator {
 				if (meta.level<level) {
 					classname = packagename+"."+meta.getSelf();
 					stack.push(classname);
-					meta.type = classname;
+					meta.type = classname;	// 子要素を持っている場合にタイプを自分にする
 				}else {
 					stack.pop();
 					classname = stack.peek();
