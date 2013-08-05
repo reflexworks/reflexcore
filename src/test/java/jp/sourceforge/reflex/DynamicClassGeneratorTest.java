@@ -110,7 +110,7 @@ public class DynamicClassGeneratorTest {
 		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3");		
 		dg2.registClass(entitytempl2);
 
-		Object muserinfo2 = dg2.fromMessagePack(mbytes);
+		EntryBase muserinfo2 = (EntryBase) dg2.fromMessagePack(mbytes);
         editTestEntry(dg2,muserinfo2);
 		
         byte[] mbytes2 = dg2.toMessagePack(muserinfo2);
