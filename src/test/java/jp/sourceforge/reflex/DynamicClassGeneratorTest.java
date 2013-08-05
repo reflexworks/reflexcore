@@ -54,7 +54,38 @@ public class DynamicClassGeneratorTest {
 		" hobby*",
 		"  _$$text"
 	};
-	
+
+	public static String entitytempl2[] = {
+		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
+		"id",
+		"email",
+		"verified_email(Boolean)",
+		"name",
+		"given_name",
+		"family_name",
+		"error",
+		" errors*",
+		"  domain",
+		"  reason",
+		"  message",
+		"  locationType",
+		"  location",
+		"  test",
+		" code(int)",
+		" message",
+		"subInfo",
+		" favorite",
+		"  food",
+		"  music",
+		" favorite2",
+		"  food",
+		"   food1",
+		" favorite3",
+		"  food",
+		" hobby*",
+		"  _$$text"
+	};
+
 	private static String[] atom = {"jp.reflexworks.atom.source.Author","jp.reflexworks.atom.source.Category",
 							 "jp.reflexworks.atom.source.Contributor","jp.reflexworks.atom.source.Generator",
 							 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source",
@@ -73,12 +104,6 @@ public class DynamicClassGeneratorTest {
 		classnames.addAll(new ArrayList(Arrays.asList(atom)));
 		classnames.addAll(dg.generateClass("testm3", entitytempl));
 		dg.registClass(classnames);
-
-		dg = new DynamicClassGenerator();		
-		classnames = new LinkedHashSet<String>();
-		classnames.addAll(new ArrayList(Arrays.asList(atom)));
-		classnames.addAll(dg.generateClass("testm3", entitytempl));
-		dg.registClass(classnames);
 		
 		Object entry = getTestEntry(dg);
 		
@@ -87,7 +112,17 @@ public class DynamicClassGeneratorTest {
         for(int i=0;i<mbytes.length;i++) { 
         	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
         } 
+		System.out.println("\n=== MessagePack UserInfo ===");
         Object muserinfo = dg.fromMessagePack(mbytes);
+		System.out.println(muserinfo);
+
+		dg = new DynamicClassGenerator();		
+		classnames = new LinkedHashSet<String>();
+		classnames.addAll(new ArrayList(Arrays.asList(atom)));
+		classnames.addAll(dg.generateClass("testm3", entitytempl2));
+		dg.registClass(classnames);
+
+        muserinfo = dg.fromMessagePack(mbytes);
 		
 		System.out.println("\n=== MessagePack UserInfo ===");
 		System.out.println(muserinfo);
@@ -181,10 +216,6 @@ public class DynamicClassGeneratorTest {
 		f.set(entry, "管理者Y");
 		
 		Class cc2 = dg.getClass("testm3.Error");
-		Field[] flds = cc2.getFields();
-		for (Field fld:flds) {
-			System.out.println("flds:"+fld.getName());
-		}
 		Object error = cc2.newInstance();
 		f = cc2.getField("code");
 		f.set(error, 100);		
@@ -194,6 +225,27 @@ public class DynamicClassGeneratorTest {
 		f = cc.getField("error");
 		f.set(entry, error);
 		
+		Class cc3 = dg.getClass("testm3.SubInfo");
+		Object subInfo = cc3.newInstance();
+		
+		Class cc4 = dg.getClass("testm3.Favorite");
+		Object favorite = cc4.newInstance();
+
+		f = cc4.getField("food");
+		f.set(favorite, "カレー");		
+		f = cc4.getField("music");
+		f.set(favorite, "ポップス");		
+
+		f = cc3.getField("favorite");
+		f.set(subInfo, favorite);		
+		
+		f = cc.getField("subInfo");
+		f.set(entry, subInfo);
+		
+		Field[] flds = cc3.getFields();
+		for (Field fld:flds) {
+			System.out.println("flds:"+fld.getName());
+		}
 		
 		
 		return entry;

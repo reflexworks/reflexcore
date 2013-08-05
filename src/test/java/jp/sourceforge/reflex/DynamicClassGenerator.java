@@ -88,6 +88,7 @@ public class DynamicClassGenerator {
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
+					System.out.println("  field="+type+field);
 					cc.getDeclaredField(type+field);
 				} catch (NotFoundException ne2) {
 					// // フィールドの定義
@@ -131,8 +132,10 @@ public class DynamicClassGenerator {
 					stack.push(classname);
 					meta.type = classname;	// 子要素を持っている場合にタイプを自分にする
 				}else {
-					stack.pop();
-					classname = stack.peek();
+					for (int i=0;i<meta.level-level;i++) {
+						stack.pop();
+						classname = stack.peek();
+					}
 				}
 			}
 			if (meta.self!=null) {
