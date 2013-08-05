@@ -116,7 +116,8 @@ public class DynamicClassGeneratorTest {
 //		Class<?> cls = loader.loadClass("testm3.Entry");
 
         Object muserinfo = dg.fromMessagePack(mbytes);
-		System.out.println(muserinfo);
+        
+		System.out.println(dg.ArrayfromMessagePack(mbytes));
 
 		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3");		
 		classnames = new LinkedHashSet<String>();
@@ -127,8 +128,12 @@ public class DynamicClassGeneratorTest {
 		Object muserinfo2 = dg2.fromMessagePack(mbytes);
         editTestEntry(dg2,muserinfo2);
 		
+        byte[] mbytes2 = dg2.toMessagePack(muserinfo2);
+        for(int i=0;i<mbytes2.length;i++) { 
+        	System.out.print(Integer.toHexString(mbytes2[i]& 0xff)+" "); 
+        } 
 		System.out.println("\n=== MessagePack UserInfo ===");
-		System.out.println(muserinfo2);
+		System.out.println(dg2.ArrayfromMessagePack(mbytes2));
         
 
 	}
@@ -184,12 +189,12 @@ public class DynamicClassGeneratorTest {
 		f.set(entry, subInfo);
 		
 		
-		
+		/*
 		Field[] flds = cc3.getFields();
 		for (Field fld:flds) {
 			System.out.println("flds:"+fld.getName());
 		}
-		
+		*/
 		
 		return entry;
 		

@@ -74,7 +74,7 @@ public class DynamicClassGenerator {
 			try {
 				cc = pool.get(classname);
 			} catch (NotFoundException ne1) {
-				System.out.println("make:"+classname);
+//				System.out.println("make:"+classname);
 				cc = pool.makeClass(classname);
 				if (classname.indexOf("Entry")>=0) {
 					CtClass cs = pool.get("jp.reflexworks.atom.entry.EntryBase");
@@ -139,7 +139,7 @@ public class DynamicClassGenerator {
 			}
 			if (meta.self!=null) {
 				metalist.add(meta);
-				System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type);
+//				System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type);
 			}
 			meta = new Meta();
 			meta.level = level;
@@ -183,7 +183,7 @@ public class DynamicClassGenerator {
 		}
 		}
 		metalist.add(meta);
-		System.out.println("self="+meta.self+" classname="+meta.parent+" level="+meta.level+" type="+meta.type);
+//		System.out.println("self="+meta.self+" classname="+meta.parent+" level="+meta.level+" type="+meta.type);
 
 		return metalist;
 
@@ -251,7 +251,7 @@ public class DynamicClassGenerator {
 //						Class<?> cls = pool.get(clsName).toClass();
 						Class<?> cls = loader.loadClass(clsName);
 						if (cls.getName().indexOf("Base")<0) {
-							System.out.println("clsName="+clsName);
+//							System.out.println("clsName="+clsName);
 							Template template = builder.buildTemplate(cls);
 							registry.register(cls, template);
 							msgpack.register(cls,template);
@@ -276,6 +276,9 @@ public class DynamicClassGenerator {
 	}
 	public Object fromMessagePack(byte[] msg) throws IOException, ClassNotFoundException {
 		return msgpack.read(msg,loader.loadClass(getRootEntry()));
+	}
+	public Object ArrayfromMessagePack(byte[] msg) throws IOException, ClassNotFoundException {
+		return msgpack.read(msg);
 	}
 	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException {
 		return msgpack.read(msg,loader.loadClass(getRootEntry()));
