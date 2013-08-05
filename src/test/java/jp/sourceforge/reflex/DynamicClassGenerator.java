@@ -37,13 +37,14 @@ public class DynamicClassGenerator {
 	private ReflectionTemplateBuilder builder; 
 	private ClassPool pool;
     private Loader loader;
+    private String packagename;
 
 
 	public ClassPool getPool() {
 		return pool;
 	}
 	
-	public DynamicClassGenerator() throws NotFoundException {
+	public DynamicClassGenerator(String packagename) throws NotFoundException {
 //		ClassPool pool0 = ClassPool.getDefault();
 		this.pool = new ClassPool();
 		this.pool.appendSystemPath();
@@ -52,15 +53,15 @@ public class DynamicClassGenerator {
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry);
 		loader = new Loader(this.pool);
-		
+		this.packagename = packagename;
 	}
 	
-	public HashSet<String> generateClass(String packagename, String entitysrc[])
+	public HashSet<String> generateClass(String entitysrc[])
 			throws NotFoundException, CannotCompileException, ParseException {
-		return generateClass(packagename, getMetalist(entitysrc,packagename));
+		return generateClass(getMetalist(entitysrc));
 	}
 	
-	public HashSet<String> generateClass(String packagename, List<Meta> metalist)
+	public HashSet<String> generateClass(List<Meta> metalist)
 			throws NotFoundException, CannotCompileException {
 
 		pool.importPackage(packagename);
@@ -88,7 +89,6 @@ public class DynamicClassGenerator {
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
-					System.out.println("  field="+type+field);
 					cc.getDeclaredField(type+field);
 				} catch (NotFoundException ne2) {
 					// // フィールドの定義
@@ -108,15 +108,14 @@ public class DynamicClassGenerator {
 		return classnames;
 	}
 	
-
-	public List<Meta> getMetalist(String entitysrc[],String packagename) throws ParseException {
+	public List<Meta> getMetalist(String entitysrc[]) throws ParseException {
 		List<Meta> metalist = new ArrayList<Meta>();
 		
 		Pattern patternf = Pattern.compile(field_pattern);
 		
 		Meta meta = new Meta();
 		Matcher matcherf;
-		String classname = packagename+".Entry"; // root
+		String classname = getRootEntry(); 
 		Stack<String> stack = new Stack<String>();
 		stack.push(classname);
 		int level = 0;
@@ -189,7 +188,12 @@ public class DynamicClassGenerator {
 		return metalist;
 
 	}
+
+	private String getRootEntry() {
+		return packagename+".Entry";
+	}
 	
+
 	private HashSet<String> getClassnames(List<Meta> metalist) {
 		
 		HashSet<String> classnames = new LinkedHashSet<String>();
@@ -270,11 +274,11 @@ public class DynamicClassGenerator {
 	public void toMessagePack(Object entity, OutputStream out) throws IOException {
 		msgpack.write(out, entity);
 	}
-	public Object fromMessagePack(byte[] msg) throws IOException {
-		return msgpack.read(msg);
+	public Object fromMessagePack(byte[] msg) throws IOException, ClassNotFoundException {
+		return msgpack.read(msg,loader.loadClass(getRootEntry()));
 	}
-	public Object fromMessagePack(InputStream msg) throws IOException {
-		return msgpack.read(msg);
+	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException {
+		return msgpack.read(msg,loader.loadClass(getRootEntry()));
 	}
 	
 

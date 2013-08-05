@@ -70,9 +70,9 @@ public class DynamicClassGeneratorTest {
 		"  message",
 		"  locationType",
 		"  location",
-		"  test",
 		" code(int)",
 		" message",
+		" test",
 		"subInfo",
 		" favorite",
 		"  food",
@@ -96,13 +96,13 @@ public class DynamicClassGeneratorTest {
 							 "jp.reflexworks.atom.feed.Generator","jp.reflexworks.atom.feed.Contributor",
 							 "jp.reflexworks.atom.feed.Link" };
 	
-	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException {
+	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException {
 
 		
-		DynamicClassGenerator dg = new DynamicClassGenerator();		
+		DynamicClassGenerator dg = new DynamicClassGenerator("testm3");		
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		classnames.addAll(new ArrayList(Arrays.asList(atom)));
-		classnames.addAll(dg.generateClass("testm3", entitytempl));
+		classnames.addAll(dg.generateClass(entitytempl));
 		dg.registClass(classnames);
 		
 		Object entry = getTestEntry(dg);
@@ -113,86 +113,27 @@ public class DynamicClassGeneratorTest {
         	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
         } 
 		System.out.println("\n=== MessagePack UserInfo ===");
+//		Class<?> cls = loader.loadClass("testm3.Entry");
+
         Object muserinfo = dg.fromMessagePack(mbytes);
 		System.out.println(muserinfo);
 
-		dg = new DynamicClassGenerator();		
+		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3");		
 		classnames = new LinkedHashSet<String>();
 		classnames.addAll(new ArrayList(Arrays.asList(atom)));
-		classnames.addAll(dg.generateClass("testm3", entitytempl2));
-		dg.registClass(classnames);
+		classnames.addAll(dg2.generateClass(entitytempl2));
+		dg2.registClass(classnames);
 
-        muserinfo = dg.fromMessagePack(mbytes);
+		Object muserinfo2 = dg2.fromMessagePack(mbytes);
+        editTestEntry(dg2,muserinfo2);
 		
 		System.out.println("\n=== MessagePack UserInfo ===");
-		System.out.println(muserinfo);
+		System.out.println(muserinfo2);
         
 
 	}
 	
 
-	public static String getJsonInfo() {
-		StringBuilder buf = new StringBuilder();
-		buf.append("{");
-		buf.append(NEWLINE);
-		buf.append(" \"id\": \"113457373253613477905\",");
-		buf.append(NEWLINE);
-		buf.append(" \"email\": \"xuser@scr01.pdc.jp\",");
-		buf.append(NEWLINE);
-		//buf.append(" \"verified_email\": true,");
-		buf.append(" \"verified_email\": false,");
-		buf.append(NEWLINE);
-		buf.append(" \"name\": \"X 管理者\",");
-		buf.append(NEWLINE);
-		buf.append(" \"given_name\": \"X\",");
-		buf.append(NEWLINE);
-		buf.append(" \"family_name\": \"管理者\"");
-		buf.append(NEWLINE);
-		buf.append("}");
-		return buf.toString();
-	}
-	
-	public static String getJsonError() {
-		StringBuilder buf = new StringBuilder();
-		buf.append("{");
-		buf.append(NEWLINE);
-		buf.append(" \"error\": {");
-		buf.append(NEWLINE);
-		buf.append("  \"errors\": [");
-		buf.append(NEWLINE);
-		buf.append("   {");
-		buf.append(NEWLINE);
-		buf.append("    \"domain\": \"com.google.auth\",");
-		buf.append(NEWLINE);
-		buf.append("    \"reason\": \"invalidAuthentication\",");
-		buf.append(NEWLINE);
-		buf.append("    \"message\": \"invalid header\",");
-		buf.append(NEWLINE);
-		buf.append("    \"locationType\": \"header\",");
-		buf.append(NEWLINE);
-		buf.append("    \"location\": \"Authorization\"");
-		buf.append(NEWLINE);
-		buf.append("   }");
-		buf.append(NEWLINE);
-		buf.append("  ],");
-		buf.append(NEWLINE);
-		buf.append("  \"code\": 401,");
-		buf.append(NEWLINE);
-		buf.append("  \"message\": \"invalid header\"");
-		buf.append(NEWLINE);
-		buf.append(" }");
-		buf.append(NEWLINE);
-		buf.append("}");
-		return buf.toString();
-	}
-	
-	public static String convertUserinfo(String json) {
-		StringBuilder buf = new StringBuilder();
-		buf.append("{ \"userinfo\" : ");
-		buf.append(json);
-		buf.append("}");
-		return buf.toString();
-	}
 	
 	public static Object getTestEntry(DynamicClassGenerator dg)  {
 		try {
@@ -242,6 +183,8 @@ public class DynamicClassGeneratorTest {
 		f = cc.getField("subInfo");
 		f.set(entry, subInfo);
 		
+		
+		
 		Field[] flds = cc3.getFields();
 		for (Field fld:flds) {
 			System.out.println("flds:"+fld.getName());
@@ -256,25 +199,23 @@ public class DynamicClassGeneratorTest {
 		return null;
 	}
 	
-	
-	public static void editUserInfo(Userinfo userInfo) {
-		SubInfo subInfo = new SubInfo();
-		Favorite favorite = new Favorite();
-		favorite.food = "カレー";
-		favorite.music = "ポップス";
-		subInfo.favorite = favorite;
+	public static void editTestEntry(DynamicClassGenerator dg,Object entry)  {
+		try {
+/*
+			Field[] flds = entry.getClass().getFields();
+			for (Field fld:flds) {
+				System.out.println("flds:"+fld.getName());
+			}
 
-		List<Hobby> hobbies = new ArrayList<Hobby>();
-		Hobby hobby = new Hobby();
-		hobby._$$text = "ハイキング";
-		hobbies.add(hobby);
-		hobby = new Hobby();
-		hobby._$$text = "映画鑑賞";
-		hobbies.add(hobby);
-		subInfo.hobby = hobbies;
+*/
+		Field f = entry.getClass().getField("error");
+		Object error = f.get(entry);	
 		
-		userInfo.setSubInfo(subInfo);
+		f = error.getClass().getField("test");
+		f.set(error, "XXXX");		
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
-
-
 }
