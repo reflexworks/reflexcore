@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.security.ProtectionDomain;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,7 +31,16 @@ import javassist.NotFoundException;
 
 public class DynamicClassGenerator {
 
-	private static String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
+	private static final String[] atom = {"jp.reflexworks.atom.source.Author","jp.reflexworks.atom.source.Category",
+		 "jp.reflexworks.atom.source.Contributor","jp.reflexworks.atom.source.Generator",
+		 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source",
+		 "jp.reflexworks.atom.entry.Author","jp.reflexworks.atom.entry.Category",
+		 "jp.reflexworks.atom.entry.Content","jp.reflexworks.atom.entry.Contributor",
+		 "jp.reflexworks.atom.entry.Link","jp.reflexworks.atom.entry.EntryBase",
+		 "jp.reflexworks.atom.feed.Author","jp.reflexworks.atom.feed.Category",
+		 "jp.reflexworks.atom.feed.Generator","jp.reflexworks.atom.feed.Contributor",
+		 "jp.reflexworks.atom.feed.Link","jp.reflexworks.atom.entry.FeedBase" };
 
 	private MessagePack msgpack = new MessagePack();
 	private TemplateRegistry registry; 
@@ -241,16 +251,25 @@ public class DynamicClassGenerator {
 		return i;
 	}
 	
+	public void registClass(String[] entitytempl) throws NotFoundException, CannotCompileException, ParseException{
+		HashSet<String> classnames = new LinkedHashSet<String>();
+		classnames.addAll(new ArrayList(Arrays.asList(atom)));
+		classnames.addAll(generateClass(entitytempl));
+		registClass(classnames);
+	}
+	
 	public void registClass(Set<String> classnames) {
 
 		// MessagePackにクラスを登録
 		if (classnames != null) {
 			Set<Class<?>> registSet = new HashSet<Class<?>>();
+			
 			for (String clsName : classnames) {
 				try {
-//						if (clsName.indexOf(".atom.")>0) {
-//							loader.delegateLoadingOf(clsName);
-//						}
+						// 静的なクラスであるatomパッケージは親のクラスローダにロード(これがないとClassCastException)
+						if (clsName.indexOf(".atom.")>0) {
+							loader.delegateLoadingOf(clsName);
+						}
 						if (clsName.indexOf("Base")<0) {
 //							Class<?> cls = pool.get(clsName).toClass();
 							Class<?> cls = loader.loadClass(clsName);

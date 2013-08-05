@@ -86,24 +86,12 @@ public class DynamicClassGeneratorTest {
 		"  _$$text"
 	};
 
-	private static String[] atom = {"jp.reflexworks.atom.source.Author","jp.reflexworks.atom.source.Category",
-							 "jp.reflexworks.atom.source.Contributor","jp.reflexworks.atom.source.Generator",
-							 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source",
-							 "jp.reflexworks.atom.entry.Author","jp.reflexworks.atom.entry.Category",
-							 "jp.reflexworks.atom.entry.Content","jp.reflexworks.atom.entry.Contributor",
-							 "jp.reflexworks.atom.entry.Link",
-							 "jp.reflexworks.atom.feed.Author","jp.reflexworks.atom.feed.Category",
-							 "jp.reflexworks.atom.feed.Generator","jp.reflexworks.atom.feed.Contributor",
-							 "jp.reflexworks.atom.feed.Link" };
 	
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException {
 
 		
 		DynamicClassGenerator dg = new DynamicClassGenerator("testm3");		
-		HashSet<String> classnames = new LinkedHashSet<String>();
-		classnames.addAll(new ArrayList(Arrays.asList(atom)));
-		classnames.addAll(dg.generateClass(entitytempl));
-		dg.registClass(classnames);
+		dg.registClass(entitytempl);
 		
 		Object entry = getTestEntry(dg);
 		
@@ -115,15 +103,12 @@ public class DynamicClassGeneratorTest {
 		System.out.println("\n=== MessagePack UserInfo ===");
 //		Class<?> cls = loader.loadClass("testm3.Entry");
 
-        Object muserinfo =  dg.fromMessagePack(mbytes);
+        EntryBase muserinfo = (EntryBase) dg.fromMessagePack(mbytes);
         
 		System.out.println(dg.ArrayfromMessagePack(mbytes));
 
 		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3");		
-		classnames = new LinkedHashSet<String>();
-		classnames.addAll(new ArrayList(Arrays.asList(atom)));
-		classnames.addAll(dg2.generateClass(entitytempl2));
-		dg2.registClass(classnames);
+		dg2.registClass(entitytempl2);
 
 		Object muserinfo2 = dg2.fromMessagePack(mbytes);
         editTestEntry(dg2,muserinfo2);
