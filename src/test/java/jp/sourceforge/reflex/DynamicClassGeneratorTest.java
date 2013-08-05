@@ -115,7 +115,7 @@ public class DynamicClassGeneratorTest {
 		System.out.println("\n=== MessagePack UserInfo ===");
 //		Class<?> cls = loader.loadClass("testm3.Entry");
 
-        Object muserinfo = dg.fromMessagePack(mbytes);
+        Object muserinfo =  dg.fromMessagePack(mbytes);
         
 		System.out.println(dg.ArrayfromMessagePack(mbytes));
 

@@ -74,7 +74,6 @@ public class DynamicClassGenerator {
 			try {
 				cc = pool.get(classname);
 			} catch (NotFoundException ne1) {
-//				System.out.println("make:"+classname);
 				cc = pool.makeClass(classname);
 				if (classname.indexOf("Entry")>=0) {
 					CtClass cs = pool.get("jp.reflexworks.atom.entry.EntryBase");
@@ -189,6 +188,7 @@ public class DynamicClassGenerator {
 
 	}
 
+	
 	private String getRootEntry() {
 		return packagename+".Entry";
 	}
@@ -248,9 +248,12 @@ public class DynamicClassGenerator {
 			Set<Class<?>> registSet = new HashSet<Class<?>>();
 			for (String clsName : classnames) {
 				try {
-//						Class<?> cls = pool.get(clsName).toClass();
-						Class<?> cls = loader.loadClass(clsName);
-						if (cls.getName().indexOf("Base")<0) {
+//						if (clsName.indexOf(".atom.")>0) {
+//							loader.delegateLoadingOf(clsName);
+//						}
+						if (clsName.indexOf("Base")<0) {
+//							Class<?> cls = pool.get(clsName).toClass();
+							Class<?> cls = loader.loadClass(clsName);
 //							System.out.println("clsName="+clsName);
 							Template template = builder.buildTemplate(cls);
 							registry.register(cls, template);

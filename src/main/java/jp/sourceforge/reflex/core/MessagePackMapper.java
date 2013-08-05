@@ -91,12 +91,9 @@ public class MessagePackMapper extends ResourceMapper {
 //					registClass(cls, registSet);
 //				} catch (ClassNotFoundException e) {
 //					try {
-						Class<?> cls = pool.get(clsName).toClass();
-						if (cls.getName().indexOf("Base")<0) {
+						if (clsName.indexOf("Base")<0) {
+							Class<?> cls = pool.get(clsName).toClass();
 							System.out.println("clsName="+clsName);
-						if (cls.getName().equals("testsvc.Entry")) {
-							System.out.println("Entry");
-						}
 						Template template = builder.buildTemplate(cls);
 						registry.register(cls, template);
 						msgpack.register(cls,template);
