@@ -5,21 +5,15 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
-import javassist.CtClass;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.EntryBase;
-import jp.sourceforge.reflex.core.MessagePackMapper;
-import jp.sourceforge.reflex.core.ResourceMapper;
 import jp.sourceforge.reflex.util.ClassFinder;
 import model3.Userinfo;
 import model3.sub.Favorite;
@@ -27,11 +21,6 @@ import model3.sub.Hobby;
 import model3.sub.SubInfo;
 
 import org.json.JSONException;
-import org.msgpack.MessagePack;
-import org.msgpack.template.Template;
-import org.msgpack.template.TemplateRegistry;
-import org.msgpack.template.builder.ReflectionTemplateBuilder;
-import org.msgpack.template.builder.TemplateBuilder;
 
 public class DynamicClassGeneratorTest {
 
@@ -74,9 +63,7 @@ public class DynamicClassGeneratorTest {
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException {
 
 		
-		ClassPool pool = ClassPool.getDefault();
-		
-		DynamicClassGenerator dg = new DynamicClassGenerator(pool);		
+		DynamicClassGenerator dg = new DynamicClassGenerator();		
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		ClassFinder classFinder = new ClassFinder();
 //		Set<String> atom = classFinder.getClassNamesFromPackage("jp.reflexworks.atom.source");
@@ -91,7 +78,7 @@ public class DynamicClassGeneratorTest {
 		dg.registClass(classnames);
 		
 		
-		EntryBase entry = getTestEntry(pool);
+		EntryBase entry = getTestEntry();
 		
 		// MessagePack test
         byte[] mbytes = dg.toMessagePack(entry);
@@ -170,10 +157,9 @@ public class DynamicClassGeneratorTest {
 		return buf.toString();
 	}
 	
-	public static EntryBase getTestEntry(ClassPool pool)  {
+	public static EntryBase getTestEntry()  {
 		try {
 			
-//		CtClass cc = pool.get("testm3.Error");
 		Class cc = Class.forName("testm3.Entry");
 		EntryBase entry = (EntryBase) cc.newInstance();
 /*		Field[] flds = cc.getFields();

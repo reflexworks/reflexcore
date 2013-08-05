@@ -35,12 +35,18 @@ public class DynamicClassGenerator {
 	private ReflectionTemplateBuilder builder; 
 	private ClassPool pool;
 
-	public DynamicClassGenerator(ClassPool pool) throws NotFoundException {
-		this.pool = pool;
+	public ClassPool getPool() {
+		return pool;
+	}
+	
+	public DynamicClassGenerator() throws NotFoundException {
+		ClassPool pool0 = ClassPool.getDefault();
+		this.pool = new ClassPool(pool0);
+		
 		// msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry);
-
+		
 	}
 	
 	public HashSet<String> generateClass(String packagename, String entitysrc[])
@@ -261,6 +267,6 @@ public class DynamicClassGenerator {
 	public Object fromMessagePack(InputStream msg) throws IOException {
 		return msgpack.read(msg);
 	}
-
+	
 
 }
