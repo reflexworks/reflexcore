@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import javassist.CannotCompileException;
-import javassist.ClassPool;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.sourceforge.reflex.util.ClassFinder;
@@ -58,27 +57,30 @@ public class DynamicClassGeneratorTest {
 	
 	private static String[] atom = {"jp.reflexworks.atom.source.Author","jp.reflexworks.atom.source.Category",
 							 "jp.reflexworks.atom.source.Contributor","jp.reflexworks.atom.source.Generator",
-							 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source" };
+							 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source",
+							 "jp.reflexworks.atom.entry.Author","jp.reflexworks.atom.entry.Category",
+							 "jp.reflexworks.atom.entry.Content","jp.reflexworks.atom.entry.Contributor",
+							 "jp.reflexworks.atom.entry.Link",
+							 "jp.reflexworks.atom.feed.Author","jp.reflexworks.atom.feed.Category",
+							 "jp.reflexworks.atom.feed.Generator","jp.reflexworks.atom.feed.Contributor",
+							 "jp.reflexworks.atom.feed.Link" };
 	
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException {
 
 		
 		DynamicClassGenerator dg = new DynamicClassGenerator();		
 		HashSet<String> classnames = new LinkedHashSet<String>();
-		ClassFinder classFinder = new ClassFinder();
-//		Set<String> atom = classFinder.getClassNamesFromPackage("jp.reflexworks.atom.source");
-//		classnames.addAll(atom);
 		classnames.addAll(new ArrayList(Arrays.asList(atom)));
-		Set<String> atom = classFinder.getClassNamesFromPackage("jp.reflexworks.atom.entry");
-		classnames.addAll(atom);
-		atom = classFinder.getClassNamesFromPackage("jp.reflexworks.atom.feed");
-		classnames.addAll(atom);
+		classnames.addAll(dg.generateClass("testm3", entitytempl));
+		dg.registClass(classnames);
 
+		dg = new DynamicClassGenerator();		
+		classnames = new LinkedHashSet<String>();
+		classnames.addAll(new ArrayList(Arrays.asList(atom)));
 		classnames.addAll(dg.generateClass("testm3", entitytempl));
 		dg.registClass(classnames);
 		
-		
-		EntryBase entry = getTestEntry();
+		Object entry = getTestEntry(dg);
 		
 		// MessagePack test
         byte[] mbytes = dg.toMessagePack(entry);
@@ -157,11 +159,12 @@ public class DynamicClassGeneratorTest {
 		return buf.toString();
 	}
 	
-	public static EntryBase getTestEntry()  {
+	public static Object getTestEntry(DynamicClassGenerator dg)  {
 		try {
 			
-		Class cc = Class.forName("testm3.Entry");
-		EntryBase entry = (EntryBase) cc.newInstance();
+//		Class cc = Class.forName("testm3.Entry");
+		Class cc = dg.getClass("testm3.Entry");
+		Object entry = (Object) cc.newInstance();
 /*		Field[] flds = cc.getFields();
 		for (Field fld:flds) {
 			System.out.println("flds:"+fld.getName());
@@ -177,7 +180,7 @@ public class DynamicClassGeneratorTest {
 		f = cc.getField("family_name");
 		f.set(entry, "管理者Y");
 		
-		Class cc2 = Class.forName("testm3.Error");
+		Class cc2 = dg.getClass("testm3.Error");
 		Field[] flds = cc2.getFields();
 		for (Field fld:flds) {
 			System.out.println("flds:"+fld.getName());

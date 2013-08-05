@@ -3,6 +3,7 @@ package jp.sourceforge.reflex;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.ProtectionDomain;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
+import javassist.Loader;
 import javassist.NotFoundException;
 
 public class DynamicClassGenerator {
@@ -34,18 +36,22 @@ public class DynamicClassGenerator {
 	private TemplateRegistry registry; 
 	private ReflectionTemplateBuilder builder; 
 	private ClassPool pool;
+    private Loader loader;
+
 
 	public ClassPool getPool() {
 		return pool;
 	}
 	
 	public DynamicClassGenerator() throws NotFoundException {
-		ClassPool pool0 = ClassPool.getDefault();
-		this.pool = new ClassPool(pool0);
+//		ClassPool pool0 = ClassPool.getDefault();
+		this.pool = new ClassPool();
+		this.pool.appendSystemPath();
 		
 		// msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry);
+		loader = new Loader(this.pool);
 		
 	}
 	
@@ -235,26 +241,26 @@ public class DynamicClassGenerator {
 			Set<Class<?>> registSet = new HashSet<Class<?>>();
 			for (String clsName : classnames) {
 				try {
-						Class<?> cls = pool.get(clsName).toClass();
+//						Class<?> cls = pool.get(clsName).toClass();
+						Class<?> cls = loader.loadClass(clsName);
 						if (cls.getName().indexOf("Base")<0) {
 							System.out.println("clsName="+clsName);
-						if (cls.getName().equals("testsvc.Entry")) {
-							System.out.println("Entry");
+							Template template = builder.buildTemplate(cls);
+							registry.register(cls, template);
+							msgpack.register(cls,template);
 						}
-						Template template = builder.buildTemplate(cls);
-						registry.register(cls, template);
-						msgpack.register(cls,template);
-						}
-					} catch (CannotCompileException ce) {
-						ce.printStackTrace();
-					} catch (NotFoundException ne) {
-						ne.printStackTrace();
+					} catch (ClassNotFoundException e) {
+					// TODO 自動生成された catch ブロック
+						e.printStackTrace();
 					}
-//				}
 			}
 		}
 	}
-	
+
+	public Class getClass(String clsName) throws ClassNotFoundException{
+		return loader.loadClass(clsName);
+	}
+
 	public byte[] toMessagePack(Object entity) throws IOException {
 		return msgpack.write(entity);
 	}
