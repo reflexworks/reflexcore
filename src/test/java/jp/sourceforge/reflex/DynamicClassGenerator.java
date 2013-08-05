@@ -32,6 +32,7 @@ import javassist.NotFoundException;
 public class DynamicClassGenerator {
 
 	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
+	
 	private static final String[] atom = {"jp.reflexworks.atom.source.Author","jp.reflexworks.atom.source.Category",
 		 "jp.reflexworks.atom.source.Contributor","jp.reflexworks.atom.source.Generator",
 		 "jp.reflexworks.atom.source.Link","jp.reflexworks.atom.source.Source",
@@ -41,6 +42,9 @@ public class DynamicClassGenerator {
 		 "jp.reflexworks.atom.feed.Author","jp.reflexworks.atom.feed.Category",
 		 "jp.reflexworks.atom.feed.Generator","jp.reflexworks.atom.feed.Contributor",
 		 "jp.reflexworks.atom.feed.Link","jp.reflexworks.atom.entry.FeedBase" };
+	
+	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
+	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
 
 	private MessagePack msgpack = new MessagePack();
 	private TemplateRegistry registry; 
@@ -83,10 +87,15 @@ public class DynamicClassGenerator {
 			CtClass cc;
 			try {
 				cc = pool.get(classname);
+				
 			} catch (NotFoundException ne1) {
 				cc = pool.makeClass(classname);
 				if (classname.indexOf("Entry")>=0) {
-					CtClass cs = pool.get("jp.reflexworks.atom.entry.EntryBase");
+					CtClass cs = pool.get(ENTRYBASE);
+					cc.setSuperclass(cs); // superclassの定義
+				}else 
+				if (classname.indexOf("Feed")>=0) {
+					CtClass cs = pool.get(FEEDBASE);
 					cc.setSuperclass(cs); // superclassの定義
 				}
 
@@ -271,15 +280,12 @@ public class DynamicClassGenerator {
 							loader.delegateLoadingOf(clsName);
 						}
 						if (clsName.indexOf("Base")<0) {
-//							Class<?> cls = pool.get(clsName).toClass();
 							Class<?> cls = loader.loadClass(clsName);
-//							System.out.println("clsName="+clsName);
 							Template template = builder.buildTemplate(cls);
 							registry.register(cls, template);
 							msgpack.register(cls,template);
 						}
 					} catch (ClassNotFoundException e) {
-					// TODO 自動生成された catch ブロック
 						e.printStackTrace();
 					}
 			}
