@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.DataFormatException;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
@@ -87,7 +88,7 @@ public class DynamicClassGeneratorTest {
 	};
 
 	
-	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException {
+	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException {
 
 		
 		DynamicClassGenerator dg = new DynamicClassGenerator("testm3");		
@@ -96,10 +97,26 @@ public class DynamicClassGeneratorTest {
 		Object entry = getTestEntry(dg);
 		
 		// MessagePack test
+		System.out.println("\n=== MessagePack UserInfo(raw) ===");
         byte[] mbytes = dg.toMessagePack(entry);
+		System.out.println("len:"+mbytes.length);
         for(int i=0;i<mbytes.length;i++) { 
         	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
         } 
+		System.out.println("\n=== MessagePack UserInfo(def) ===");
+        byte[] de = dg.deflate(mbytes);
+		System.out.println("len:"+de.length+" 圧縮率："+(de.length*100/mbytes.length)+"%");
+        for(int i=0;i<de.length;i++) { 
+        	System.out.print(Integer.toHexString(de[i]& 0xff)+" "); 
+        } 
+
+		System.out.println("\n=== MessagePack UserInfo(raw2) ===");
+        byte[] in = dg.inflate(de);
+		System.out.println("len:"+in.length);
+        for(int i=0;i<in.length;i++) { 
+        	System.out.print(Integer.toHexString(in[i]& 0xff)+" "); 
+        } 
+
 		System.out.println("\n=== MessagePack UserInfo ===");
 //		Class<?> cls = loader.loadClass("testm3.Entry");
 
