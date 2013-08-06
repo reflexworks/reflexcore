@@ -36,10 +36,11 @@ public class DynamicClassGenerator {
 
 	// private static final String field_pattern =
 	// "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
-	// &・・必須
-	// TODO １段下がることのみ可能とする。１行目のインデントは0
+	// &・・必須項目 TODO デフォルト値、Validator
+	// 
 	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(&?)$";
 
+	// atom クラス（順番は重要）
 	private static final String[] atom = { "jp.reflexworks.atom.source.Author",
 			"jp.reflexworks.atom.source.Category",
 			"jp.reflexworks.atom.source.Contributor",
@@ -80,9 +81,10 @@ public class DynamicClassGenerator {
 		public String self; // 項目名
 		public boolean isEncrypted; // 暗号化
 		public boolean isIndex; // インデックス
-		public boolean isNullable; // 省略可
+		public boolean isMandatory; // 必須項目
 
 		public String getSelf() {
+			if (self==null) return null;
 			return self.substring(0, 1).toUpperCase() + self.substring(1);
 		}
 
@@ -233,13 +235,18 @@ public class DynamicClassGenerator {
 		stack.push(classname);
 		int level = 0;
 
-		for (String line : entitytmpl) {
+		for (int l=0;l<entitytmpl.length;l++) {
+			String line = entitytmpl[l];
 			matcherf = patternf.matcher(line);
 
 			if (matcherf.find()) {
 				if (meta.level != matcherf.group(1).length()) {
 					level = matcherf.group(1).length();
 					if (meta.level < level) {
+						//最初の行にインデントがあるとエラー、また、２段階下がるとエラー
+						if (l==0||meta.level+1<level) {
+							throw new ParseException("Wrong Indentation:" + line, 0);	
+						}
 						classname = packagename + "." + meta.getSelf();
 						stack.push(classname);
 						meta.type = classname; // 子要素を持っている場合にタイプを自分にする
