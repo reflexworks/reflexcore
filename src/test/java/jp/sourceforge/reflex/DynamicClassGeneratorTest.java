@@ -3,22 +3,11 @@ package jp.sourceforge.reflex;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.zip.DataFormatException;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.EntryBase;
-import jp.sourceforge.reflex.util.ClassFinder;
-import model3.Userinfo;
-import model3.sub.Favorite;
-import model3.sub.Hobby;
-import model3.sub.SubInfo;
 
 import org.json.JSONException;
 
@@ -91,8 +80,7 @@ public class DynamicClassGeneratorTest {
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException {
 
 		
-		DynamicClassGenerator dg = new DynamicClassGenerator("testm3");		
-		dg.registClass(entitytempl);
+		DynamicClassGenerator dg = new DynamicClassGenerator("testm3",entitytempl);		
 		
 		Object entry = getTestEntry(dg);
 		
@@ -124,8 +112,7 @@ public class DynamicClassGeneratorTest {
         
 		System.out.println(dg.ArrayfromMessagePack(mbytes));
 
-		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3");		
-		dg2.registClass(entitytempl2);
+		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3",entitytempl2);		
 
 		EntryBase muserinfo2 = (EntryBase) dg2.fromMessagePack(mbytes);
         editTestEntry(dg2,muserinfo2);
