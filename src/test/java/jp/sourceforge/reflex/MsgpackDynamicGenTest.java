@@ -3,22 +3,25 @@ package jp.sourceforge.reflex;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.zip.DataFormatException;
 
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.EntryBase;
+import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
 
-public class DynamicClassGeneratorTest {
+public class MsgpackDynamicGenTest {
 
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	public static String entitytempl[] = {
 		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる。@必須
-//		"/abc/def",        親フォルダPathを指定すると {service名}/Path でそれぞれ定義できるEntryとなる。内部的にはPathをパッケージ名に変換
-		"id",
+		"testm3",        //  0行目はパッケージ名(service名)
+		"id",			  //  1行名以降が項目名
 		"email",
 		"verified_email(Boolean)",
 		"name",
@@ -35,7 +38,8 @@ public class DynamicClassGeneratorTest {
 		" message",
 		"subInfo",
 		" favorite:",
-		"  food:^.{8}$",
+		"  food",
+//		"  food:^.{8}$",
 		"  music",
 		" favorite2",
 		"  food",
@@ -48,6 +52,7 @@ public class DynamicClassGeneratorTest {
 
 	public static String entitytempl2[] = {
 		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
+		"testm3",        //  0行目はパッケージ名(service名)
 		"id",
 		"email",
 		"verified_email(Boolean)",
@@ -81,7 +86,7 @@ public class DynamicClassGeneratorTest {
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException {
 
 		
-		DynamicClassGenerator dg = new DynamicClassGenerator("testm3",entitytempl);		
+		MessagePackMapper dg = new MessagePackMapper(entitytempl);		
 		
 		Object entry = getTestEntry(dg);
 		
@@ -107,14 +112,15 @@ public class DynamicClassGeneratorTest {
         } 
 
 		System.out.println("\n=== MessagePack UserInfo ===");
-//		Class<?> cls = loader.loadClass("testm3.Entry");
 
         EntryBase muserinfo = (EntryBase) dg.fromMessagePack(in);
         System.out.println("Validtion:"+muserinfo.isValid());
         
 		System.out.println(dg.ArrayfromMessagePack(in));
 
-		DynamicClassGenerator dg2 = new DynamicClassGenerator("testm3",entitytempl2);		
+		System.out.println("\n=== Errorクラスの子要素の項目(Error.test)を追加して値をセット ===");
+		List<String> entitytempllist = Arrays.asList(entitytempl2);
+		MessagePackMapper dg2 = new MessagePackMapper(entitytempllist);		
 
 		EntryBase muserinfo2 = (EntryBase) dg2.fromMessagePack(mbytes);
         editTestEntry(dg2,muserinfo2);
@@ -123,7 +129,7 @@ public class DynamicClassGeneratorTest {
         for(int i=0;i<mbytes2.length;i++) { 
         	System.out.print(Integer.toHexString(mbytes2[i]& 0xff)+" "); 
         } 
-		System.out.println("\n=== MessagePack UserInfo ===");
+		System.out.println();
 		System.out.println(dg2.ArrayfromMessagePack(mbytes2));
         
 
@@ -131,7 +137,7 @@ public class DynamicClassGeneratorTest {
 	
 
 	
-	public static Object getTestEntry(DynamicClassGenerator dg)  {
+	public static Object getTestEntry(MessagePackMapper dg)  {
 		try {
 			
 //		Class cc = Class.forName("testm3.Entry");
@@ -195,7 +201,7 @@ public class DynamicClassGeneratorTest {
 		return null;
 	}
 	
-	public static void editTestEntry(DynamicClassGenerator dg,Object entry)  {
+	public static void editTestEntry(MessagePackMapper dg,Object entry)  {
 		try {
 /*
 			Field[] flds = entry.getClass().getFields();
@@ -208,7 +214,7 @@ public class DynamicClassGeneratorTest {
 		Object error = f.get(entry);	
 		
 		f = error.getClass().getField("test");
-		f.set(error, "XXXX");		
+		f.set(error, "<この項目が追加された>");		
 		
 		}catch(Exception e) {
 			e.printStackTrace();

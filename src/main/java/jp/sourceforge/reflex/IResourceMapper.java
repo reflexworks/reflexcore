@@ -104,14 +104,16 @@ public interface IResourceMapper {
 	 * MessagePack形式からオブジェクトを作成します。
 	 * @param msg MessagePack形式バイト配列
 	 * @return オブジェクト
+	 * @throws ClassNotFoundException 
 	 */
-	public Object fromMessagePack(byte[] msg) throws IOException;
+	public Object fromMessagePack(byte[] msg) throws IOException, ClassNotFoundException;
 
 	/**
 	 * MessagePack形式からオブジェクトを作成します。
 	 * @param msg MessagePack形式データの読み込み元
 	 * @return オブジェクト
+	 * @throws ClassNotFoundException 
 	 */
-	public Object fromMessagePack(InputStream msg) throws IOException;
+	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException;
 
 }

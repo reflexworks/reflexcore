@@ -196,10 +196,10 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	public void toMessagePack(Object entity, OutputStream out) throws IOException {
 		throw new IllegalStateException();
 	}
-	public Object fromMessagePack(byte[] msg) throws IOException {
+	public Object fromMessagePack(byte[] msg) throws IOException, ClassNotFoundException {
 		throw new IllegalStateException();
 	}
-	public Object fromMessagePack(InputStream msg) throws IOException {
+	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException {
 		throw new IllegalStateException();
 	}
 
