@@ -66,6 +66,12 @@ public class Entry extends EntryBase implements Serializable {
 	public void setNote(String note) {
 		this.note = note;
 	}
+
+	@Override
+	public boolean isValid() {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
+	}
 	
 	
 

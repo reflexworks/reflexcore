@@ -88,12 +88,6 @@ public class DynamicClassGenerator {
 			if (self==null) return null;
 			return self.substring(0, 1).toUpperCase() + self.substring(1);
 		}
-		/*
-		public boolean isValid() throws ParseException{
-			if (type==null&&isMandatory) throw new ParseException("type",0);
-			return true;
-		}
-		*/
 	}
 
 	/*
@@ -178,6 +172,7 @@ public class DynamicClassGenerator {
 
 			} catch (NotFoundException ne1) {
 				cc = pool.makeClass(classname);
+				
 				if (classname.indexOf("Entry") >= 0) {
 					CtClass cs;
 					try {
@@ -198,6 +193,9 @@ public class DynamicClassGenerator {
 
 			}
 
+			StringBuffer validation = new StringBuffer();
+			validation.append(lines);
+			
 			for (int i = 0; i < count(metalist, classname); i++) {
 
 				Meta meta = getMetaOfLevel(metalist, classname, i);
@@ -217,11 +215,28 @@ public class DynamicClassGenerator {
 							+ meta.self + "=" + meta.self + ";}", cc);
 					cc.addMethod(m);
 				}
+				validation.append(getValidationMandatory(meta));
 			}
+			validation.append(linee);
+			CtMethod m = CtNewMethod.make(validation.toString(), cc);
+			cc.addMethod(m);
+			
 		}
 		return classnames;
 	}
 
+	private final String lines = "public boolean isValid() throws java.text.ParseException {";
+	private final String linee = "return true;}";
+
+	private String getValidationMandatory(Meta meta) {
+		String line = "";
+		if (meta.isMandatory) {
+			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"required property '" + meta.self + "' not specified.\",0);";
+		}
+		return line;
+	}
+	
+	
 	/**
 	 * Entity Templateからメタ情報を作成する
 	 * 
@@ -395,7 +410,7 @@ public class DynamicClassGenerator {
 			classnames.addAll(generateClass(getMetalist(entitytempl)));
 			registClass(classnames);
 		} catch (CannotCompileException e) {
-			throw new ParseException("Cannot Compile:" + e.getStackTrace(), 0);
+			throw new ParseException("Cannot Compile:" + e.getMessage(), 0);
 		}
 	}
 

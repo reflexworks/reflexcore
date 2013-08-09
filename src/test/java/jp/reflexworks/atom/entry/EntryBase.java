@@ -1038,6 +1038,11 @@ public abstract class EntryBase implements Serializable {
 		return false;
 	}
 
+	/*
+	 * Validation用メソッド
+	 */
+	public abstract boolean isValid();
+	
 	@Override
 	public String toString() {
 		return "Entry [myUri=" + getMyUri() + ", title=" + title + "]";
