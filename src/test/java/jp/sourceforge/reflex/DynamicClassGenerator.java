@@ -34,11 +34,9 @@ import javassist.NotFoundException;
 
 public class DynamicClassGenerator {
 
-	// private static final String field_pattern =
-	// "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
-	// &・・必須項目 TODO デフォルト値、Validator
+	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(&?):?(.*)$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(@?):?(.*)$";
 
 	// atom クラス（順番は重要）
 	private static final String[] atom = { "jp.reflexworks.atom.source.Author",

@@ -16,7 +16,7 @@ public class DynamicClassGeneratorTest {
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	public static String entitytempl[] = {
-		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
+		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる。@必須
 //		"/abc/def",        親フォルダPathを指定すると {service名}/Path でそれぞれ定義できるEntryとなる。内部的にはPathをパッケージ名に変換
 		"id",
 		"email",
