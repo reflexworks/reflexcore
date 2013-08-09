@@ -239,17 +239,22 @@ public class DynamicClassGenerator {
 
 	private final String isValidFuncS = "public boolean isValid() throws java.text.ParseException {";
 	private final String isValidFuncE = "return true;}";
-
+	
+	/**
+	 * バリデーションロジック（必須チェックと正規表現チェック）
+	 * @param meta
+	 * @return
+	 */
 	private String getValidatorLogic(Meta meta) {
 		String line = "";
 		if (meta.isMandatory) {
-			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"required property '" + meta.self + "' not specified.\",0);";
+			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"Required property '" + meta.self + "' not specified.\",0);";
 		}
 		if (!meta.regex.isEmpty()) {
 			line += "if ("+meta.self+"!=null) {";
 			line += "java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(\""+meta.regex+"\");";
 			line += "java.util.regex.Matcher matcher = pattern.matcher(\"\"+"+meta.self+");";
-			line += "if (!matcher.find()) throw new java.text.ParseException(\"property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+"+meta.self+"+\")\",0);";
+			line += "if (!matcher.find()) throw new java.text.ParseException(\"Property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+"+meta.self+"+\")\",0);";
 			line += "}";
 //			System.out.println(line);
 			
@@ -344,9 +349,9 @@ public class DynamicClassGenerator {
 					
 					
 				}
-
+				
 				if (!meta.regex.isEmpty()&&meta.hasChild()) {
-					throw new ParseException("Unexpected Format,can't use regex in List:" + line, 0);
+					throw new ParseException("Regex can't use in parent object:" + line, 0);
 				}
 
 			} else {
