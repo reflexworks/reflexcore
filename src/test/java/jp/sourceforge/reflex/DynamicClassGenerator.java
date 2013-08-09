@@ -198,9 +198,9 @@ public class DynamicClassGenerator {
 			}
 
 			StringBuffer validation = new StringBuffer();
-			validation.append(lines);
+			validation.append(isValidFuncS);
 			
-			for (int i = 0; i < count(metalist, classname); i++) {
+			for (int i = 0; i < matches(metalist, classname); i++) {
 
 				Meta meta = getMetaOfLevel(metalist, classname, i);
 				String type = "public " + meta.type + " ";
@@ -219,12 +219,17 @@ public class DynamicClassGenerator {
 							+ meta.self + "=" + meta.self + ";}", cc);
 					cc.addMethod(m);
 				}
+				
+				// 必須チェック
 				validation.append(getValidationMandatory(meta));
+				// 子要素のValidation
 				if (meta.hasChild()) {
 					validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
 				}
 			}
-			validation.append(linee);
+			
+			// Validation Method追加
+			validation.append(isValidFuncE);
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);
 			cc.addMethod(m);
 			
@@ -232,14 +237,24 @@ public class DynamicClassGenerator {
 		return classnames;
 	}
 
-	private final String lines = "public boolean isValid() throws java.text.ParseException {";
-	private final String linee = "return true;}";
+	private final String isValidFuncS = "public boolean isValid() throws java.text.ParseException {";
+	private final String isValidFuncE = "return true;}";
 
 	private String getValidationMandatory(Meta meta) {
 		String line = "";
 		if (meta.isMandatory) {
 			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"required property '" + meta.self + "' not specified.\",0);";
 		}
+		if (!meta.regex.isEmpty()) {
+			line += "if ("+meta.self+"!=null) {";
+			line += "java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(\""+meta.regex+"\");";
+			line += "java.util.regex.Matcher matcher = pattern.matcher(\"\"+"+meta.self+");";
+			line += "if (!matcher.find()) throw new java.text.ParseException(\"property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+"+meta.self+"+\")\",0);";
+			line += "}";
+			System.out.println(line);
+			
+		}
+
 		return line;
 	}
 	
@@ -326,7 +341,14 @@ public class DynamicClassGenerator {
 					} else {
 						meta.type = "String"; // 省略時
 					}
+					
+					
 				}
+
+				if (!meta.regex.isEmpty()&&meta.hasChild()) {
+					throw new ParseException("Unexpected Format,can't use regex in List:" + line, 0);
+				}
+
 			} else {
 				throw new ParseException("Unexpected Format:" + line, 0);
 			}
@@ -392,7 +414,7 @@ public class DynamicClassGenerator {
 	 * @param classname
 	 * @return
 	 */
-	private int count(List<Meta> metalist, String classname) {
+	private int matches(List<Meta> metalist, String classname) {
 
 		int i = 0;
 		for (Meta meta : metalist) {
