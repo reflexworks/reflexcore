@@ -34,7 +34,7 @@ public class DynamicClassGeneratorTest {
 		" code(int)",
 		" message",
 		"subInfo",
-		" favorite",
+		" favorite:",
 		"  food:^.{8}$",
 		"  music",
 		" favorite2",

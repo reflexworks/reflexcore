@@ -306,8 +306,11 @@ public class DynamicClassGenerator {
 					}
 				}
 				if (meta.self != null) {
+					if (meta.regex.length()>0&&meta.hasChild()) {
+							throw new ParseException("Syntax error(illegal character in property or regex uses in parent object):" + meta.self, 0);
+					}
 					metalist.add(meta);
-					System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type+" mandatory="+meta.isMandatory+" regex:"+meta.regex);
+					System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type+" mandatory="+meta.isMandatory+" regex:"+meta.regex+" hasChild:"+meta.hasChild());
 				}
 				meta = new Meta();
 				meta.level = level;
@@ -350,10 +353,6 @@ public class DynamicClassGenerator {
 					
 				}
 				
-				if (!meta.regex.isEmpty()&&meta.hasChild()) {
-					throw new ParseException("Regex can't use in parent object:" + line, 0);
-				}
-
 			} else {
 				throw new ParseException("Unexpected Format:" + line, 0);
 			}
