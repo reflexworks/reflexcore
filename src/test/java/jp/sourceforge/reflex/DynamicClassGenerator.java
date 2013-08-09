@@ -251,7 +251,7 @@ public class DynamicClassGenerator {
 			line += "java.util.regex.Matcher matcher = pattern.matcher(\"\"+"+meta.self+");";
 			line += "if (!matcher.find()) throw new java.text.ParseException(\"property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+"+meta.self+"+\")\",0);";
 			line += "}";
-			System.out.println(line);
+//			System.out.println(line);
 			
 		}
 
