@@ -38,7 +38,7 @@ public class DynamicClassGenerator {
 	// "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)$";
 	// &・・必須項目 TODO デフォルト値、Validator
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(&?)$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(&?):?(.*)$";
 
 	// atom クラス（順番は重要）
 	private static final String[] atom = { "jp.reflexworks.atom.source.Author",
@@ -82,12 +82,18 @@ public class DynamicClassGenerator {
 		public boolean isEncrypted; // 暗号化
 		public boolean isIndex; // インデックス
 		public boolean isMandatory; // 必須項目
+		public String regex; // バリーデーション用正規表現
 
 		public String getSelf() {
 			if (self==null) return null;
 			return self.substring(0, 1).toUpperCase() + self.substring(1);
 		}
-
+		/*
+		public boolean isValid() throws ParseException{
+			if (type==null&&isMandatory) throw new ParseException("type",0);
+			return true;
+		}
+		*/
 	}
 
 	/*
@@ -259,13 +265,15 @@ public class DynamicClassGenerator {
 				}
 				if (meta.self != null) {
 					metalist.add(meta);
-					// System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type);
+					System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type+" mandatory="+meta.isMandatory+" regex:"+meta.regex);
 				}
 				meta = new Meta();
 				meta.level = level;
 				meta.parent = classname;
 				meta.isEncrypted = false;
 				meta.isIndex = false;
+				meta.isMandatory = matcherf.group(6).equals("&");
+				meta.regex = matcherf.group(7);
 
 				meta.self = matcherf.group(2);
 				if (matcherf.group(5).equals("*")) {
