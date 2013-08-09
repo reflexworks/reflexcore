@@ -220,8 +220,8 @@ public class DynamicClassGenerator {
 					cc.addMethod(m);
 				}
 				
-				// 必須チェック
-				validation.append(getValidationMandatory(meta));
+				// バリデーションチェック
+				validation.append(getValidatorLogic(meta));
 				// 子要素のValidation
 				if (meta.hasChild()) {
 					validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
@@ -240,7 +240,7 @@ public class DynamicClassGenerator {
 	private final String isValidFuncS = "public boolean isValid() throws java.text.ParseException {";
 	private final String isValidFuncE = "return true;}";
 
-	private String getValidationMandatory(Meta meta) {
+	private String getValidatorLogic(Meta meta) {
 		String line = "";
 		if (meta.isMandatory) {
 			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"required property '" + meta.self + "' not specified.\",0);";
