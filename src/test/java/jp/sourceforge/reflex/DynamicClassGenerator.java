@@ -88,6 +88,10 @@ public class DynamicClassGenerator {
 			if (self==null) return null;
 			return self.substring(0, 1).toUpperCase() + self.substring(1);
 		}
+		
+		public boolean hasChild() {
+			return type.indexOf(getSelf())>0;
+		}
 	}
 
 	/*
@@ -216,6 +220,9 @@ public class DynamicClassGenerator {
 					cc.addMethod(m);
 				}
 				validation.append(getValidationMandatory(meta));
+				if (meta.hasChild()) {
+					validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
+				}
 			}
 			validation.append(linee);
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);

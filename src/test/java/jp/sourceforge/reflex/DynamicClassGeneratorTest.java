@@ -18,7 +18,7 @@ public class DynamicClassGeneratorTest {
 	public static String entitytempl[] = {
 		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
 //		"/abc/def",        親フォルダPathを指定すると {service名}/Path でそれぞれ定義できるEntryとなる。内部的にはPathをパッケージ名に変換
-		"id&:^.{8}$",
+		"id:^.{8}$",
 		"email",
 		"verified_email(Boolean)",
 		"name",
