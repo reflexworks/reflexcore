@@ -23,6 +23,8 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import org.msgpack.MessagePack;
+import org.msgpack.template.ListTemplate;
+import org.msgpack.template.StringTemplate;
 import org.msgpack.template.Template;
 import org.msgpack.template.TemplateRegistry;
 import org.msgpack.template.builder.ReflectionTemplateBuilder;
@@ -44,8 +46,14 @@ public class MessagePackMapper extends ResourceMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(@?)(:(.+))?$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#%]|\\[([0-9]*)?\\])?)(@?)(?::(.+))?$";
 
+	private static final String MANDATORY = "@";
+	private static final String ENCRYPTED = "%";
+	private static final String INDEX = "#";
+	private static final String LIST = "*";
+	private static final String ARRAY = "[";
+		
 	// atom クラス（順番は重要、TODO これらは taggingserviceのConstantsに移すべきか?）
 	// このクラス内でatomクラスを区別するのは難しい
 	private static final String[] atom = { "jp.reflexworks.atom.source.Author",
@@ -128,6 +136,9 @@ public class MessagePackMapper extends ResourceMapper {
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 		loader = new Loader(this.pool);
+
+		registry.register(ArrayList.class, new ListTemplate(StringTemplate.getInstance()));
+
 		if (entitytempl instanceof String[]) {
 			this.packagename = ((String[]) entitytempl)[0];
 			registClass(((String[]) entitytempl));
@@ -169,6 +180,7 @@ public class MessagePackMapper extends ResourceMapper {
 		public boolean isIndex; // インデックス
 		public boolean isMandatory; // 必須項目
 		public String regex; // バリーデーション用正規表現
+		public int arraycnt; // 配列の要素数
 
 		public String getSelf() {
 			if (self==null) return null;
@@ -269,6 +281,12 @@ public class MessagePackMapper extends ResourceMapper {
 					// // フィールドの定義
 					CtField f2 = CtField.make(type + field, cc); // フィールドの定義
 					cc.addField(f2);
+					/*
+					if (meta.arraycnt>0) {
+						f2 = CtField.make("public final int _$$col =" + meta.arraycnt+";", cc); // フィールドの定義
+						cc.addField(f2);
+					}*/
+					
 					CtMethod m = CtNewMethod.make(type + "get" + meta.getSelf()
 							+ "() {" + "  return " + meta.self + "; }", cc);
 					cc.addMethod(m);
@@ -366,26 +384,35 @@ public class MessagePackMapper extends ResourceMapper {
 							throw new ParseException("Syntax error(illegal character in property or regex uses in parent object):" + meta.self, 0);
 					}
 					metalist.add(meta);
-					//System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type+" mandatory="+meta.isMandatory+" regex:"+meta.regex+" hasChild:"+meta.hasChild());
+//					System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type+" mandatory="+meta.isMandatory+" regex:"+meta.regex+" hasChild:"+meta.hasChild()+" array:"+meta.arraycnt);
 				}
 				meta = new Meta();
 				meta.level = level;
 				meta.parent = classname;
 				meta.isEncrypted = false;
 				meta.isIndex = false;
-				meta.isMandatory = matcherf.group(6).equals("&");
+				meta.isMandatory = matcherf.group(7).equals(MANDATORY);
 				meta.regex = matcherf.group(8);
-//				System.out.println(matcherf.group(6)+" "+matcherf.group(7));
-				
+//				System.out.println("桁:"+matcherf.group(5)+" "+matcherf.group(6)+" man:"+matcherf.group(7)+" regex:"+matcherf.group(8));
 				meta.self = matcherf.group(2);
-				if (matcherf.group(5).equals("*")) {
+				if (matcherf.group(5).equals(LIST)) {
 					meta.type = "List<" + meta.getSelf() + ">";
 				} else {
-					if (matcherf.group(5).equals("#")) {
+					if (matcherf.group(5).equals(INDEX)) {
 						meta.isIndex = true;
-					} else if (matcherf.group(5).equals("%")) {
+					} else if (matcherf.group(5).equals(ENCRYPTED)) {
 						meta.isEncrypted = true;
+					} else if (matcherf.group(5).indexOf(ARRAY)>=0) {
+						/*
+						if (!matcherf.group(6).isEmpty()) {
+							meta.arraycnt = Integer.parseInt(matcherf.group(6));
+						}else {
+							meta.arraycnt = 1;
+						}
+						meta.type = "List<" + meta.getSelf() + ">";
+						*/
 					}
+					
 					if (matcherf.group(4) != null) {
 						String typestr = matcherf.group(4).toLowerCase();
 						if (typestr.equals("date")) {
@@ -404,9 +431,10 @@ public class MessagePackMapper extends ResourceMapper {
 							meta.type = "String"; // その他
 						}
 					} else {
-						meta.type = "String"; // 省略時
+						if (meta.type==null) {
+							meta.type = "String"; // 省略時
+						}
 					}
-					
 					
 				}
 				

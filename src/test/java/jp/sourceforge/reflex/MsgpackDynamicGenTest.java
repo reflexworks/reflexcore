@@ -3,6 +3,7 @@ package jp.sourceforge.reflex;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.DataFormatException;
@@ -38,9 +39,9 @@ public class MsgpackDynamicGenTest {
 		" message",
 		"subInfo",
 		" favorite",
-		"  food",
+		"  food[]",
 //		"  food:^.{8}$",
-		"  music",
+		"  music@",
 		" favorite2",
 		"  food",
 		"   food1",
@@ -189,9 +190,16 @@ public class MsgpackDynamicGenTest {
 		
 		Class cc4 = dg.getClass("testm3.Favorite");
 		Object favorite = cc4.newInstance();
-
+/*
+		ArrayList list = new ArrayList<String>();
+		list.add("カレー1");
+		list.add("カレー2");
+		list.add("カレー3");
+		list.add("カレー4");
+*/		
 		f = cc4.getField("food");
-		f.set(favorite, "カレー");		
+//		f.set(favorite,list );		
+		f.set(favorite,"カレー" );		
 		f = cc4.getField("music");
 		f.set(favorite, "ポップス");		
 
