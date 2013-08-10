@@ -206,16 +206,15 @@ public class JSONSerializer implements IResourceMapper {
 	private boolean isRealClass(Field field) {
 		if (Modifier.isFinal(field.getModifiers()))
 			return false;
-		String validname = field.getType().getName();
-		Object obj;
-		try {
-			obj = Class.forName(validname).newInstance();
-			return (obj != null);
-		} catch (Exception e) {
+		
+		String fieldname = field.getName();
+		if (fieldname!=null) {
+			String classname = fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1);
+			if (field.getType().getName().indexOf(classname)>0) return true;
 		}
 		return false;
 	}
-
+	
 	/**
 	 * @param field Field
 	 * @return boolean

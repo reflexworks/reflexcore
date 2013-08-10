@@ -141,6 +141,14 @@ public class MsgpackDynamicGenTest {
 		System.out.println(dg2.ArrayfromMessagePack(mbytes2));
         
 
+		System.out.println("\n=== XML UserInfo(クラス変更後) ===");
+        xml = dg2.toXML(muserinfo2);
+		System.out.println(xml);
+
+		System.out.println("\n=== JSON UserInfo(クラス変更後) ===");
+        json = dg2.toJSON(muserinfo2);
+		System.out.println(json);
+
 	}
 	
 
