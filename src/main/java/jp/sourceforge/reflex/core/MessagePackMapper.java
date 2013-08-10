@@ -7,9 +7,12 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
@@ -43,7 +46,8 @@ public class MessagePackMapper extends ResourceMapper {
 	// 
 	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(@?):?(.*)$";
 
-	// atom クラス（順番は重要）
+	// atom クラス（順番は重要、TODO これらは taggingserviceのConstantsに移すべきか?）
+	// このクラス内でatomクラスを区別するのは難しい
 	private static final String[] atom = { "jp.reflexworks.atom.source.Author",
 			"jp.reflexworks.atom.source.Category",
 			"jp.reflexworks.atom.source.Contributor",
@@ -66,6 +70,21 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
 
+	/** ATOM : Feed package */
+	public static final String ATOM_PACKAGE_FEED = "jp.reflexworks.atom.feed";
+	/** ATOM : Entry package */
+	public static final String ATOM_PACKAGE_ENTRY = "jp.reflexworks.atom.entry";
+	/** ATOM : Source package */
+	public static final String ATOM_PACKAGE_SOURCE = "jp.reflexworks.atom.source";
+	/** ATOM : Package map */
+	public static Map<String, String> ATOM_PACKAGE;
+	static {
+		ATOM_PACKAGE = new HashMap<String, String>();
+		ATOM_PACKAGE.put(ATOM_PACKAGE_FEED, "");
+		ATOM_PACKAGE.put(ATOM_PACKAGE_ENTRY, "");
+		ATOM_PACKAGE.put(ATOM_PACKAGE_SOURCE, "");
+	}
+
 	private MessagePack msgpack = new MessagePack();
 	private TemplateRegistry registry;
 	private ReflectionTemplateBuilder builder;
@@ -85,41 +104,56 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param jo_packages
 	 * @throws ParseException
 	 */
-	public MessagePackMapper(Object jo_packages) throws ParseException {
-		this(jo_packages, false, false);
+	public MessagePackMapper(Object etitytempl) throws ParseException {
+		this(etitytempl, false, false);
 	}
 	
-	public MessagePackMapper(Object jo_packages, boolean isCamel) throws ParseException {
-		this(jo_packages, isCamel, false);
+	public MessagePackMapper(Object etitytempl, boolean isCamel) throws ParseException {
+		this(etitytempl, isCamel, false);
 	}
-	public MessagePackMapper(Object jo_packages, ReflectionProvider reflectionProvider) throws ParseException {
-		this(jo_packages, false, false, reflectionProvider);
+	public MessagePackMapper(Object etitytempl, ReflectionProvider reflectionProvider) throws ParseException {
+		this(etitytempl, false, false, reflectionProvider);
 	}
-	public MessagePackMapper(Object jo_packages, boolean isCamel,
+	public MessagePackMapper(Object etitytempl, boolean isCamel,
 			boolean useSingleQuote) throws ParseException {
-		this(jo_packages, isCamel, useSingleQuote, null);
+		this(etitytempl, isCamel, useSingleQuote, null);
 	}
 	
-	public MessagePackMapper(Object jo_packages, boolean isCamel,
+	public MessagePackMapper(Object entitytempl, boolean isCamel,
 			boolean useSingleQuote, ReflectionProvider reflectionProvider) throws ParseException {
-		
-		super(jo_packages, isCamel, useSingleQuote, reflectionProvider);
+		super(getJo_packages(entitytempl), isCamel, useSingleQuote, reflectionProvider);
 
 		this.pool = new ClassPool();
 		this.pool.appendSystemPath();
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 		loader = new Loader(this.pool);
-		if (jo_packages instanceof String[]) {
-			this.packagename = ((String[]) jo_packages)[0];
-			registClass(((String[]) jo_packages));
-		}else if (jo_packages instanceof List) {
-			String[] entitytempl = (String[]) ((List) jo_packages).toArray(new String[((List<String>) jo_packages).size()]);;
-			this.packagename = entitytempl[0];
-			registClass(entitytempl);
+		if (entitytempl instanceof String[]) {
+			this.packagename = ((String[]) entitytempl)[0];
+			registClass(((String[]) entitytempl));
+		}else if (entitytempl instanceof List) {
+			String[] entitytemplstr = (String[]) ((List) entitytempl).toArray(new String[((List<String>) entitytempl).size()]);;
+			this.packagename = entitytemplstr[0];
+			registClass(entitytemplstr);
 			
 		}
 
+	}
+	
+	/**
+	 * ATOM Packageとユーザ Packageを取得する
+	 * @param entitytempl
+	 * @return
+	 */
+	private static Map<String, String> getJo_packages(Object entitytempl) {
+		Map jo_packages = new LinkedHashMap<String,String>();
+		jo_packages.putAll(ATOM_PACKAGE);
+		if (entitytempl instanceof String[]) {
+			jo_packages.put(((String[]) entitytempl)[0], "");
+		}else if (entitytempl instanceof List) {
+			jo_packages.put(((List) entitytempl).get(0), "");
+		}
+		return jo_packages;
 	}
 	
 	/*

@@ -68,11 +68,10 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		
 		if (jo_packages instanceof Map) {
 			this.jo_packages0 = (Map) jo_packages;
-		}else {
-			if (jo_packages instanceof String) {
-				this.jo_packages0 = new LinkedHashMap<String, String>();
-				this.jo_packages0.put((String)jo_packages, "");
-			}
+		}else 
+		if (jo_packages instanceof String) {
+			this.jo_packages0 = new LinkedHashMap<String, String>();
+			this.jo_packages0.put((String)jo_packages, "");	
 		}
 
 		this.isCamel = isCamel;

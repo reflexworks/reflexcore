@@ -95,7 +95,9 @@ public class RXConverter implements Converter {
 									if (!e.getValue().equals("")) {
 										prefix += ":"+e.getValue().replace(":", "");
 									}
-									writer.addAttribute(prefix, ns);
+									// 名前空間が""のときは表示しない
+									if (!ns.isEmpty())
+										writer.addAttribute(prefix, ns);
 								}
 							}
 							// 名前空間表示は一度きり

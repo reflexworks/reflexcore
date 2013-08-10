@@ -89,7 +89,15 @@ public class MsgpackDynamicGenTest {
 		MessagePackMapper dg = new MessagePackMapper(entitytempl);		
 		
 		Object entry = getTestEntry(dg);
-		
+
+		System.out.println("\n=== JSON UserInfo ===");
+        String json = dg.toJSON(entry);
+		System.out.println(json);
+
+		System.out.println("\n=== XML UserInfo ===");
+        String xml = dg.toXML(entry);
+		System.out.println(xml);
+
 		// MessagePack test
 		System.out.println("\n=== MessagePack UserInfo(raw) ===");
         byte[] mbytes = dg.toMessagePack(entry);
