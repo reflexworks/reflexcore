@@ -44,7 +44,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(@?):?(.*)$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?([\\*#%]?)(@?)(:(.+))?$";
 
 	// atom クラス（順番は重要、TODO これらは taggingserviceのConstantsに移すべきか?）
 	// このクラス内でatomクラスを区別するのは難しい
@@ -308,7 +308,7 @@ public class MessagePackMapper extends ResourceMapper {
 		if (meta.isMandatory) {
 			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"Required property '" + meta.self + "' not specified.\",0);";
 		}
-		if (!meta.regex.isEmpty()) {
+		if (meta.regex!=null&&!meta.regex.isEmpty()) {
 			line += "if ("+meta.self+"!=null) {";
 			line += "java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(\""+meta.regex+"\");";
 			line += "java.util.regex.Matcher matcher = pattern.matcher(\"\"+"+meta.self+");";
@@ -362,7 +362,7 @@ public class MessagePackMapper extends ResourceMapper {
 					}
 				}
 				if (meta.self != null) {
-					if (meta.regex.length()>0&&meta.hasChild()) {
+					if (meta.regex!=null&&meta.regex.length()>0&&meta.hasChild()) {
 							throw new ParseException("Syntax error(illegal character in property or regex uses in parent object):" + meta.self, 0);
 					}
 					metalist.add(meta);
@@ -374,8 +374,9 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.isEncrypted = false;
 				meta.isIndex = false;
 				meta.isMandatory = matcherf.group(6).equals("&");
-				meta.regex = matcherf.group(7);
-
+				meta.regex = matcherf.group(8);
+//				System.out.println(matcherf.group(6)+" "+matcherf.group(7));
+				
 				meta.self = matcherf.group(2);
 				if (matcherf.group(5).equals("*")) {
 					meta.type = "List<" + meta.getSelf() + ">";
