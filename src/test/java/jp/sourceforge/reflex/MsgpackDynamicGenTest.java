@@ -39,7 +39,7 @@ public class MsgpackDynamicGenTest {
 		" message",
 		"subInfo",
 		" favorite",
-		"  food[]",
+		"  food",
 //		"  food:^.{8}$",
 		"  music@",
 		" favorite2",
