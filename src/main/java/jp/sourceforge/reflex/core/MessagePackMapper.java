@@ -553,6 +553,9 @@ public class MessagePackMapper extends ResourceMapper {
 		}
 	}
 
+	/**
+	 * MessagePackを使ってJSONをデシリアライズする
+	 */
 	public Object fromJSON(String json) throws JSONException{
         JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
         try {
@@ -562,6 +565,17 @@ public class MessagePackMapper extends ResourceMapper {
         }
 	}
 	
+	/**
+	 * MessagePackのValueオブジェクトからEntityクラスを作成する
+	 * @param classname
+	 * @param value
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
 	private Object parseValue(String classname,Value value) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
 
 		Object parent = null;

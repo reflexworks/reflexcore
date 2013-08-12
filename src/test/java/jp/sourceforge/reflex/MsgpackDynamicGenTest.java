@@ -15,7 +15,6 @@ import jp.reflexworks.atom.entry.EntryBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
-import org.msgpack.type.Value;
 
 public class MsgpackDynamicGenTest {
 
