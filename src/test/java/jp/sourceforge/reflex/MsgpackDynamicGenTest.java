@@ -132,7 +132,14 @@ public class MsgpackDynamicGenTest {
         EntryBase muserinfo = (EntryBase) dg.fromMessagePack(in);
         System.out.println("Validtion:"+muserinfo.isValid());
         
-		System.out.println(dg.ArrayfromMessagePack(in));
+        // 項目名を省略した配列形式でもシリアライズ/デシリアライズ可能 (null は省略できない）
+		System.out.println("\n=== Array UserInfo ===");
+        String array = dg.toArray(in).toString();
+		System.out.println(array);
+		Object entity3 = dg.fromArray(array);
+        String json3 = dg.toJSON(entity3);
+		System.out.println(json3);
+
 
 		System.out.println("\n=== Errorクラスの子要素の項目(Error.test)を追加して値をセット ===");
 		List<String> entitytempllist = Arrays.asList(entitytempl2);
@@ -146,7 +153,7 @@ public class MsgpackDynamicGenTest {
         	System.out.print(Integer.toHexString(mbytes2[i]& 0xff)+" "); 
         } 
 		System.out.println();
-		System.out.println(dg2.ArrayfromMessagePack(mbytes2));
+		System.out.println(dg2.toArray(mbytes2));
         
 
 		System.out.println("\n=== XML UserInfo(クラス変更後) ===");

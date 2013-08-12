@@ -216,7 +216,7 @@ public class MessagePackMapper extends ResourceMapper {
 		return msgpack.read(msg, loader.loadClass(getRootEntry()));
 	}
 
-	public Object ArrayfromMessagePack(byte[] msg) throws IOException,
+	public Object toArray(byte[] msg) throws IOException,
 			ClassNotFoundException {
 		return msgpack.read(msg);
 	}
@@ -560,6 +560,15 @@ public class MessagePackMapper extends ResourceMapper {
         JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
         try {
         	return parseValue("",u.readValue());
+        } catch(Exception e) {
+        	throw new JSONException(e);
+        }
+	}
+
+	public Object fromArray(String array) throws JSONException{
+        JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(array.getBytes());
+        try {
+        	return msgpack.convert(u.readValue(),loader.loadClass(getRootEntry()));
         } catch(Exception e) {
         	throw new JSONException(e);
         }
