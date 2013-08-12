@@ -288,7 +288,7 @@ public class MessagePackMapper extends ResourceMapper {
 					cc.addMethod(m);
 					// 暗号キー
 					if (meta.privatekey!=null) {
-						CtMethod m2 = CtNewMethod.make("public String private"+meta.getSelf()+"() {return \"" + meta.privatekey+"\";}", cc);
+						CtMethod m2 = CtNewMethod.make("public String _"+meta.getSelf()+"() {return \"" + meta.privatekey+"\";}", cc);
 						cc.addMethod(m2);
 					}
 				}

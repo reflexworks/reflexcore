@@ -201,7 +201,7 @@ public class MsgpackDynamicGenTest {
 		f = cc4.getField("food");
 //		f.set(favorite,list );		
 		f.set(favorite,"カレー" );
-		Method m = cc4.getMethod("privateFood",null);
+		Method m = cc4.getMethod("_Food",null);
 		System.out.println(m.invoke(favorite,null));
 
 		f = cc4.getField("music");
