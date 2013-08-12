@@ -594,7 +594,7 @@ public class MessagePackMapper extends ResourceMapper {
         if (value.isMapValue()) {
         	boolean isCreated = false;
         	for(Entry<Value,Value> e:value.asMapValue().entrySet()) {
-    			String fld = e.getKey().toString().replace("\"", "");
+    			String fld = e.getKey().toString().replace("\"", "").replace("-", "__");  // フィールド名の変換。ハイフン
         		if (!classname.isEmpty()) {
         			cc = this.getClass(classname);
     				f = cc.getField(fld);
