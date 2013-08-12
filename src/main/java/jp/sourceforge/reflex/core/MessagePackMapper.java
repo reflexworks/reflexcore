@@ -46,7 +46,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#%])?)(@?)(?::(.+))?$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#]|%[0-9a-zA-Z]+)?)(@?)(?::(.+))?$";
 
 	private static final String MANDATORY = "@";
 	private static final String ENCRYPTED = "%";
@@ -175,7 +175,7 @@ public class MessagePackMapper extends ResourceMapper {
 		public String type; // タイプ
 		public String parent; // 属しているクラス
 		public String self; // 項目名
-		public boolean isEncrypted; // 暗号化
+		public String privatekey; // 暗号化のための秘密鍵
 		public boolean isIndex; // インデックス
 		public boolean isMandatory; // 必須項目
 		public String regex; // バリーデーション用正規表現
@@ -276,7 +276,6 @@ public class MessagePackMapper extends ResourceMapper {
 				try {
 					cc.getDeclaredField(type + field);
 				} catch (NotFoundException ne2) {
-					// // フィールドの定義
 					CtField f2 = CtField.make(type + field, cc); // フィールドの定義
 					cc.addField(f2);
 					
@@ -287,6 +286,11 @@ public class MessagePackMapper extends ResourceMapper {
 							+ "(" + meta.type + " " + meta.self + ") { this."
 							+ meta.self + "=" + meta.self + ";}", cc);
 					cc.addMethod(m);
+					// 暗号キー
+					if (meta.privatekey!=null) {
+						CtMethod m2 = CtNewMethod.make("public String private"+meta.getSelf()+"() {return \"" + meta.privatekey+"\";}", cc);
+						cc.addMethod(m2);
+					}
 				}
 				
 				// バリデーションチェック
@@ -382,7 +386,7 @@ public class MessagePackMapper extends ResourceMapper {
 				meta = new Meta();
 				meta.level = level;
 				meta.parent = classname;
-				meta.isEncrypted = false;
+				meta.privatekey = null;
 				meta.isIndex = false;
 				meta.isMandatory = matcherf.group(6).equals(MANDATORY);
 				meta.regex = matcherf.group(7);
@@ -393,8 +397,8 @@ public class MessagePackMapper extends ResourceMapper {
 				} else {
 					if (matcherf.group(5).equals(INDEX)) {
 						meta.isIndex = true;
-					} else if (matcherf.group(5).equals(ENCRYPTED)) {
-						meta.isEncrypted = true;
+					} else if (matcherf.group(5).startsWith(ENCRYPTED)) {
+						meta.privatekey = matcherf.group(5);	// %付きで保存
 					} 
 					
 					if (matcherf.group(4) != null) {

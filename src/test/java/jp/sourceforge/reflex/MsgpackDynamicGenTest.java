@@ -2,6 +2,7 @@ package jp.sourceforge.reflex;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class MsgpackDynamicGenTest {
 		" message",
 		"subInfo",
 		" favorite",
-		"  food",
+		"  food%abc",
 //		"  food:^.{8}$",
 		"  music@",
 		" favorite2",
@@ -199,7 +200,10 @@ public class MsgpackDynamicGenTest {
 */		
 		f = cc4.getField("food");
 //		f.set(favorite,list );		
-		f.set(favorite,"カレー" );		
+		f.set(favorite,"カレー" );
+		Method m = cc4.getMethod("privateFood",null);
+		System.out.println(m.invoke(favorite,null));
+
 		f = cc4.getField("music");
 		f.set(favorite, "ポップス");		
 
