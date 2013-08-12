@@ -15,6 +15,7 @@ import jp.reflexworks.atom.entry.EntryBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
+import org.msgpack.type.Value;
 
 public class MsgpackDynamicGenTest {
 
@@ -85,7 +86,7 @@ public class MsgpackDynamicGenTest {
 	};
 
 	
-	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException {
+	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException, SecurityException, NoSuchFieldException {
 
 		
 		MessagePackMapper dg = new MessagePackMapper(entitytempl);		
@@ -95,9 +96,15 @@ public class MsgpackDynamicGenTest {
 		System.out.println("\n=== JSON UserInfo ===");
         String json = dg.toJSON(entry);
 		System.out.println(json);
+		
+		Object entry2 = dg.fromJSON(json);
+		System.out.println("\n=== JSON UserInfo(デシリアライズ) ===");
+        String json2 = dg.toJSON(entry2);
+		System.out.println(json2);
 
+		
 		System.out.println("\n=== XML UserInfo ===");
-        String xml = dg.toXML(entry);
+        String xml = dg.toXML(entry2);
 		System.out.println(xml);
 
 		// MessagePack test

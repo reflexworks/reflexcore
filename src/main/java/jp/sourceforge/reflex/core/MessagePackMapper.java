@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,12 +24,15 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+import org.json.JSONException;
 import org.msgpack.MessagePack;
 import org.msgpack.template.ListTemplate;
 import org.msgpack.template.StringTemplate;
 import org.msgpack.template.Template;
 import org.msgpack.template.TemplateRegistry;
 import org.msgpack.template.builder.ReflectionTemplateBuilder;
+import org.msgpack.type.Value;
+import org.msgpack.util.json.JSONBufferUnpacker;
 
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
@@ -97,7 +102,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private ReflectionTemplateBuilder builder;
 	private ClassPool pool;
 	private Loader loader;
-	private String packagename;
+	protected String packagename;
 
 	/*
 	 * root entry
@@ -548,6 +553,66 @@ public class MessagePackMapper extends ResourceMapper {
 		}
 	}
 
+	public Object fromJSON(String json) throws JSONException{
+        JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
+        try {
+        	return parseValue("",u.readValue());
+        } catch(Exception e) {
+        	throw new JSONException(e);
+        }
+	}
+	
+	private Object parseValue(String classname,Value value) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
+
+		Object parent = null;
+		Class cc = null;
+		Field f = null;
+		
+        if (value.isMapValue()) {
+        	boolean isCreated = false;
+        	for(Entry<Value,Value> e:value.asMapValue().entrySet()) {
+    			String fld = e.getKey().toString().replace("\"", "");
+        		if (!classname.isEmpty()) {
+        			cc = this.getClass(classname);
+    				f = cc.getField(fld);
+        		}
+        		
+        		if ((e.getValue()).isMapValue()) {
+        			String childclsname = packagename+"."+fld.substring(0, 1).toUpperCase() + fld.substring(1);
+        			Object child = parseValue(childclsname,e.getValue());
+            		if (!classname.isEmpty()) {
+            			if (!isCreated) parent = (Object) cc.newInstance();
+    					f.set(parent, child);
+    					isCreated = true;
+//            			System.out.println("parent="+classname+" child="+childclsname);
+            		}else {
+            			return child;
+            		}
+        			
+        		}else {
+        			if (e.getValue().isArrayValue()) break;
+        			else {
+        				if (!isCreated) {
+//        					System.out.println("new classname:"+classname);
+        					parent = (Object) cc.newInstance();
+        					isCreated = true;
+        				}
+//                		System.out.println("key="+classname+"."+fld+" value="+e.getValue());
+                		if (e.getValue().isBooleanValue()) f.set(parent, e.getValue().asBooleanValue().getBoolean());
+                		else if (e.getValue().isIntegerValue()) f.set(parent, e.getValue().asIntegerValue().getInt());
+                		else if (e.getValue().isFloatValue()) f.set(parent, e.getValue().asFloatValue().getFloat());
+                		else if (e.getValue().isRawValue()) f.set(parent, e.getValue().toString().replace("\"",""));
+                			
+
+        			}
+        		}
+        	}
+        }
+    	return parent;
+		
+	}
+
+	
 	/**
 	 * 圧縮する
 	 * 
