@@ -105,7 +105,7 @@ public class MessagePackMapper extends ResourceMapper {
 	protected String packagename;
 
 	/*
-	 * root entry
+	 * root entry　TODO Feedの場合
 	 */
 	private String getRootEntry() {
 		return packagename + ".Entry";
@@ -386,7 +386,6 @@ public class MessagePackMapper extends ResourceMapper {
 							throw new ParseException("Syntax error(illegal character in property or regex uses in parent object):" + meta.self, 0);
 					}
 					metalist.add(meta);
-//					System.out.println(" self="+meta.self+" parent="+meta.parent+" level="+meta.level+" type="+meta.type+" mandatory="+meta.isMandatory+" regex:"+meta.regex+" hasChild:"+meta.hasChild()+" array:"+meta.arraycnt);
 				}
 				meta = new Meta();
 				meta.level = level;
@@ -395,10 +394,9 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.isIndex = false;
 				meta.isMandatory = matcherf.group(6).equals(MANDATORY);
 				meta.regex = matcherf.group(7);
-//				System.out.println("桁:"+matcherf.group(5)+" "+matcherf.group(6)+" man:"+matcherf.group(7)+" regex:"+matcherf.group(8));
 				meta.self = matcherf.group(2);
 				if (matcherf.group(5).equals(LIST)) {
-//					meta.type = "List<" + meta.getSelf() + ">";
+					//	何もしない
 				} else {
 					if (matcherf.group(5).equals(INDEX)) {
 						meta.isIndex = true;
@@ -436,8 +434,6 @@ public class MessagePackMapper extends ResourceMapper {
 			}
 		}
 		metalist.add(meta);
-		// System.out.println("self="+meta.self+" classname="+meta.parent+" level="+meta.level+" type="+meta.type);
-
 		return metalist;
 
 	}
@@ -607,7 +603,6 @@ public class MessagePackMapper extends ResourceMapper {
             			if (!isCreated) parent = (Object) cc.newInstance();
     					f.set(parent, child);
     					isCreated = true;
-//            			System.out.println("parent="+classname+" child="+childclsname);
             		}else {
             			return child;
             		}
@@ -616,11 +611,9 @@ public class MessagePackMapper extends ResourceMapper {
         			if (e.getValue().isArrayValue()) break;
         			else {
         				if (!isCreated) {
-//        					System.out.println("new classname:"+classname);
         					parent = (Object) cc.newInstance();
         					isCreated = true;
         				}
-//                		System.out.println("key="+classname+"."+fld+" value="+e.getValue());
                 		if (e.getValue().isBooleanValue()) f.set(parent, e.getValue().asBooleanValue().getBoolean());
                 		else if (e.getValue().isIntegerValue()) f.set(parent, e.getValue().asIntegerValue().getInt());
                 		else if (e.getValue().isFloatValue()) f.set(parent, e.getValue().asFloatValue().getFloat());
