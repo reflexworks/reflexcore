@@ -364,7 +364,8 @@ public class JSONSerializer implements IResourceMapper {
 								mode = context.HASH;
 							}
 							context.push(mode);
-							this.marshal(context, list.get(ln).getClass().getName(),list.get(ln), isArray);
+//							this.marshal(context, list.get(ln).getClass().getName(),list.get(ln), isArray);
+							this.marshal(context, fields[fn].getName(),list.get(ln), isArray);
 						}
 					}
 				}
