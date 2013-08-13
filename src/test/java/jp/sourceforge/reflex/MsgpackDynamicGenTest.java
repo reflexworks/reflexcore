@@ -83,7 +83,7 @@ public class MsgpackDynamicGenTest {
 		"subInfo",
 		" favorite",
 		"  food",
-		"  music",
+		"  music[]",
 		" favorite2",
 		"  food",
 		"   food1",
