@@ -14,25 +14,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-
-import org.json.JSONException;
-import org.msgpack.MessagePack;
-import org.msgpack.template.Template;
-import org.msgpack.template.TemplateRegistry;
-import org.msgpack.template.builder.ReflectionTemplateBuilder;
-import org.msgpack.type.Value;
-import org.msgpack.util.json.JSONBufferUnpacker;
-
-import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
 import javassist.CannotCompileException;
 import javassist.ClassPool;
@@ -43,15 +33,18 @@ import javassist.CtNewMethod;
 import javassist.Loader;
 import javassist.Modifier;
 import javassist.NotFoundException;
-
 import javassist.bytecode.BadBytecode;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.FieldInfo;
 import javassist.bytecode.SignatureAttribute;
-import javassist.bytecode.SignatureAttribute.ClassSignature;
-import javassist.bytecode.SignatureAttribute.ObjectType;
-import jp.sourceforge.reflex.Element;
-import jp.sourceforge.reflex.core.ResourceMapper;
+
+import org.json.JSONException;
+import org.msgpack.MessagePack;
+import org.msgpack.template.Template;
+import org.msgpack.template.TemplateRegistry;
+import org.msgpack.template.builder.ReflectionTemplateBuilder;
+import org.msgpack.type.Value;
+import org.msgpack.util.json.JSONBufferUnpacker;
+
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
 public class MessagePackMapper extends ResourceMapper {
 
@@ -351,7 +344,7 @@ public class MessagePackMapper extends ResourceMapper {
 			cc.addMethod(m);
 			
 			if (isDirty) {
-		        // classpathに反映
+		        // classpathに反映(これをやると二度と差し替えできなくなるためまずい） TODO 安全な差し替え
 				 loader.delegateLoadingOf(classname);
 				 cc.toClass();
 			}
