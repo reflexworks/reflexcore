@@ -345,6 +345,7 @@ public class MessagePackMapper extends ResourceMapper {
 			
 			if (isDirty) {
 		        // classpathに反映(これをやると二度と差し替えできなくなるためまずい） TODO 安全な差し替え
+				// translatorを使うらしい http://www.acroquest.co.jp/webworkshop/javassis/javassist03.html
 				 loader.delegateLoadingOf(classname);
 				 cc.toClass();
 			}
