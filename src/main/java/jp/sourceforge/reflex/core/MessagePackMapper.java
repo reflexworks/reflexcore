@@ -26,8 +26,6 @@ import java.util.zip.Inflater;
 
 import org.json.JSONException;
 import org.msgpack.MessagePack;
-import org.msgpack.template.ListTemplate;
-import org.msgpack.template.StringTemplate;
 import org.msgpack.template.Template;
 import org.msgpack.template.TemplateRegistry;
 import org.msgpack.template.builder.ReflectionTemplateBuilder;
@@ -43,7 +41,16 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.Loader;
+import javassist.Modifier;
 import javassist.NotFoundException;
+
+import javassist.bytecode.BadBytecode;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.SignatureAttribute;
+import javassist.bytecode.SignatureAttribute.ClassSignature;
+import javassist.bytecode.SignatureAttribute.ObjectType;
+import jp.sourceforge.reflex.Element;
 import jp.sourceforge.reflex.core.ResourceMapper;
 
 public class MessagePackMapper extends ResourceMapper {
@@ -51,16 +58,18 @@ public class MessagePackMapper extends ResourceMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#]|%[0-9a-zA-Z]+)?)(@?)(?::(.+))?$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#]|%[0-9a-zA-Z]+|\\[([0-9]*)?\\])?)(@?)(?::(.+))?$";
 
 	private static final String MANDATORY = "@";
 	private static final String ENCRYPTED = "%";
 	private static final String INDEX = "#";
 	private static final String LIST = "*";
+	private static final String ARRAY = "[";
+
 		
 	// atom クラス（順番は重要、TODO これらは taggingserviceのConstantsに移すべきか?）
 	// このクラス内でatomクラスを区別するのは難しい
-	private static final String[] atom = { "jp.reflexworks.atom.source.Author",
+	public static final String[] ATOMCLASSES = { "jp.reflexworks.atom.source.Author",
 			"jp.reflexworks.atom.source.Category",
 			"jp.reflexworks.atom.source.Contributor",
 			"jp.reflexworks.atom.source.Generator",
@@ -81,6 +90,8 @@ public class MessagePackMapper extends ResourceMapper {
 
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
+
+	private static final String ELEMENTCLASS = "jp.sourceforge.reflex.Element";
 
 	/** ATOM : Feed package */
 	public static final String ATOM_PACKAGE_FEED = "jp.reflexworks.atom.feed";
@@ -141,8 +152,7 @@ public class MessagePackMapper extends ResourceMapper {
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 		loader = new Loader(this.pool);
 
-		registry.register(ArrayList.class, new ListTemplate(StringTemplate.getInstance()));
-
+		
 		if (entitytempl instanceof String[]) {
 			this.packagename = ((String[]) entitytempl)[0];
 			registClass(((String[]) entitytempl));
@@ -184,6 +194,9 @@ public class MessagePackMapper extends ResourceMapper {
 		public boolean isIndex; // インデックス
 		public boolean isMandatory; // 必須項目
 		public String regex; // バリーデーション用正規表現
+
+		public boolean isArray; // 配列
+		public int arraycnt; // 配列の要素数(子要素につく）
 
 		public String getSelf() {
 			if (self==null) return null;
@@ -237,7 +250,6 @@ public class MessagePackMapper extends ResourceMapper {
 	private Set<String> generateClass(List<Meta> metalist)
 			throws CannotCompileException {
 
-		pool.importPackage(packagename);
 		pool.importPackage("java.util.Date");
 
 		Set<String> classnames = getClassnames(metalist);
@@ -266,12 +278,12 @@ public class MessagePackMapper extends ResourceMapper {
 					} catch (NotFoundException e) {
 						throw new CannotCompileException(e);
 					}
-				}
-
+				} 
 			}
 
 			StringBuffer validation = new StringBuffer();
 			validation.append(isValidFuncS);
+			boolean isDirty = false;
 			
 			for (int i = 0; i < matches(metalist, classname); i++) {
 
@@ -281,16 +293,43 @@ public class MessagePackMapper extends ResourceMapper {
 				try {
 					cc.getDeclaredField(type + field);
 				} catch (NotFoundException ne2) {
-					CtField f2 = CtField.make(type + field, cc); // フィールドの定義
-					cc.addField(f2);
 					
-					CtMethod m = CtNewMethod.make(type + "get" + meta.getSelf()
-							+ "() {" + "  return " + meta.self + "; }", cc);
-					cc.addMethod(m);
-					m = CtNewMethod.make("public void set" + meta.getSelf()
+					// for Array
+					if (meta.isArray) {
+
+						try {
+						String signature = "Ljava/util/List<Ljp/sourceforge/reflex/Element;>;";
+
+					    CtClass objClass = pool.get("java.util.List");
+//					    CtClass elementClass = pool.get("jp.sourceforge.reflex.Element");
+					    CtField arrayfld = new CtField(objClass, meta.self, cc); 
+					    arrayfld.setModifiers(Modifier.PUBLIC);
+				        SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(signature);
+				        arrayfld.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
+				        cc.addField(arrayfld);
+				        
+				        // classの入れ替えが必要
+				        isDirty = true;
+				        
+						} catch (NotFoundException e) {
+							throw new CannotCompileException(e);
+						} catch (BadBytecode e) {
+							throw new CannotCompileException(e);
+						}
+						
+					}else {
+						CtField f2 = CtField.make(type + field, cc); // フィールドの定義
+						cc.addField(f2);
+					
+						CtMethod m = CtNewMethod.make(type + "get" + meta.getSelf()
+								+ "() {" + "  return " + meta.self + "; }", cc);
+						cc.addMethod(m);
+						m = CtNewMethod.make("public void set" + meta.getSelf()
 							+ "(" + meta.type + " " + meta.self + ") { this."
 							+ meta.self + "=" + meta.self + ";}", cc);
-					cc.addMethod(m);
+						cc.addMethod(m);
+					}
+
 					// 暗号キー
 					if (meta.privatekey!=null) {
 						CtMethod m2 = CtNewMethod.make("public String _"+meta.getSelf()+"() {return \"" + meta.privatekey+"\";}", cc);
@@ -311,6 +350,11 @@ public class MessagePackMapper extends ResourceMapper {
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);
 			cc.addMethod(m);
 			
+			if (isDirty) {
+		        // classpathに反映
+				 loader.delegateLoadingOf(classname);
+				 cc.toClass();
+			}
 		}
 		return classnames;
 	}
@@ -347,7 +391,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @return メタ情報
 	 * @throws ParseException
 	 */
-	private List<Meta> getMetalist(String entitytmpl[]) throws ParseException {
+	public List<Meta> getMetalist(String entitytmpl[]) throws ParseException {
 		List<Meta> metalist = new ArrayList<Meta>();
 
 		Pattern patternf = Pattern.compile(field_pattern);
@@ -392,8 +436,8 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.parent = classname;
 				meta.privatekey = null;
 				meta.isIndex = false;
-				meta.isMandatory = matcherf.group(6).equals(MANDATORY);
-				meta.regex = matcherf.group(7);
+				meta.isMandatory = matcherf.group(7).equals(MANDATORY);
+				meta.regex = matcherf.group(8);
 				meta.self = matcherf.group(2);
 				if (matcherf.group(5).equals(LIST)) {
 					//	何もしない
@@ -403,6 +447,17 @@ public class MessagePackMapper extends ResourceMapper {
 					} else if (matcherf.group(5).startsWith(ENCRYPTED)) {
 						meta.privatekey = matcherf.group(5);	// %付きで保存
 					} 
+					else if (matcherf.group(5).indexOf(ARRAY)>=0) {
+						// for Array
+						meta.isArray = true;
+						
+						if (!matcherf.group(6).isEmpty()) {
+							meta.arraycnt = Integer.parseInt(matcherf.group(6));
+						}else {
+							meta.arraycnt = 1;
+						}
+						meta.regex = meta.regex;
+					}
 					
 					if (matcherf.group(4) != null) {
 						String typestr = matcherf.group(4).toLowerCase();
@@ -485,7 +540,17 @@ public class MessagePackMapper extends ResourceMapper {
 		}
 		return null;
 	}
-	
+
+	private Meta getMeta(List<Meta> metalist, String classname) {
+
+		for (Meta meta : metalist) {
+			if (classname.indexOf(meta.getSelf())>=0) {
+				return meta;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * メタ情報でclassnameに名前が一致するものをカウントする
 	 * @param metalist
@@ -510,13 +575,19 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @throws ParseException
 	 */
 	private void registClass(String[] entitytempl) throws ParseException {
-		HashSet<String> classnames = new LinkedHashSet<String>();
-		classnames.addAll(new ArrayList(Arrays.asList(atom)));
 
+		HashSet<String> classnames = new LinkedHashSet<String>();
+		classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
+		
 		try {
+			Class cls = loader.loadClass(ELEMENTCLASS);
+			Template template = builder.buildTemplate(cls);
+			registry.register(cls,template);
 			classnames.addAll(generateClass(getMetalist(entitytempl)));
 			registClass(classnames);
 		} catch (CannotCompileException e) {
+			throw new ParseException("Cannot Compile:" + e.getMessage(), 0);
+		} catch (ClassNotFoundException e) {
 			throw new ParseException("Cannot Compile:" + e.getMessage(), 0);
 		}
 	}
@@ -530,22 +601,27 @@ public class MessagePackMapper extends ResourceMapper {
 	private void registClass(Set<String> classnames)
 			throws CannotCompileException {
 
+		Class<?> cls = null;
+		Template template = null;
 		for (String clsName : classnames) {
 			// 静的なクラスであるatomパッケージは親のクラスローダにロード(これがないとClassCastException)
 			if (clsName.indexOf(".atom.") > 0) {
 				loader.delegateLoadingOf(clsName);
 			}
 			if (clsName.indexOf("Base") < 0) {
-				Class<?> cls;
 				try {
 					cls = loader.loadClass(clsName);
 				} catch (ClassNotFoundException e) {
 					throw new CannotCompileException(e);
 				}
-				Template template = builder.buildTemplate(cls);
+				template = builder.buildTemplate(cls);
+				// 途中はregistryに登録
 				registry.register(cls, template);
-				msgpack.register(cls, template);
 			}
+		}
+		// 最後にmsgpackに登録
+		if (cls!=null&&template!=null) {
+			msgpack.register(cls, template);
 		}
 	}
 
@@ -608,7 +684,9 @@ public class MessagePackMapper extends ResourceMapper {
             		}
         			
         		}else {
-        			if (e.getValue().isArrayValue()) break;
+        			if (e.getValue().isArrayValue()) {
+        				System.out.println("Array!!!");
+        			}
         			else {
         				if (!isCreated) {
         					parent = (Object) cc.newInstance();
@@ -679,5 +757,6 @@ public class MessagePackMapper extends ResourceMapper {
 
 		return byteArrayOutputStream.toByteArray();
 	}
+
 
 }

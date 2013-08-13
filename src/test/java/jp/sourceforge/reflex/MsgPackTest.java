@@ -2,9 +2,6 @@ package jp.sourceforge.reflex;
 
 
 import java.lang.reflect.Field;
-import java.lang.reflect.GenericDeclaration;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +16,7 @@ import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.Loader;
+import javassist.Modifier;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.FieldInfo;
 import javassist.bytecode.SignatureAttribute;
@@ -33,8 +31,10 @@ public class MsgPackTest {
 		// TODO setGenericSignature CtClass
 		// http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/html/javassist/CtClass.html#setGenericSignature(java.lang.String)
 		
-		ClassPool sloader = ClassPool.getDefault();
-		Loader loader = new Loader(sloader);
+		ClassPool pool = new ClassPool();
+		pool.appendSystemPath();
+
+		Loader loader = new Loader(pool);
 
 		List<Element> lines2 = new ArrayList<Element>();
 		Element a1 = new Element();
@@ -49,19 +49,28 @@ public class MsgPackTest {
 
 		String signature = "Ljava/util/List<Ljp/sourceforge/reflex/Element;>;";
 		
-			CtClass arrayClass = sloader.makeClass("jp.sourceforge.reflex.Array");
-	        CtClass objClass0 = sloader.get("java.util.List");
+			CtClass arrayClass = pool.makeClass("testm3.Favorite");
+	        CtClass objClass0 = pool.get("java.util.List");
 	        
 	        
 		  CtField field = new CtField(objClass0, "element", arrayClass); 
 
-		  FieldInfo fieldInfo = field.getFieldInfo();
-		  ConstPool constPool = fieldInfo.getConstPool();
+		  field.setModifiers(Modifier.PUBLIC);
           SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(signature);
           field.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
 		  arrayClass.addField(field);
 
-          Class cc0 = arrayClass.toClass();
+	        CtClass objClass1 = pool.get("java.lang.String");
+		  CtField field2 = new CtField(objClass1, "prop1", arrayClass); 
+		  arrayClass.addField(field2);
+
+		  
+//          Class cc0 = arrayClass.toClass();
+//		 loader.delegateLoadingOf("testm3.Favorite");
+		 arrayClass.toClass();
+		 
+         Class cc0 = loader.loadClass("testm3.Favorite");
+         
           Object array = cc0.newInstance();
           Field f = cc0.getDeclaredField("element");
           
@@ -79,9 +88,11 @@ public class MsgPackTest {
 			TemplateRegistry registry = new TemplateRegistry(null);
 			ReflectionTemplateBuilder builder = new ReflectionTemplateBuilder(registry); 
 
-			Template template = builder.buildTemplate(Element.class);
+			Class cls = loader.loadClass(ELEMENTCLASS);
+
+			Template template = builder.buildTemplate(cls);
 //			msgpack.register(Element.class,template);
-			registry.register(Element.class,template);
+			registry.register(cls,template);
 //			msgpack.register(List.class, new ListTemplate(template));
 
 			Template templatearray = builder.buildTemplate(cc0);
@@ -95,5 +106,7 @@ public class MsgPackTest {
 
 		
 	}
+	private static final String ELEMENTCLASS = "jp.sourceforge.reflex.Element";
+
 
 }

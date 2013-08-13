@@ -1,5 +1,7 @@
 package jp.sourceforge.reflex;
 
+import jp.sourceforge.reflex.Element;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -10,11 +12,18 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.Loader;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
+import org.msgpack.MessagePack;
+import org.msgpack.template.ListTemplate;
+import org.msgpack.template.Template;
+import org.msgpack.template.TemplateRegistry;
+import org.msgpack.template.builder.ReflectionTemplateBuilder;
 
 public class MsgpackDynamicGenTest {
 
@@ -42,7 +51,7 @@ public class MsgpackDynamicGenTest {
 		" favorite",
 		"  food%abc",
 //		"  food:^.{8}$",
-		"  music@",
+		"  music[]",
 		" favorite2",
 		"  food",
 		"   food1",
@@ -103,31 +112,31 @@ public class MsgpackDynamicGenTest {
 
 		
 		System.out.println("\n=== XML UserInfo ===");
-        String xml = dg.toXML(entry2);
+        String xml = dg.toXML(entry);
 		System.out.println(xml);
-
+		
 		// MessagePack test
-		System.out.println("\n=== MessagePack UserInfo(raw) ===");
+		System.out.println("\n=== MessagePack UserInfo(シリアライズ) ===");
         byte[] mbytes = dg.toMessagePack(entry);
 		System.out.println("len:"+mbytes.length);
         for(int i=0;i<mbytes.length;i++) { 
         	System.out.print(Integer.toHexString(mbytes[i]& 0xff)+" "); 
         } 
-		System.out.println("\n=== MessagePack UserInfo(def) ===");
+		System.out.println("\n=== MessagePack UserInfo(deflate圧縮) ===");
         byte[] de = dg.deflate(mbytes);
 		System.out.println("len:"+de.length+" 圧縮率："+(de.length*100/mbytes.length)+"%");
         for(int i=0;i<de.length;i++) { 
         	System.out.print(Integer.toHexString(de[i]& 0xff)+" "); 
         } 
 
-		System.out.println("\n=== MessagePack UserInfo(raw2) ===");
+		System.out.println("\n=== MessagePack UserInfo(raw2に戻す) ===");
         byte[] in = dg.inflate(de);
 		System.out.println("len:"+in.length);
         for(int i=0;i<in.length;i++) { 
         	System.out.print(Integer.toHexString(in[i]& 0xff)+" "); 
         } 
 
-		System.out.println("\n=== MessagePack UserInfo ===");
+		System.out.println("\n=== fromMessagePack UserInfo(デシリアライズ) ===");
 
         EntryBase muserinfo = (EntryBase) dg.fromMessagePack(in);
         System.out.println("Validtion:"+muserinfo.isValid());
@@ -165,9 +174,8 @@ public class MsgpackDynamicGenTest {
 		System.out.println(json);
 
 	}
-	
 
-	
+
 	public static Object getTestEntry(MessagePackMapper dg)  {
 		try {
 			
@@ -211,14 +219,27 @@ public class MsgpackDynamicGenTest {
 		list.add("カレー3");
 		list.add("カレー4");
 */		
+
 		f = cc4.getField("food");
 //		f.set(favorite,list );		
 		f.set(favorite,"カレー" );
 		Method m = cc4.getMethod("_Food",null);
-		System.out.println(m.invoke(favorite,null));
+		System.out.println("暗号キー(_Food)="+m.invoke(favorite,null));
 
-		f = cc4.getField("music");
-		f.set(favorite, "ポップス");		
+		List<Element> lines2 = new ArrayList<Element>();
+		Element a1 = new Element();
+		a1._$$text = "ポップス1";
+		lines2.add(a1);
+		a1 = new Element();
+		a1._$$text = "ポップス2";
+		lines2.add(a1);
+		a1 = new Element();
+		a1._$$text = "ポップス3";
+		lines2.add(a1);
+
+		f = cc4.getDeclaredField("music");
+		f.set(favorite, lines2);		
+//		System.out.println("Generic Type="+f.getGenericType());
 
 		f = cc3.getField("favorite");
 		f.set(subInfo, favorite);		
