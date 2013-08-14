@@ -39,13 +39,11 @@ public class RXConverter implements Converter {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private RXMapper classMapper;
-//	private LinkedHashMap<String, String> jo_packagemap;
 	private RXClassProvider classProvider;
 
 	public RXConverter(ClassMapper classMapper) {
 		this.classMapper = (RXMapper) classMapper;
 		this.classProvider = new RXClassProvider();
-//		this.jo_packagemap = new LinkedHashMap<String, String>(jo_packagemap);
 	}
 
 	public boolean canConvert(Class type) {
@@ -58,7 +56,6 @@ public class RXConverter implements Converter {
 
 		Field[] fields = source.getClass().getFields();
 		boolean sw = false;
-		//String defaultns = "";
 				
 		// 最初にtextnodeとattributeを出力する。
 		for (int i = 0; i < fields.length; i++) {
@@ -116,7 +113,7 @@ public class RXConverter implements Converter {
 									&& attrname.startsWith("xmlns")) {
 								//if (attrname.equals("xmlns"))
 								//	defaultns = attrvalue;
-								/* 名前空間をプロパティから取得するところを廃止(2012/8/7)
+								/* 名前空間をプロパティから取得するところを廃止(2012/8/7) TODO 下位互換性
 								if (((RXMapper)classMapper).getJo_namespacemap()
 										.get(attrvalue) == null) {
 									writer.addAttribute(attrname, attrvalue);
@@ -131,55 +128,8 @@ public class RXConverter implements Converter {
 								writer.addAttribute(attrname, attrvalue);
 						}
 					}
-					/*
-				} else {
-
-					Object value = fld.get(source);
-					if (value != null) {
-						String node = classMapper.getRxutil().fld2node(fldname);
-
-						String ns = "";
-
-						if (classMapper.getRxutil().isList(fld.getType())) {
-							sw = false;
-						} else {
-
-							String classname2 = fld.getType().getName();
-							if (!fld.getType().isPrimitive())
-								ns = classMapper.getNamespace(Class
-										.forName(classname2));
-							sw = true;
-						}
-
-						String prefix = (String) ((RXMapper)classMapper).getJo_namespacemap().get(ns);
-						
-						if (prefix == null)
-							prefix = "";
-						node = prefix + node;
-
-						if (sw)
-							writer.startNode(node);
-
-						List attrs = getAttrproperty(fields, fldname);
-
-						for (int j = 0; j < attrs.size(); j++) {
-							Field attr = (Field) attrs.get(j);
-							String attrname = classMapper.getRxutil().fld2node(
-									attr.getName().substring(
-											attr.getName().indexOf("_$") + 2));
-							String attrvalue = (String) attr.get(source);
-							if (attrvalue != null)
-								writer.addAttribute(attrname, attrvalue);
-						}
-
-						context.convertAnother(value);
-						if (sw)
-							writer.endNode();
-					}
-					*/
 				}
 			} catch (Exception e) {
-				//e.printStackTrace();
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
@@ -193,45 +143,7 @@ public class RXConverter implements Converter {
 					continue; // ignore final modifier
 
 				if (fldname.indexOf("_$") > -1) {
-					/*
-					// textnode
-					if (fldname.equals("_$$text")) {
-						Object value = fld.get(source);
-						if (value != null) {
-							if (classMapper.getRxutil()
-									.isText(value.getClass())) {
-								writer.setValue(classMapper.getRxutil()
-										.getTextValue(value));
-							} else {
-								writer.setValue("" + value);
-							}
-						}
-					} else {
-						// attribute
-						if (fldname.startsWith("_")) {
-							String attrname = classMapper.getRxutil()
-									.fld2node(
-											fldname.substring(fldname
-													.indexOf("_$") + 2));
-							String attrvalue = (String) fld.get(source);
-							if (attrvalue != null
-									&& attrname.startsWith("xmlns")) {
-								if (attrname.equals("xmlns"))
-									defaultns = attrvalue;
-								if (((RXMapper)classMapper).getJo_namespacemap()
-										.get(attrvalue) == null) {
-									writer.addAttribute(attrname, attrvalue);
-									String ns = attrname.substring(5); // "xmlns"
-									if (!ns.equals(""))
-										ns = ns.substring(1) + ":";
-									((RXMapper)classMapper).getJo_namespacemap()
-											.put(attrvalue, ns); // save
-								}
-							} else if (attrvalue != null)
-								writer.addAttribute(attrname, attrvalue);
-						}
-					}
-					*/
+					//
 				} else {
 
 					Object value = fld.get(source);
@@ -249,18 +161,11 @@ public class RXConverter implements Converter {
 							if (classname2.startsWith("java.lang")) {
 								prefix = (String) ((RXMapper)classMapper).getPrefix(source.getClass());
 							}else {
-							/*
-							if (!fld.getType().isPrimitive())
-								ns = classMapper.getNamespace(Class
-										.forName(classname2));
-*/
 							prefix = (String) ((RXMapper)classMapper).getPrefix(fld.getType());
 							}
 							}
 							sw = true;
 						}
-
-//						String prefix = (String) ((RXMapper)classMapper).getJo_namespacemap().get(ns);
 						
 						if (prefix == null)
 							prefix = "";

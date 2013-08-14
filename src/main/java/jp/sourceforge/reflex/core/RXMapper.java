@@ -121,11 +121,6 @@ public class RXMapper extends MapperWrapper {
 			if (getPrintns()>=0) {
 				prefix = getPrefix(type);
 			}
-/*			if (prefix != null && !prefix.equals(""))
-				prefix += ":";
-			else
-				prefix = "";
-*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -172,40 +167,6 @@ public class RXMapper extends MapperWrapper {
 		
 		return getPrefix(type.getName());
 
-		/*
-		String namespace = getNamespace(type);
-		String result = null;
-//		rx.setJo_namespacemap(new HashMap()); // initialize
-
-		Field[] fields = type.getFields();
-		for (int i = 0; i < fields.length; i++) {
-
-			String fldname = fields[i].getName();
-			if (fldname.startsWith("_$xmlns")) {
-
-				try {
-					Field fld = type.getField(fldname);
-					String _namespace = (String) fld.get(fld);
-					if (_namespace.indexOf(namespace) > -1) {
-
-						fldname = fldname.substring(7); // "_$xmlns"
-						if (fldname.equals(""))
-							result = "";
-						else
-							result = fldname.substring(1);
-
-						return rxutil.fld2node(result);
-					}
-
-				} catch (Exception e) {
-					return null;
-				}
-
-			}
-		}
-
-		return null;
-		*/
 	}
 
 	public String getNamespace(Class type) {
@@ -262,7 +223,6 @@ public class RXMapper extends MapperWrapper {
 
 	public String findPackagename(String classname) {
 
-//		Iterator iter = rx.getJo_packagemap().keySet().iterator();
 		Iterator iter = getJo_packagemap().keySet().iterator();
 		while (iter.hasNext()) {
 			String packagename = (String) iter.next();
@@ -312,7 +272,6 @@ public class RXMapper extends MapperWrapper {
 
 	public String getPackagename(String namespace) {
 
-//		Iterator iter = rx.getJo_packagemap().entrySet().iterator();
 		Iterator iter = getJo_packagemap().entrySet().iterator();
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();

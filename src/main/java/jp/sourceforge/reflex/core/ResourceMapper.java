@@ -165,7 +165,6 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	public void toXML(Object obj, Writer out, boolean printns) {
 		((RXMapper)this.getClassMapper()).setJo_packagemap(
 				new LinkedHashMap<String, String>(jo_packages0), printns);
-//		((RXMapper)this.getClassMapper()).clearJo_namespacemap();
 		HierarchicalStreamWriter writer = hierarchicalStreamDriver
 				.createWriter(out);
 		marshal(obj, writer);
