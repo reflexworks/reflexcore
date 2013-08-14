@@ -398,7 +398,6 @@ public class MessagePackMapper extends ResourceMapper {
 		return line;
 	}
 	
-	
 	/**
 	 * Entity Templateからメタ情報を作成する
 	 * 
