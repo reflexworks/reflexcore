@@ -84,7 +84,9 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
 
-	private static final String ELEMENTCLASS = "jp.sourceforge.reflex.Element";
+	private static final String ELEMENTCLASS = "jp.sourceforge.reflex.core.Element";
+	private static final String ELEMENTSIG = "Ljava/util/List<Ljp/sourceforge/reflex/core/Element;>;";
+
 
 	/** ATOM : Feed package */
 	public static final String ATOM_PACKAGE_FEED = "jp.reflexworks.atom.feed";
@@ -200,7 +202,7 @@ public class MessagePackMapper extends ResourceMapper {
 			return type.indexOf(getSelf())>0;
 		}
 	}
-
+	
 	public Class getClass(String clsName) throws ClassNotFoundException {
 		return loader.loadClass(clsName);
 	}
@@ -250,8 +252,8 @@ public class MessagePackMapper extends ResourceMapper {
 		for (String classname : classnames) {
 			CtClass cc;
 			try {
+				// ATOM classなど既に登録されていたらそれを使う
 				cc = pool.get(classname);
-
 			} catch (NotFoundException ne1) {
 				cc = pool.makeClass(classname);
 				
@@ -284,6 +286,7 @@ public class MessagePackMapper extends ResourceMapper {
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
+					// ATOM classなど既に登録されていたらそれを使う
 					cc.getDeclaredField(type + field);
 				} catch (NotFoundException ne2) {
 					
@@ -291,13 +294,11 @@ public class MessagePackMapper extends ResourceMapper {
 					if (meta.isArray) {
 
 						try {
-						String signature = "Ljava/util/List<Ljp/sourceforge/reflex/Element;>;";
 
 					    CtClass objClass = pool.get("java.util.List");
-//					    CtClass elementClass = pool.get("jp.sourceforge.reflex.Element");
 					    CtField arrayfld = new CtField(objClass, meta.self, cc); 
 					    arrayfld.setModifiers(Modifier.PUBLIC);
-				        SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(signature);
+				        SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(ELEMENTSIG);
 				        arrayfld.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
 				        cc.addField(arrayfld);
 				        
@@ -385,7 +386,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @return メタ情報
 	 * @throws ParseException
 	 */
-	public List<Meta> getMetalist(String entitytmpl[]) throws ParseException {
+	private List<Meta> getMetalist(String entitytmpl[]) throws ParseException {
 		List<Meta> metalist = new ArrayList<Meta>();
 
 		Pattern patternf = Pattern.compile(field_pattern);

@@ -1,6 +1,5 @@
 package jp.sourceforge.reflex;
 
-import jp.sourceforge.reflex.Element;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -16,6 +15,7 @@ import javassist.ClassPool;
 import javassist.Loader;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.EntryBase;
+import jp.sourceforge.reflex.core.Element;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
@@ -64,7 +64,7 @@ public class MsgpackDynamicGenTest {
 	public static String entitytempl2[] = {
 		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
 		"testm3",        //  0行目はパッケージ名(service名)
-		"id",
+		"id",			 // atom classと重複するがエラーにはならない
 		"email",
 		"verified_email(Boolean)",
 		"name",

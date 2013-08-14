@@ -22,6 +22,7 @@ import javassist.bytecode.FieldInfo;
 import javassist.bytecode.SignatureAttribute;
 import javassist.bytecode.SignatureAttribute.ClassSignature;
 import javassist.bytecode.SignatureAttribute.ObjectType;
+import jp.sourceforge.reflex.core.Element;
 
 
 public class MsgPackTest {

@@ -1,4 +1,4 @@
-package jp.sourceforge.reflex;
+package jp.sourceforge.reflex.core;
 
 import org.msgpack.annotation.Message;
 
