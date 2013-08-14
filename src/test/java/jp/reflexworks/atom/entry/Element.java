@@ -1,8 +1,8 @@
-package jp.sourceforge.reflex.core;
+package jp.reflexworks.atom.entry;
 
 import org.msgpack.annotation.Message;
 
-// TODO パッケージはここでいいか？
+// このパッケージに置かないとXMLにできない
 
 @Message
 public class Element {

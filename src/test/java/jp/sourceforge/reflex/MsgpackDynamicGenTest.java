@@ -14,8 +14,8 @@ import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.Loader;
 import javassist.NotFoundException;
+import jp.reflexworks.atom.entry.Element;
 import jp.reflexworks.atom.entry.EntryBase;
-import jp.sourceforge.reflex.core.Element;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
@@ -93,23 +93,20 @@ public class MsgpackDynamicGenTest {
 		"  _$$text"
 	};
 
+	private static String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
 	
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException, SecurityException, NoSuchFieldException {
 
 		
 		MessagePackMapper dg = new MessagePackMapper(entitytempl);		
 		
-		Object entry = getTestEntry(dg);
-
-		System.out.println("\n=== JSON UserInfo ===");
-        String json = dg.toJSON(entry);
-		System.out.println(json);
+		//Object entry = getTestEntry(dg);
 		
-		Object entry2 = dg.fromJSON(json);
-		System.out.println("\n=== JSON UserInfo(デシリアライズ) ===");
-        String json2 = dg.toJSON(entry2);
+		System.out.println("JSON デシリアライズ実行");
+		Object entry = dg.fromJSON(json);
+		System.out.println("\n=== JSON UserInfo(それをシリアライズ) ===");
+        String json2 = dg.toJSON(entry);
 		System.out.println(json2);
-
 		
 		System.out.println("\n=== XML UserInfo ===");
         String xml = dg.toXML(entry);

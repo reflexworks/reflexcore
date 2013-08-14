@@ -23,7 +23,7 @@ import javassist.bytecode.FieldInfo;
 import javassist.bytecode.SignatureAttribute;
 import javassist.bytecode.SignatureAttribute.ClassSignature;
 import javassist.bytecode.SignatureAttribute.ObjectType;
-import jp.sourceforge.reflex.core.Element;
+import jp.reflexworks.atom.entry.Element;
 
 
 public class MsgPackTest extends ClassLoader{
@@ -37,7 +37,7 @@ public class MsgPackTest extends ClassLoader{
 
 		
 	}
-	private static final String ELEMENTCLASS = "jp.sourceforge.reflex.core.Element";
+	private static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
 
 	private void exec() throws Exception {
 		ClassPool pool = new ClassPool();
@@ -56,7 +56,7 @@ public class MsgPackTest extends ClassLoader{
 		a1._$$text = "ポップス3";
 		lines2.add(a1);
 
-		String signature = "Ljava/util/List<Ljp/sourceforge/reflex/core/Element;>;";
+		String ELEMENTSIG = "Ljava/util/List<Ljp/reflexworks/atom/entry/Element;>;";
 		
 			CtClass arrayClass = pool.makeClass("testm3.Favorite");
 	        CtClass objClass0 = pool.get("java.util.List");
@@ -65,7 +65,7 @@ public class MsgPackTest extends ClassLoader{
 		  CtField field = new CtField(objClass0, "element", arrayClass); 
 
 		  field.setModifiers(Modifier.PUBLIC);
-          SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(signature);
+          SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(ELEMENTSIG);
           field.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
 		  arrayClass.addField(field);
 

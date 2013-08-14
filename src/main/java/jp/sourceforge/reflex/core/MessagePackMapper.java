@@ -36,6 +36,7 @@ import javassist.NotFoundException;
 import javassist.Translator;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
+import jp.reflexworks.atom.entry.Element;
 
 import org.json.JSONException;
 import org.msgpack.MessagePack;
@@ -85,8 +86,8 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
 
-	private static final String ELEMENTCLASS = "jp.sourceforge.reflex.core.Element";
-	private static final String ELEMENTSIG = "Ljava/util/List<Ljp/sourceforge/reflex/core/Element;>;";
+	private static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
+	private static final String ELEMENTSIG = "Ljava/util/List<Ljp/reflexworks/atom/entry/Element;>;";
 
 
 	/** ATOM : Feed package */
@@ -708,7 +709,6 @@ public class MessagePackMapper extends ResourceMapper {
         			
         		}else {
         			if (e.getValue().isArrayValue()) {
-        				System.out.println("Array!!!:"+e.getValue().asArrayValue().get(0));
         				if (!isCreated) {
         					parent = (Object) cc.newInstance();
         					isCreated = true;
