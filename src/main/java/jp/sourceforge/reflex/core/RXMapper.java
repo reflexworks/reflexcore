@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  */
 public class RXMapper extends MapperWrapper {
 
-	private ClassMapper wrapped;
+	public ClassMapper wrapped;
 	private ResourceMapper rx;
 	private RXUtil rxutil;
 	private final ThreadLocal<LinkedHashMap<String,String>> packagemap = 
@@ -267,16 +267,12 @@ public class RXMapper extends MapperWrapper {
 		while (iter.hasNext()) {
 			String packagename = (String) iter.next();
 			String validname = packagename + "." + classname;
-
-			try {
-				Object obj = Class.forName(validname).newInstance();
-				if (obj != null)
-					return packagename;
-
-			} catch (Exception e) {
-				// continue;
+			if (classname.equals("Element")) {
+				return "jp.reflexworks.atom.entry";	// Elementだけは特別にパッケージ名を返す
 			}
-
+			if (packagename.indexOf("atom")<0) {
+				return packagename;			// atomでないユーザパッケージ(サービス名は唯一)を返す
+			}
 		}
 		return null;
 

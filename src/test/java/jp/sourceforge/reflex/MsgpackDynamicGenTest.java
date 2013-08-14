@@ -110,6 +110,7 @@ public class MsgpackDynamicGenTest {
         String xml = dg.toXML(entry);
 		System.out.println(xml);
 		
+		System.out.println("\n=== XML UserInfo(デシリアライズ) ===");
 		Object entryx = dg.fromXML(xml);
         String xml2 = dg.toXML(entryx);
 		System.out.println(xml2);

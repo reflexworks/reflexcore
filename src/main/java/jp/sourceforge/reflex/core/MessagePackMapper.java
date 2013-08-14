@@ -46,6 +46,7 @@ import org.msgpack.type.Value;
 import org.msgpack.util.json.JSONBufferUnpacker;
 
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.mapper.DefaultMapper;
 
 public class MessagePackMapper extends ResourceMapper {
 
@@ -87,7 +88,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
 
 	// Arrayの要素クラス
-	private static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
+	public static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
 	private static final String ELEMENTSIG = "Ljava/util/List<Ljp/reflexworks/atom/entry/Element;>;";
 
 
@@ -148,6 +149,14 @@ public class MessagePackMapper extends ResourceMapper {
 		this.pool = new ClassPool();
 		this.pool.appendSystemPath();
 	    this.loader = new Loader(this.pool);
+
+	    // XMLデシリアライザのRXMapperのClassloaderにセットする。サーブレットでのメモリ増加に注意
+	    try {
+			((RXMapper)this.getClassMapper()).wrapped = new DefaultMapper(new MessagePackMapper.MyLoader(pool)); 
+	    } catch (NotFoundException e) {
+			throw new ParseException(e.getMessage(), 0);
+		}
+	    
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 
@@ -156,7 +165,36 @@ public class MessagePackMapper extends ResourceMapper {
 
 		registClass();
 	}
-	
+	/**
+	 * 独自ClassLoader(XMLデシリアライザ用） 
+	 * @author stakezaki
+	 *
+	 */
+	 public class MyLoader extends ClassLoader {
+	     private ClassPool pool;
+
+	     public MyLoader(ClassPool pool) throws NotFoundException {
+	         this.pool = pool;
+	     }
+
+	     /* Finds a specified class.
+	      * The bytecode for that class can be modified.
+	      */
+	     protected Class findClass(String name) throws ClassNotFoundException {
+	         try {
+	             CtClass cc = pool.get(name);
+	             byte[] b = cc.toBytecode();
+	             return defineClass(name, b, 0, b.length);
+	         } catch (NotFoundException e) {
+	             throw new ClassNotFoundException();
+	         } catch (IOException e) {
+	             throw new ClassNotFoundException();
+	         } catch (CannotCompileException e) {
+	             throw new ClassNotFoundException();
+	         }
+	     }
+	 }
+	 
 	/**
 	 * ATOM Packageとユーザ Packageを取得する
 	 * @param entitytempl
@@ -252,7 +290,6 @@ public class MessagePackMapper extends ResourceMapper {
 				cc = pool.get(classname);
 			} catch (NotFoundException ne1) {
 				cc = pool.makeClass(classname);
-				
 				if (classname.indexOf("Entry") >= 0) {
 					CtClass cs;
 					try {
@@ -378,9 +415,9 @@ public class MessagePackMapper extends ResourceMapper {
 			entitytmpl = (String[]) ((List) entitytempl).toArray(new String[((List<String>) entitytempl).size()]);;
 			
 		}
-		// 先頭はパッケージ名
+		// 先頭のパッケージ名を退避してentryに置き換える
 		this.packagename = entitytmpl[0];
-		
+				
 		List<Meta> metalist = new ArrayList<Meta>();
 
 		Pattern patternf = Pattern.compile(field_pattern);
