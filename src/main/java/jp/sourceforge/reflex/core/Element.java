@@ -7,6 +7,6 @@ import org.msgpack.annotation.Message;
 @Message
 public class Element {
 
-	  public final int _$$col =1;
+	  public final int _$$col = 0;
 	  public String _$$text;
 }

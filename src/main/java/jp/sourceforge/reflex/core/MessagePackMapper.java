@@ -33,6 +33,7 @@ import javassist.CtNewMethod;
 import javassist.Loader;
 import javassist.Modifier;
 import javassist.NotFoundException;
+import javassist.Translator;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
 
@@ -104,10 +105,12 @@ public class MessagePackMapper extends ResourceMapper {
 	}
 
 	private MessagePack msgpack = new MessagePack();
+	private List<Meta> metalist;
 	private TemplateRegistry registry;
 	private ReflectionTemplateBuilder builder;
 	private ClassPool pool;
 	private Loader loader;
+	private Object etitytempl;
 	protected String packagename;
 
 	/*
@@ -141,23 +144,24 @@ public class MessagePackMapper extends ResourceMapper {
 			boolean useSingleQuote, ReflectionProvider reflectionProvider) throws ParseException {
 		super(getJo_packages(entitytempl), isCamel, useSingleQuote, reflectionProvider);
 
+		this.etitytempl = entitytempl;
+		metalist = getMetalist(entitytempl);
+
 		this.pool = new ClassPool();
 		this.pool.appendSystemPath();
+		Translator t = new GenericListTranslator();
+	    this.loader = new Loader(this.pool);
+	    try {
+			this.loader.addTranslator(pool, t);
+		} catch (NotFoundException e) {
+			throw new ParseException(e.getMessage(),0);
+		} catch (CannotCompileException e) {
+			throw new ParseException(e.getMessage(),0);
+		}
+		
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
-		loader = new Loader(this.pool);
-
-		
-		if (entitytempl instanceof String[]) {
-			this.packagename = ((String[]) entitytempl)[0];
-			registClass(((String[]) entitytempl));
-		}else if (entitytempl instanceof List) {
-			String[] entitytemplstr = (String[]) ((List) entitytempl).toArray(new String[((List<String>) entitytempl).size()]);;
-			this.packagename = entitytemplstr[0];
-			registClass(entitytemplstr);
-			
-		}
-
+		registClass();
 	}
 	
 	/**
@@ -234,6 +238,23 @@ public class MessagePackMapper extends ResourceMapper {
 		return msgpack.read(msg, loader.loadClass(getRootEntry()));
 	}
 
+	public class GenericListTranslator implements Translator {
+	     public void start(ClassPool pool)
+	         throws NotFoundException, CannotCompileException {
+
+	     }
+	     public void onLoad(ClassPool pool, String classname)
+	         throws NotFoundException, CannotCompileException
+	     {
+	        CtClass cc = pool.get(classname);
+	        if (classname.equals("testm3.Favorite"))
+	        for(CtField f:cc.getFields()) {
+	        	System.out.println("classnam:"+classname+" field:"+f.getName()+" TYPE:"+f.getGenericSignature());
+//	        	System.out.println("classnam:"+classname+" field:"+f.getName());
+	        }
+	     }
+	 }
+	
 	/**
 	 * メタ情報から動的クラスを生成する
 	 * 
@@ -242,12 +263,12 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @throws NotFoundException
 	 * @throws CannotCompileException
 	 */
-	private Set<String> generateClass(List<Meta> metalist)
+	private Set<String> generateClass()
 			throws CannotCompileException {
 
 		pool.importPackage("java.util.Date");
 
-		Set<String> classnames = getClassnames(metalist);
+		Set<String> classnames = getClassnames();
 
 		for (String classname : classnames) {
 			CtClass cc;
@@ -280,9 +301,9 @@ public class MessagePackMapper extends ResourceMapper {
 			validation.append(isValidFuncS);
 			boolean isDirty = false;
 			
-			for (int i = 0; i < matches(metalist, classname); i++) {
+			for (int i = 0; i < matches(classname); i++) {
 
-				Meta meta = getMetaOfLevel(metalist, classname, i);
+				Meta meta = getMetaOfLevel(classname, i);
 				String type = "public " + meta.type + " ";
 				String field = meta.self + ";";
 				try {
@@ -292,7 +313,6 @@ public class MessagePackMapper extends ResourceMapper {
 					
 					// for Array
 					if (meta.isArray) {
-
 						try {
 
 					    CtClass objClass = pool.get("java.util.List");
@@ -304,13 +324,13 @@ public class MessagePackMapper extends ResourceMapper {
 				        
 				        // classの入れ替えが必要
 				        isDirty = true;
+
 				        
 						} catch (NotFoundException e) {
 							throw new CannotCompileException(e);
 						} catch (BadBytecode e) {
 							throw new CannotCompileException(e);
 						}
-						
 					}else {
 						CtField f2 = CtField.make(type + field, cc); // フィールドの定義
 						cc.addField(f2);
@@ -343,12 +363,11 @@ public class MessagePackMapper extends ResourceMapper {
 			validation.append(isValidFuncE);
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);
 			cc.addMethod(m);
-			
 			if (isDirty) {
 		        // classpathに反映(これをやると二度と差し替えできなくなるためまずい） TODO 安全な差し替え
 				// translatorを使うらしい http://www.acroquest.co.jp/webworkshop/javassis/javassist03.html
-				 loader.delegateLoadingOf(classname);
-				 cc.toClass();
+//				 loader.delegateLoadingOf(classname);
+//				 cc.toClass();
 			}
 		}
 		return classnames;
@@ -386,7 +405,17 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @return メタ情報
 	 * @throws ParseException
 	 */
-	private List<Meta> getMetalist(String entitytmpl[]) throws ParseException {
+	private List<Meta> getMetalist(Object entitytempl) throws ParseException {
+		
+		String[] entitytmpl = null;
+		if (entitytempl instanceof String[]) {
+			entitytmpl = (String[]) entitytempl;
+		}else if (entitytempl instanceof List) {
+			entitytmpl = (String[]) ((List) entitytempl).toArray(new String[((List<String>) entitytempl).size()]);;
+			
+		}
+		this.packagename = entitytmpl[0];
+		
 		List<Meta> metalist = new ArrayList<Meta>();
 
 		Pattern patternf = Pattern.compile(field_pattern);
@@ -493,7 +522,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param metalist
 	 * @return クラス名のSet
 	 */
-	private Set<String> getClassnames(List<Meta> metalist) {
+	private Set<String> getClassnames() {
 
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		int size = metalist.size();
@@ -523,7 +552,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param level
 	 * @return
 	 */
-	private Meta getMetaOfLevel(List<Meta> metalist, String classname, int level) {
+	private Meta getMetaOfLevel(String classname, int level) {
 
 		for (Meta meta : metalist) {
 			if (meta.parent.equals(classname)) {
@@ -536,7 +565,7 @@ public class MessagePackMapper extends ResourceMapper {
 		return null;
 	}
 
-	private Meta getMeta(List<Meta> metalist, String classname) {
+	private Meta getMeta(String classname) {
 
 		for (Meta meta : metalist) {
 			if (classname.indexOf(meta.getSelf())>=0) {
@@ -552,7 +581,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param classname
 	 * @return
 	 */
-	private int matches(List<Meta> metalist, String classname) {
+	private int matches(String classname) {
 
 		int i = 0;
 		for (Meta meta : metalist) {
@@ -566,10 +595,9 @@ public class MessagePackMapper extends ResourceMapper {
 	/**
 	 * Entity Templateからクラスを動的に作成しmsgpackに登録する
 	 * 
-	 * @param entitytempl
 	 * @throws ParseException
 	 */
-	private void registClass(String[] entitytempl) throws ParseException {
+	private void registClass() throws ParseException {
 
 		HashSet<String> classnames = new LinkedHashSet<String>();
 		classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
@@ -578,7 +606,7 @@ public class MessagePackMapper extends ResourceMapper {
 			Class cls = loader.loadClass(ELEMENTCLASS);
 			Template template = builder.buildTemplate(cls);
 			registry.register(cls,template);
-			classnames.addAll(generateClass(getMetalist(entitytempl)));
+			classnames.addAll(generateClass());
 			registClass(classnames);
 		} catch (CannotCompileException e) {
 			throw new ParseException("Cannot Compile:" + e.getMessage(), 0);
@@ -680,7 +708,18 @@ public class MessagePackMapper extends ResourceMapper {
         			
         		}else {
         			if (e.getValue().isArrayValue()) {
-        				System.out.println("Array!!!");
+        				System.out.println("Array!!!:"+e.getValue().asArrayValue().get(0));
+        				if (!isCreated) {
+        					parent = (Object) cc.newInstance();
+        					isCreated = true;
+        				}
+        				List<Element> child = new ArrayList<Element>();
+        				for (int i=0;i<e.getValue().asArrayValue().size();i++) {
+        					Element element = new Element();
+        					element._$$text = e.getValue().asArrayValue().get(i).toString().replace("\"", "");
+        					child.add(element);
+        					f.set(parent, child);
+        				}
         			}
         			else {
         				if (!isCreated) {
