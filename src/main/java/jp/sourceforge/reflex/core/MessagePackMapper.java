@@ -151,11 +151,7 @@ public class MessagePackMapper extends ResourceMapper {
 	    this.loader = new Loader(this.pool);
 
 	    // XMLデシリアライザのRXMapperのClassloaderにセットする。サーブレットでのメモリ増加に注意
-	    try {
-			((RXMapper)this.getClassMapper()).wrapped = new DefaultMapper(new MessagePackMapper.MyLoader(pool)); 
-	    } catch (NotFoundException e) {
-			throw new ParseException(e.getMessage(), 0);
-		}
+			((RXMapper)this.getClassMapper()).wrapped = new DefaultMapper(this.loader); 
 	    
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
@@ -165,35 +161,6 @@ public class MessagePackMapper extends ResourceMapper {
 
 		registClass();
 	}
-	/**
-	 * 独自ClassLoader(XMLデシリアライザ用） 
-	 * @author stakezaki
-	 *
-	 */
-	 public class MyLoader extends ClassLoader {
-	     private ClassPool pool;
-
-	     public MyLoader(ClassPool pool) throws NotFoundException {
-	         this.pool = pool;
-	     }
-
-	     /* Finds a specified class.
-	      * The bytecode for that class can be modified.
-	      */
-	     protected Class findClass(String name) throws ClassNotFoundException {
-	         try {
-	             CtClass cc = pool.get(name);
-	             byte[] b = cc.toBytecode();
-	             return defineClass(name, b, 0, b.length);
-	         } catch (NotFoundException e) {
-	             throw new ClassNotFoundException();
-	         } catch (IOException e) {
-	             throw new ClassNotFoundException();
-	         } catch (CannotCompileException e) {
-	             throw new ClassNotFoundException();
-	         }
-	     }
-	 }
 	 
 	/**
 	 * ATOM Packageとユーザ Packageを取得する
