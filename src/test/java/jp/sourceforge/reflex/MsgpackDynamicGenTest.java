@@ -110,6 +110,10 @@ public class MsgpackDynamicGenTest {
         String xml = dg.toXML(entry);
 		System.out.println(xml);
 		
+		Object entryx = dg.fromXML(xml);
+        String xml2 = dg.toXML(entryx);
+		System.out.println(xml2);
+		
 		// MessagePack test
 		System.out.println("\n=== MessagePack UserInfo(シリアライズ) ===");
         byte[] mbytes = dg.toMessagePack(entry);

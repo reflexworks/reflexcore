@@ -43,7 +43,7 @@ public class ReflexJSONTest {
 		elementList.add(element6);
 
 		Array array = new Array();
-		array.element = elementList;
+		array.music = elementList;
 
 		// XMLにシリアライズ
 		String toXML = mapper.toXML(array);

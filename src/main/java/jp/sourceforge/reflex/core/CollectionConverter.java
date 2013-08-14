@@ -75,12 +75,12 @@ public class CollectionConverter extends AbstractCollectionConverter {
 
 		// These lines are commented out to omit duplicated tags.
 
-		// while (reader.hasMoreChildren()) {
-		// reader.moveDown();
+		 while (reader.hasMoreChildren()) {
+		 reader.moveDown();
 		Object item = readItem(reader, context, collection);
 		collection.add(item);
-		// reader.moveUp();
-		// }
+		 reader.moveUp();
+		 }
 	}
 
 }

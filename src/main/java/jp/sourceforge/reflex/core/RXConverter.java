@@ -242,7 +242,7 @@ public class RXConverter implements Converter {
 						String prefix ="";
 						
 						if (classMapper.getRxutil().isList(fld.getType())) {
-							sw = false;
+							sw = true;  // Arrayの場合は親で括ることにした
 						} else {
 							if (classMapper.getPrintns()>=0) {
 							String classname2 = fld.getType().getName();
