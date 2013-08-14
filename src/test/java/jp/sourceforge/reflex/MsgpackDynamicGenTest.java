@@ -30,39 +30,37 @@ public class MsgpackDynamicGenTest {
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	public static String entitytempl[] = {
-		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる。@必須
+		// *がList, #がIndex , %が暗号化, []が配列　, * # % [] は末尾に一つだけ付けられる。@が必須項目
 		"testm3",        //  0行目はパッケージ名(service名)
-		"id",			  //  1行名以降が項目名
+		"id#",			  // Index
 		"email",
-		"verified_email(Boolean)",
+		"verified_email(Boolean)",// Boolean型 他に（int,date,long,float,double,booleanがある。先小文字OK、省略時はString）
 		"name",
 		"given_name",
 		"family_name",
 		"error",
-		" errors*",
+		" errors*",				// 多重度(n)、*がないと多重度(1)
 		"  domain",
 		"  reason",
 		"  message",
 		"  locationType",
 		"  location",
-		" code(int)",
+		" code(int)",			
 		" message",
 		"subInfo",
 		" favorite",
-		"  food%abc",
-//		"  food:^.{8}$",
-		"  music[]",
+		"  food%abc@:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
+		"  music[]",			// 配列
 		" favorite2",
 		"  food",
 		"   food1",
 		" favorite3",
 		"  food",
 		" hobby*",
-		"  _$$text"
+		"  _$$text"				// テキストノード
 	};
 
 	public static String entitytempl2[] = {
-		// *がList, #がkey , %が暗号化　, * # % は末尾に一つだけ付けられる
 		"testm3",        //  0行目はパッケージ名(service名)
 		"id",			 // atom classと重複するがエラーにはならない
 		"email",
