@@ -603,6 +603,7 @@ public class MessagePackMapper extends ResourceMapper {
         try {
         	return parseValue("",u.readValue());
         } catch(Exception e) {
+        	e.printStackTrace();
         	throw new JSONException(e);
         }
 	}
@@ -659,13 +660,18 @@ public class MessagePackMapper extends ResourceMapper {
         					parent = (Object) cc.newInstance();
         					isCreated = true;
         				}
-        				List<Element> child = new ArrayList<Element>();
-        				for (int i=0;i<e.getValue().asArrayValue().size();i++) {
-        					Element element = new Element();
-        					element._$$text = e.getValue().asArrayValue().get(i).toString().replace("\"", "");
-        					child.add(element);
-        					f.set(parent, child);
+        				List child = new ArrayList();
+        				for(Value v:e.getValue().asArrayValue().getElementArray()) {
+        					if (v.isMapValue()) {
+        						System.out.println("MapValue!");
+        					}else if (v.isRawValue()) {
+               					Element element = new Element();
+               					element._$$text = v.toString().replace("\"", "");
+               					child.add(element);
+               					f.set(parent, child);
+        					}
         				}
+        				
         			}
         			else {
         				if (!isCreated) {
