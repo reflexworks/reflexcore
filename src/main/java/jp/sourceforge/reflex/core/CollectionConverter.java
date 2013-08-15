@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import jp.reflexworks.atom.entry.Element;
+
+import com.thoughtworks.xstream.alias.CannotResolveClassException;
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -74,13 +77,20 @@ public class CollectionConverter extends AbstractCollectionConverter {
 			UnmarshallingContext context, Collection collection) {
 
 		// These lines are commented out to omit duplicated tags.
-
-		 while (reader.hasMoreChildren()) {
-		 reader.moveDown();
-		Object item = readItem(reader, context, collection);
-		collection.add(item);
-		 reader.moveUp();
-		 }
+		Object item;
+		try {
+			// Arrayの場合
+			item = readItem(reader, context, collection);
+			collection.add(item);
+		} catch(CannotResolveClassException e) {
+			// その他Listの場合
+			 while (reader.hasMoreChildren()) {
+				 reader.moveDown();
+				item = readItem(reader, context, collection);
+				collection.add(item);
+				 reader.moveUp();
+				 }
+		}
 	}
 
 }

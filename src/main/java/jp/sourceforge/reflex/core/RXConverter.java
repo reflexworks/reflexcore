@@ -154,7 +154,9 @@ public class RXConverter implements Converter {
 						String prefix ="";
 						
 						if (classMapper.getRxutil().isList(fld.getType())) {
-							sw = true;  // Arrayの場合は親で括ることにした
+							// Arrayの場合は親で括ることにした
+							if (!fld.getGenericType().toString().equals("java.util.List<jp.reflexworks.atom.entry.Element>"))
+								sw = false;  
 						} else {
 							if (classMapper.getPrintns()>=0) {
 							String classname2 = fld.getType().getName();
