@@ -19,11 +19,6 @@ import jp.reflexworks.atom.entry.EntryBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
-import org.msgpack.MessagePack;
-import org.msgpack.template.ListTemplate;
-import org.msgpack.template.Template;
-import org.msgpack.template.TemplateRegistry;
-import org.msgpack.template.builder.ReflectionTemplateBuilder;
 
 public class MsgpackDynamicGenTest {
 
@@ -50,7 +45,7 @@ public class MsgpackDynamicGenTest {
 		"subInfo",
 		" favorite",
 		"  food%abc@:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
-		"  music[]",			// 配列
+		"  music[]:^.{5}$",			// 配列
 		" favorite2",
 		"  food",
 		"   food1",

@@ -352,20 +352,22 @@ public class MessagePackMapper extends ResourceMapper {
 				}
 								
 				// バリデーションチェック
-				validation.append(getValidatorLogic(meta));
+				if (meta.isArray) {
+					validation.append(getValidatorLogicArray(meta));
+				}else {
+					validation.append(getValidatorLogic(meta));
 				
 				// 子要素のValidation
 				if (meta.hasChild()) {
 					if (meta.isMap) {
 						validation.append("if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) { (("+meta.type +")"+meta.self+".get(i)).isValid();}"); 
-					}else
-					if (meta.isArray) {
-						validation.append("if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) { (("+ELEMENTCLASS +")"+meta.self+".get(i)).isValid();}"); 
 					}
 					else {
 						validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
 					}
 				}
+				}
+
 			}
 			try {
 			// Validation Method追加
@@ -403,7 +405,24 @@ public class MessagePackMapper extends ResourceMapper {
 
 		return line;
 	}
-	
+
+	private String getValidatorLogicArray(Meta meta) {
+		String line = "";
+		if (meta.isMandatory) {
+			line = "if ("+meta.self+"==null) throw new java.text.ParseException(\"Required property '" + meta.self + "' not specified.\",0);";
+		}
+		if (meta.regex!=null&&!meta.regex.isEmpty()) {
+			line += "if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) {";
+			line += "java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(\""+meta.regex+"\");";
+			line += "String val=(("+ELEMENTCLASS +")"+meta.self+".get(i))._$$text;";
+			line += "java.util.regex.Matcher matcher = pattern.matcher(\"+val+\");";
+			line += "if (!matcher.find()) throw new java.text.ParseException(\"Property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+val+\")\",0);";
+			line += "}";			
+		}
+
+		return line;
+	}
+
 	/**
 	 * Entity Templateからメタ情報を作成する
 	 * 
