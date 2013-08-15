@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 
 import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.Loader;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.Element;
 import jp.reflexworks.atom.entry.EntryBase;
