@@ -350,14 +350,19 @@ public class MessagePackMapper extends ResourceMapper {
 						cc.addMethod(m2);
 					}
 				}
-				
+								
 				// バリデーションチェック
 				validation.append(getValidatorLogic(meta));
+				
 				// 子要素のValidation
 				if (meta.hasChild()) {
 					if (meta.isMap) {
-//						validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();"); TODO MAPのバリデーション
-					}else {
+						validation.append("if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) { (("+meta.type +")"+meta.self+".get(i)).isValid();}"); 
+					}else
+					if (meta.isArray) {
+						validation.append("if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) { (("+ELEMENTCLASS +")"+meta.self+".get(i)).isValid();}"); 
+					}
+					else {
 						validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
 					}
 				}
