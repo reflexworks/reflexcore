@@ -284,6 +284,7 @@ public class JSONSerializer implements IResourceMapper {
 					// 配列かどうかのチェック
 					if (list.size() > 0) {
 						Object objTmp = list.get(0);
+						if (objTmp!=null) {
 						Field[] fldTmp = objTmp.getClass().getFields();
 						for (int t = 0; t < fldTmp.length; t++) {
 							if ("_$$col".equals(fldTmp[t].getName())) {
@@ -292,6 +293,7 @@ public class JSONSerializer implements IResourceMapper {
 								arrayCol = ((Integer) fldTmp[t].get(objTmp))
 										.intValue();
 							}
+						}
 						}
 					}
 

@@ -103,6 +103,7 @@ public class MsgpackDynamicGenTest {
 		
 		System.out.println("JSON デシリアライズ実行");
 		Object entry = dg.fromJSON(json);
+		
 		System.out.println("\n=== JSON UserInfo(それをシリアライズ) ===");
         String json2 = dg.toJSON(entry);
 		System.out.println(json2);

@@ -58,7 +58,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String MANDATORY = "@";
 	private static final String ENCRYPTED = "%";
 	private static final String INDEX = "#";
-	private static final String LIST = "*";
+	private static final String MAP = "*";
 	private static final String ARRAY = "[";
 
 		
@@ -193,6 +193,7 @@ public class MessagePackMapper extends ResourceMapper {
 		public String regex; // バリーデーション用正規表現
 
 		public boolean isArray; // 配列
+		public boolean isMap;
 
 		public String getSelf() {
 			if (self==null) return null;
@@ -234,6 +235,12 @@ public class MessagePackMapper extends ResourceMapper {
 			ClassNotFoundException {
 		return msgpack.read(msg, loader.loadClass(getRootEntry()));
 	}
+	
+	private String getSignature(String classname) {
+		String signature = "Ljava/util/List<L"+classname.replace(".", "/")+";>;";
+		return signature;
+	}
+	
 	
 	/**
 	 * メタ情報から動的クラスを生成する
@@ -305,7 +312,26 @@ public class MessagePackMapper extends ResourceMapper {
 						} catch (BadBytecode e) {
 							throw new CannotCompileException(e);
 						}
-					}else {
+					}else if (meta.isMap) {
+
+						try {
+							
+						    CtClass objClass = pool.get("java.util.List");
+						    CtField arrayfld = new CtField(objClass, meta.self, cc); 
+						    arrayfld.setModifiers(Modifier.PUBLIC);
+//						    System.out.println("Signature="+getSignature(packagename+"."+meta.getSelf()));
+					        SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(getSignature(packagename+"."+meta.getSelf()));
+					        arrayfld.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
+					        cc.addField(arrayfld);
+					        
+							} catch (NotFoundException e) {
+								throw new CannotCompileException(e);
+							} catch (BadBytecode e) {
+								throw new CannotCompileException(e);
+							}
+					
+					}
+					else {
 						CtField f2 = CtField.make(type + field, cc); // フィールドの定義
 						cc.addField(f2);
 					
@@ -329,17 +355,25 @@ public class MessagePackMapper extends ResourceMapper {
 				validation.append(getValidatorLogic(meta));
 				// 子要素のValidation
 				if (meta.hasChild()) {
-					validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
+					if (meta.isMap) {
+//						validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();"); TODO MAPのバリデーション
+					}else {
+						validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
+					}
 				}
 			}
-			
+			try {
 			// Validation Method追加
 			validation.append(isValidFuncE);
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);
 			cc.addMethod(m);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return classnames;
 	}
+	
 	
 	/**
 	 * バリデーションロジック（必須チェックと正規表現チェック）
@@ -431,8 +465,9 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.isMandatory = matcherf.group(6).equals(MANDATORY);
 				meta.regex = matcherf.group(7);
 				meta.self = matcherf.group(2);
-				if (matcherf.group(5).equals(LIST)) {
-					//	何もしない
+				if (matcherf.group(5).equals(MAP)) {
+					meta.isMap = true;
+					System.out.println("Map="+meta.self);
 				} else {
 					if (matcherf.group(5).equals(INDEX)) {
 						meta.isIndex = true;
@@ -663,6 +698,9 @@ public class MessagePackMapper extends ResourceMapper {
         				List child = new ArrayList();
         				for(Value v:e.getValue().asArrayValue().getElementArray()) {
         					if (v.isMapValue()) {
+        	        			String childclsname = packagename+"."+fld.substring(0, 1).toUpperCase() + fld.substring(1);
+               					child.add(parseValue(childclsname,v));
+               					f.set(parent, child);
         						System.out.println("MapValue!");
         					}else if (v.isRawValue()) {
                					Element element = new Element();
