@@ -467,7 +467,6 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.self = matcherf.group(2);
 				if (matcherf.group(5).equals(MAP)) {
 					meta.isMap = true;
-					System.out.println("Map="+meta.self);
 				} else {
 					if (matcherf.group(5).equals(INDEX)) {
 						meta.isIndex = true;
@@ -701,7 +700,6 @@ public class MessagePackMapper extends ResourceMapper {
         	        			String childclsname = packagename+"."+fld.substring(0, 1).toUpperCase() + fld.substring(1);
                					child.add(parseValue(childclsname,v));
                					f.set(parent, child);
-        						System.out.println("MapValue!");
         					}else if (v.isRawValue()) {
                					Element element = new Element();
                					element._$$text = v.toString().replace("\"", "");
