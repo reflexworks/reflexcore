@@ -220,19 +220,24 @@ public class RXMapper extends MapperWrapper {
 
 		}
 	}
-
+	
 	public String findPackagename(String classname) {
 
 		Iterator iter = getJo_packagemap().keySet().iterator();
 		while (iter.hasNext()) {
 			String packagename = (String) iter.next();
 			String validname = packagename + "." + classname;
-			if (classname.equals("Element")) {
-				return "jp.reflexworks.atom.entry";	// Elementだけは特別にパッケージ名を返す
+
+			try {
+//				Object obj = Class.forName(validname).newInstance();
+				Object obj = wrapped.lookupType(validname);
+				if (obj != null)
+					return packagename;
+
+			} catch (Exception e) {
+				// continue;
 			}
-			if (packagename.indexOf("atom")<0) {
-				return packagename;			// atomでないユーザパッケージ(サービス名は唯一)を返す
-			}
+
 		}
 		return null;
 
