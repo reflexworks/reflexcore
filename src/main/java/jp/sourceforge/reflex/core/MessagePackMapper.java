@@ -64,6 +64,7 @@ public class MessagePackMapper extends ResourceMapper {
 		
 	// atom クラス（順番は重要、TODO これらは taggingserviceのConstantsに移すべきか?）
 	// このクラス内でatomクラスを区別するのは難しい
+	
 	public static final String[] ATOMCLASSES = { "jp.reflexworks.atom.source.Author",
 			"jp.reflexworks.atom.source.Category",
 			"jp.reflexworks.atom.source.Contributor",
@@ -76,16 +77,16 @@ public class MessagePackMapper extends ResourceMapper {
 			"jp.reflexworks.atom.entry.Contributor",
 			"jp.reflexworks.atom.entry.Link",
 			"jp.reflexworks.atom.entry.Element",		// Elementは本来はATOMクラスではないがここに必要
-			"jp.reflexworks.atom.entry.EntryBase",
+			"jp.reflexworks.atom.entry.ValidatorBase",		// isValid() を呼び出すためのインターフェース
 			"jp.reflexworks.atom.feed.Author",
 			"jp.reflexworks.atom.feed.Category",
 			"jp.reflexworks.atom.feed.Generator",
 			"jp.reflexworks.atom.feed.Contributor",
-			"jp.reflexworks.atom.feed.Link",
-			"jp.reflexworks.atom.entry.FeedBase" };
+			"jp.reflexworks.atom.feed.Link"
+			 };
 
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
-	private static final String FEEDBASE = "jp.reflexworks.atom.entry.FeedBase";
+	private static final String FEEDBASE = "jp.reflexworks.atom.feed.FeedBase";
 
 	// Arrayの要素クラス
 	public static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
@@ -119,7 +120,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * root entry　TODO Feedの場合
 	 */
 	private String getRootEntry() {
-		return packagename + ".Entry";
+		return packagename + ".Feed";
 	}
 
 	/**
@@ -277,7 +278,13 @@ public class MessagePackMapper extends ResourceMapper {
 					try {
 						cs = pool.get(FEEDBASE);
 						cc.setSuperclass(cs); // superclassの定義
+						CtField f = cc.getField("entry");
+				        SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(getSignature(packagename+".Entry"));
+				        f.setGenericSignature(st.encode()); 
+				        
 					} catch (NotFoundException e) {
+						throw new CannotCompileException(e);
+					} catch (BadBytecode e) {
 						throw new CannotCompileException(e);
 					}
 				} 
@@ -293,7 +300,8 @@ public class MessagePackMapper extends ResourceMapper {
 				String field = meta.self + ";";
 				try {
 					// ATOM classなど既に登録されていたらそれを使う
-					cc.getDeclaredField(type + field);
+					CtField f = cc.getField(meta.self);
+					
 				} catch (NotFoundException ne2) {
 					
 					// for Array
@@ -303,8 +311,8 @@ public class MessagePackMapper extends ResourceMapper {
 					    CtClass objClass = pool.get("java.util.List");
 					    CtField arrayfld = new CtField(objClass, meta.self, cc); 
 					    arrayfld.setModifiers(Modifier.PUBLIC);
-				        SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(ELEMENTSIG);
-				        arrayfld.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
+				        SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(ELEMENTSIG);
+				        arrayfld.setGenericSignature(st.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
 				        cc.addField(arrayfld);
 				        
 						} catch (NotFoundException e) {
@@ -319,9 +327,8 @@ public class MessagePackMapper extends ResourceMapper {
 						    CtClass objClass = pool.get("java.util.List");
 						    CtField arrayfld = new CtField(objClass, meta.self, cc); 
 						    arrayfld.setModifiers(Modifier.PUBLIC);
-//						    System.out.println("Signature="+getSignature(packagename+"."+meta.getSelf()));
-					        SignatureAttribute.ObjectType cs = SignatureAttribute.toFieldSignature(getSignature(packagename+"."+meta.getSelf()));
-					        arrayfld.setGenericSignature(cs.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
+					        SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(getSignature(packagename+"."+meta.getSelf()));
+					        arrayfld.setGenericSignature(st.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
 					        cc.addField(arrayfld);
 					        
 							} catch (NotFoundException e) {
@@ -378,6 +385,7 @@ public class MessagePackMapper extends ResourceMapper {
 				e.printStackTrace();
 			}
 		}
+		
 		return classnames;
 	}
 	
@@ -423,6 +431,13 @@ public class MessagePackMapper extends ResourceMapper {
 		return line;
 	}
 
+	private String getTempl(String entitytmpl[],int l) {
+		if (l==0) return "entry*";
+		else {
+			return " "+entitytmpl[l];	// 2行目以降はユーザ定義の1行目から
+		}
+	}
+
 	/**
 	 * Entity Templateからメタ情報を作成する
 	 * 
@@ -448,21 +463,21 @@ public class MessagePackMapper extends ResourceMapper {
 
 		Meta meta = new Meta();
 		Matcher matcherf;
-		String classname = getRootEntry();
 		Stack<String> stack = new Stack<String>();
+		String classname = getRootEntry();
 		stack.push(classname);
 		int level = 0;
-
-		for (int l=1;l<entitytmpl.length;l++) {
-			String line = entitytmpl[l];
+		
+		for (int l=0;l<entitytmpl.length;l++) {
+			String line = getTempl(entitytmpl,l);
 			matcherf = patternf.matcher(line);
 
 			if (matcherf.find()) {
 				if (meta.level != matcherf.group(1).length()) {
 					level = matcherf.group(1).length();
 					if (meta.level < level) {
-						//最初の行にインデントがあるとエラー、また、２段階下がるとエラー
-						if (l==0||meta.level+1<level) {
+						//２段階下がるとエラー
+						if (meta.level+1<level) {
 							throw new ParseException("Wrong Indentation:" + line, 0);	
 						}
 						classname = packagename + "." + meta.getSelf();
@@ -609,7 +624,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 */
 	private void registClass() throws ParseException {
 
-		HashSet<String> classnames = new LinkedHashSet<String>();
+		List<String> classnames = new ArrayList<String>();
 		classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
 		
 		try {
@@ -626,31 +641,35 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param classnames
 	 * @throws CannotCompileException
 	 */
-	private void registClass(Set<String> classnames)
+	private void registClass(List<String> classnames)
 			throws CannotCompileException {
 
 		Class<?> cls = null;
 		Template template = null;
+
 		for (String clsName : classnames) {
 			// 静的なクラスであるatomパッケージは親のクラスローダにロード(これがないとClassCastException)
 			if (clsName.indexOf(".atom.") > 0) {
 				loader.delegateLoadingOf(clsName);
 			}
+			
 			if (clsName.indexOf("Base") < 0) {
-				try {
+				try {	
 					cls = loader.loadClass(clsName);
 				} catch (ClassNotFoundException e) {
 					throw new CannotCompileException(e);
 				}
+				
 				template = builder.buildTemplate(cls);
 				// 途中はregistryに登録
 				registry.register(cls, template);
+				msgpack.register(cls, template);
 			}
 		}
 		// 最後にmsgpackに登録
-		if (cls!=null&&template!=null) {
-			msgpack.register(cls, template);
-		}
+//		if (cls!=null&&template!=null) {
+//			msgpack.register(cls, template);
+//		}
 	}
 
 	/**
@@ -659,7 +678,8 @@ public class MessagePackMapper extends ResourceMapper {
 	public Object fromJSON(String json) throws JSONException{
         JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
         try {
-        	return parseValue("",u.readValue());
+        	Value v = u.readValue();
+        	return parseValue("",v);
         } catch(Exception e) {
         	e.printStackTrace();
         	throw new JSONException(e);
@@ -685,6 +705,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @throws IllegalAccessException
 	 * @throws SecurityException
 	 * @throws NoSuchFieldException
+	 * @throws ParseException 
 	 */
 	private Object parseValue(String classname,Value value) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
 

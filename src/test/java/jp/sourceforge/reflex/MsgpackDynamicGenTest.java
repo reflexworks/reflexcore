@@ -14,6 +14,8 @@ import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.Element;
 import jp.reflexworks.atom.entry.EntryBase;
+import jp.reflexworks.atom.entry.ValidatorBase;
+import jp.reflexworks.atom.feed.FeedBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
@@ -84,8 +86,9 @@ public class MsgpackDynamicGenTest {
 		"  _$$text"
 	};
 
+	// entryを指定するとmsgpackのデシリアライズでエラーになる。ルート要素の指定が必要
 //	private static String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
-	private static String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
+	private static String json = "{ \"feed\" : {\"entry\" : [{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}},{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}]}}";
 
 	public static void main(String args[]) throws NotFoundException, CannotCompileException, JSONException, IOException, InstantiationException, IllegalAccessException, ParseException, ClassNotFoundException, DataFormatException, SecurityException, NoSuchFieldException {
 
@@ -133,7 +136,7 @@ public class MsgpackDynamicGenTest {
 
 		System.out.println("\n=== fromMessagePack UserInfo(デシリアライズ) ===");
 
-        EntryBase muserinfo = (EntryBase) dg.fromMessagePack(in);
+        ValidatorBase  muserinfo = (ValidatorBase) dg.fromMessagePack(in);
         System.out.println("Validtion:"+muserinfo.isValid());
         
         // 項目名を省略した配列形式でもシリアライズ/デシリアライズ可能 (null は省略できない）
@@ -149,7 +152,7 @@ public class MsgpackDynamicGenTest {
 		List<String> entitytempllist = Arrays.asList(entitytempl2);
 		MessagePackMapper dg2 = new MessagePackMapper(entitytempllist);		
 
-		EntryBase muserinfo2 = (EntryBase) dg2.fromMessagePack(mbytes);
+		Object muserinfo2 = (Object) dg2.fromMessagePack(mbytes);
         editTestEntry(dg2,muserinfo2);
 		
         byte[] mbytes2 = dg2.toMessagePack(muserinfo2);
@@ -258,7 +261,7 @@ public class MsgpackDynamicGenTest {
 		return null;
 	}
 	
-	public static void editTestEntry(MessagePackMapper dg,Object entry)  {
+	public static void editTestEntry(MessagePackMapper dg,Object feed)  {
 		try {
 /*
 			Field[] flds = entry.getClass().getFields();
@@ -267,7 +270,11 @@ public class MsgpackDynamicGenTest {
 			}
 
 */
-		Field f = entry.getClass().getField("error");
+		Field f = feed.getClass().getField("entry");
+		List entrylist = (List) f.get(feed);	
+		Object entry = entrylist.get(0);	
+		
+		f = entry.getClass().getField("error");
 		Object error = f.get(entry);	
 		
 		f = error.getClass().getField("test");

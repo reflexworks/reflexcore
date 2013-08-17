@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.reflexworks.atom.entry.EntryBase;
+import jp.reflexworks.atom.entry.ValidatorBase;
 
 /**
  * Feedの親クラス.
@@ -14,7 +15,7 @@ import jp.reflexworks.atom.entry.EntryBase;
  * 各プロジェクトでこのクラスを継承し、カスタマイズしたFeedクラスを生成してください。<br>
  * </p>
  */
-public abstract class FeedBase implements Serializable, Cloneable {
+public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase {
 
 	private static final long serialVersionUID = 1L;
 
@@ -300,6 +301,13 @@ public abstract class FeedBase implements Serializable, Cloneable {
 	@Override
 	public String toString() {
 		return "Feed [entry=" + entry + "]";
+	}
+
+	/*
+	 * Validation用メソッド
+	 */
+	public boolean isValid() {
+		return false;
 	}
 
 }

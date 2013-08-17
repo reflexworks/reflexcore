@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.msgpack.annotation.Message;
+
 import jp.reflexworks.atom.source.Source;
 
 /**
@@ -14,7 +16,7 @@ import jp.reflexworks.atom.source.Source;
  * 各プロジェクトでこのクラスを継承し、カスタマイズしたEntryクラスを生成してください。<br>
  * </p>
  */
-public abstract class EntryBase implements Serializable {
+public abstract class EntryBase implements Serializable,ValidatorBase {
 
 	private static final long serialVersionUID = 1L;
 
@@ -1041,7 +1043,9 @@ public abstract class EntryBase implements Serializable {
 	/*
 	 * Validation用メソッド
 	 */
-	public abstract boolean isValid();
+	public boolean isValid() {
+		return false;
+	}
 	
 	@Override
 	public String toString() {

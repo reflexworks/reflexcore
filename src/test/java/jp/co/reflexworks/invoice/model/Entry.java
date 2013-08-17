@@ -69,7 +69,6 @@ public class Entry extends EntryBase implements Serializable {
 
 	@Override
 	public boolean isValid() {
-		// TODO 自動生成されたメソッド・スタブ
 		return false;
 	}
 	
