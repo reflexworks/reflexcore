@@ -60,7 +60,6 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String MANDATORY = "@";
 	private static final String ENCRYPTED = "%";
 	private static final String INDEX = "#";
-	private static final String MAP = "*";
 	private static final String ARRAY = "[";
 
 		
