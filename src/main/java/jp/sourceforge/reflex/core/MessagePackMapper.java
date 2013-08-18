@@ -53,7 +53,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#]|%[0-9a-zA-Z]+|\\[([0-9]+)?\\])?)(@?)(?:\\{([\\-0-9]+)~?([\\-0-9]+)?\\})?(?::(.+))?$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:#|%[0-9a-zA-Z]+|\\[([0-9]+)?\\]|\\{([\\-0-9]*)~?([\\-0-9]+)?\\})?)(@?)(?::(.+))?$";
 
 	private static final String MANDATORY = "@";
 	private static final String ENCRYPTED = "%";
@@ -456,6 +456,9 @@ public class MessagePackMapper extends ResourceMapper {
 				if (meta.isNumeric()) {
 					line += "if ("+meta.self+".longValue()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
 					line += "if ("+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+				}else if (meta.isArray||meta.hasChild()) {
+					line += "if ("+meta.self+".size()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
+					line += "if ("+max+"<"+meta.self+".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
 				}
 			}else {
 				// maxチェックのみ
@@ -545,17 +548,41 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.parent = classname;
 				meta.privatekey = null;
 				meta.isIndex = false;
-				meta.isMandatory = matcherf.group(7).equals(MANDATORY);
+				meta.isMandatory = matcherf.group(9).equals(MANDATORY);
+				
 				meta.regex = matcherf.group(10);
 				if (l==0) {
 					meta.self = "entry";
 				}else {
 					meta.self = matcherf.group(2);
 				}
-				meta.min = matcherf.group(8);
-				meta.max = matcherf.group(9);
+				meta.min = matcherf.group(7);
+				meta.max = matcherf.group(8);
+
+				if (matcherf.group(4) != null) {
+					String typestr = matcherf.group(4).toLowerCase();
+					if (typestr.equals("date")) {
+						meta.type = "Date";
+					} else if (typestr.equals("int")) {
+						meta.type = "Integer";
+					} else if (typestr.equals("long")) {
+						meta.type = "Long";
+					} else if (typestr.equals("float")) {
+						meta.type = "Float";
+					} else if (typestr.equals("double")) {
+						meta.type = "Double";
+					} else if (typestr.equals("boolean")) {
+						meta.type = "Boolean";
+					} else {
+						meta.type = "String"; // その他
+					}
+				} else {
+					if (meta.type==null) {
+						meta.type = "String"; // 省略時
+					}
+				}
 				
-				if (matcherf.group(5).equals(MAP)) {
+				if (meta.min!=null&&meta.type.equals("String")) {
 					meta.isMap = true;
 				} else {
 					if (matcherf.group(5).equals(INDEX)) {
@@ -569,28 +596,6 @@ public class MessagePackMapper extends ResourceMapper {
 						meta.min = matcherf.group(6);	// maxの要素数をminに入れる
 					}
 					
-					if (matcherf.group(4) != null) {
-						String typestr = matcherf.group(4).toLowerCase();
-						if (typestr.equals("date")) {
-							meta.type = "Date";
-						} else if (typestr.equals("int")) {
-							meta.type = "Integer";
-						} else if (typestr.equals("long")) {
-							meta.type = "Long";
-						} else if (typestr.equals("float")) {
-							meta.type = "Float";
-						} else if (typestr.equals("double")) {
-							meta.type = "Double";
-						} else if (typestr.equals("boolean")) {
-							meta.type = "Boolean";
-						} else {
-							meta.type = "String"; // その他
-						}
-					} else {
-						if (meta.type==null) {
-							meta.type = "String"; // 省略時
-						}
-					}
 					
 				}
 				

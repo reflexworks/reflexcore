@@ -23,8 +23,8 @@ public class MsgpackDynamicGenTest {
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	public static String entitytempl[] = {
-		// *がList, #がIndex , %が暗号化, []が配列　, * # % [] は末尾に一つだけ付けられる。@が必須項目
-		"testm3*{2}",        //  0行目はパッケージ名(service名)
+		// {}がMap, #がIndex , %が暗号化, []がArray　, {} # % [] は末尾に一つだけ付けられる。@が必須項目
+		"testm3{2}",        //  0行目はパッケージ名(service名)
 		" id#",			  // Index
 		" email",
 		" verified_email(Boolean)",// Boolean型 他に（int,date,long,float,doubleがある。先小文字OK、省略時はString）
@@ -32,7 +32,7 @@ public class MsgpackDynamicGenTest {
 		" given_name",
 		" family_name",
 		" error",
-		"  errors*{1}",				// 多重度(n)、*がないと多重度(1)、繰り返し最大{1}
+		"  errors{1}",				// 多重度(n)、*がないと多重度(1)、繰り返し最大{1}
 		"   domain",
 		"   reason",
 		"   message",
@@ -42,20 +42,20 @@ public class MsgpackDynamicGenTest {
 		"  message",
 		" subInfo",
 		"  favorite",
-		"   food%abc@{-3~15}:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
+		"   food%abc@:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
 		"   music[3]:^.{5}$",			// 配列(要素数max3)
 		"  favorite2",
 		"   food",
 		"    food1",
 		"  favorite3",
 		"   food",
-		"  hobby*",
+		"  hobby{}",
 		"   _$$text"				// テキストノード
 	};
 
 	public static String entitytempl2[] = {
-		// *がList, #がIndex , %が暗号化, []が配列　, * # % [] は末尾に一つだけ付けられる。@が必須項目
-		"testm3*",        //  0行目はパッケージ名(service名)
+		// {}がMap, #がIndex , %が暗号化, []がArray　, {} # % [] は末尾に一つだけ付けられる。@が必須項目
+		"testm3{2}",        //  0行目はパッケージ名(service名)
 		" id#",			  // Index
 		" email",
 		" verified_email(Boolean)",// Boolean型 他に（int,date,long,float,doubleがある。先小文字OK、省略時はString）
@@ -63,7 +63,7 @@ public class MsgpackDynamicGenTest {
 		" given_name",
 		" family_name",
 		" error",
-		"  errors*{1}",				// 多重度(n)、*がないと多重度(1)、繰り返し最大{1}
+		"  errors{1}",				// 多重度(n)、*がないと多重度(1)、繰り返し最大{1}
 		"   domain",
 		"   reason",
 		"   message",
@@ -74,14 +74,14 @@ public class MsgpackDynamicGenTest {
 		"  test",						// 追加項目
 		" subInfo",
 		"  favorite",
-		"   food%abc@{-3~15}:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
+		"   food%abc@:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
 		"   music[3]:^.{5}$",			// 配列(要素数max3)
 		"  favorite2",
 		"   food",
 		"    food1",
 		"  favorite3",
 		"   food",
-		"  hobby*",
+		"  hobby{}",
 		"   _$$text"				// テキストノード
 	};
 
