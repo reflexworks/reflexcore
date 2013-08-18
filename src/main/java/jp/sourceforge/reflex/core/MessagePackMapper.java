@@ -172,9 +172,9 @@ public class MessagePackMapper extends ResourceMapper {
 		Map jo_packages = new LinkedHashMap<String,String>();
 		jo_packages.putAll(ATOM_PACKAGE);
 		if (entitytempl instanceof String[]) {
-			jo_packages.put(((String[]) entitytempl)[0], "");
+			jo_packages.put(parseLine0(((String[]) entitytempl)[0]), "");
 		}else if (entitytempl instanceof List) {
-			jo_packages.put(((List) entitytempl).get(0), "");
+			jo_packages.put(parseLine0(""+((List) entitytempl).get(0)), "");
 		}
 		return jo_packages;
 	}
@@ -470,11 +470,15 @@ public class MessagePackMapper extends ResourceMapper {
 		return line;
 	}
 	
-	private String getTempl(String entitytmpl[],int l) {
-		if (l==0) return "entry*";		// entry*{件数}とすることでentryの件数制限が可能
-		else {
-			return " "+entitytmpl[l];	// 2行目以降はユーザ定義の1行目から
-		}
+	private static String parseLine0(String line) {
+		Pattern patternf = Pattern.compile(field_pattern);
+		Matcher matcherf = patternf.matcher(line);
+
+			if (matcherf.find()) {
+				return matcherf.group(2);
+			}else 
+				return "";
+
 	}
 
 	/**
@@ -494,7 +498,7 @@ public class MessagePackMapper extends ResourceMapper {
 			
 		}
 		// 先頭のパッケージ名を退避してentryに置き換える
-		this.packagename = entitytmpl[0];
+		this.packagename = parseLine0(entitytmpl[0]);
 				
 		List<Meta> metalist = new ArrayList<Meta>();
 
@@ -508,7 +512,8 @@ public class MessagePackMapper extends ResourceMapper {
 		int level = 0;
 		
 		for (int l=0;l<entitytmpl.length;l++) {
-			String line = getTempl(entitytmpl,l);
+//			String line = getTempl(entitytmpl,l);
+			String line = entitytmpl[l];
 			matcherf = patternf.matcher(line);
 
 			if (matcherf.find()) {
@@ -542,7 +547,11 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.isIndex = false;
 				meta.isMandatory = matcherf.group(7).equals(MANDATORY);
 				meta.regex = matcherf.group(10);
-				meta.self = matcherf.group(2);
+				if (l==0) {
+					meta.self = "entry";
+				}else {
+					meta.self = matcherf.group(2);
+				}
 				meta.min = matcherf.group(8);
 				meta.max = matcherf.group(9);
 				
