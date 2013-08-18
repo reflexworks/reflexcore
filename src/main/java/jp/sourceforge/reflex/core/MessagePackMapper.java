@@ -471,7 +471,7 @@ public class MessagePackMapper extends ResourceMapper {
 	}
 	
 	private String getTempl(String entitytmpl[],int l) {
-		if (l==0) return "entry*";
+		if (l==0) return "entry*";		// entry*{件数}とすることでentryの件数制限が可能
 		else {
 			return " "+entitytmpl[l];	// 2行目以降はユーザ定義の1行目から
 		}
