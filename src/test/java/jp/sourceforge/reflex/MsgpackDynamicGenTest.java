@@ -136,7 +136,7 @@ public class MsgpackDynamicGenTest {
 		System.out.println("\n=== fromMessagePack UserInfo(デシリアライズ) ===");
 
         ValidatorBase  muserinfo = (ValidatorBase) dg.fromMessagePack(in);
-        System.out.println("Validtion:"+muserinfo.isValid());
+        System.out.println("Validtion:"+muserinfo.validate());
         
         // 項目名を省略した配列形式でもシリアライズ/デシリアライズ可能 (null は省略できない）
 		System.out.println("\n=== Array UserInfo ===");

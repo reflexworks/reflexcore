@@ -306,7 +306,7 @@ public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase 
 	/*
 	 * Validation用メソッド
 	 */
-	public boolean isValid() {
+	public boolean validate() {
 		return false;
 	}
 

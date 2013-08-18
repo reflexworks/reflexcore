@@ -68,7 +68,7 @@ public class Entry extends EntryBase implements Serializable {
 	}
 
 	@Override
-	public boolean isValid() {
+	public boolean validate() {
 		return false;
 	}
 	

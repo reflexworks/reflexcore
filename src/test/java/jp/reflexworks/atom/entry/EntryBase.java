@@ -1043,7 +1043,7 @@ public abstract class EntryBase implements Serializable,ValidatorBase {
 	/*
 	 * Validation用メソッド
 	 */
-	public boolean isValid() {
+	public boolean validate() {
 		return false;
 	}
 	

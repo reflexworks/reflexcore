@@ -79,7 +79,7 @@ public class MessagePackMapper extends ResourceMapper {
 			"jp.reflexworks.atom.entry.Contributor",
 			"jp.reflexworks.atom.entry.Link",
 			"jp.reflexworks.atom.entry.Element",		// Elementは本来はATOMクラスではないがここに必要
-			"jp.reflexworks.atom.entry.ValidatorBase",		// isValid() を呼び出すためのインターフェース
+			"jp.reflexworks.atom.entry.ValidatorBase",		// validate() を呼び出すためのインターフェース
 			"jp.reflexworks.atom.feed.Author",
 			"jp.reflexworks.atom.feed.Category",
 			"jp.reflexworks.atom.feed.Generator",
@@ -304,7 +304,7 @@ public class MessagePackMapper extends ResourceMapper {
 			}
 
 			StringBuffer validation = new StringBuffer();
-			validation.append(isValidFuncS);
+			validation.append(validateFuncS);
 			
 			for (int i = 0; i < matches(classname); i++) {
 
@@ -380,10 +380,10 @@ public class MessagePackMapper extends ResourceMapper {
 				// 子要素のValidation
 				if (meta.hasChild()) {
 					if (meta.isMap) {
-						validation.append("if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) { (("+meta.type +")"+meta.self+".get(i)).isValid();}"); 
+						validation.append("if ("+meta.self+"!=null) for (int i=0;i<"+meta.self+".size();i++) { (("+meta.type +")"+meta.self+".get(i)).validate();}"); 
 					}
 					else {
-						validation.append("if ("+meta.self+"!=null) "+ meta.self+".isValid();");
+						validation.append("if ("+meta.self+"!=null) "+ meta.self+".validate();");
 					}
 				}
 				}
@@ -391,7 +391,7 @@ public class MessagePackMapper extends ResourceMapper {
 			}
 			try {
 			// Validation Method追加
-			validation.append(isValidFuncE);
+			validation.append(validateFuncE);
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);
 			cc.addMethod(m);
 			} catch(Exception e) {
@@ -408,8 +408,8 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param meta
 	 * @return
 	 */
-	private final String isValidFuncS = "public boolean isValid() throws java.text.ParseException {";
-	private final String isValidFuncE = "return true;}";
+	private final String validateFuncS = "public boolean validate() throws java.text.ParseException {";
+	private final String validateFuncE = "return true;}";
 	
 	private String getValidatorLogic(Meta meta) {
 		String line = "";
