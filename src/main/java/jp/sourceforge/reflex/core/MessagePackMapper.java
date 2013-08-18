@@ -53,7 +53,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	// @・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#]|%[0-9a-zA-Z]+|\\[\\])?)(@?)(?::(.+))?$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:[\\*#]|%[0-9a-zA-Z]+|\\[([0-9]+)?\\])?)(@?)(?:\\{([\\-0-9]+)~?([\\-0-9]+)?\\})?(?::(.+))?$";
 
 	private static final String MANDATORY = "@";
 	private static final String ENCRYPTED = "%";
@@ -195,6 +195,8 @@ public class MessagePackMapper extends ResourceMapper {
 
 		public boolean isArray; // 配列
 		public boolean isMap;
+		public String min;		// 最小 ""の場合は指定なし
+		public String max;		// 最大　""の場合は指定なし
 
 		public String getSelf() {
 			if (self==null) return null;
@@ -204,6 +206,15 @@ public class MessagePackMapper extends ResourceMapper {
 		public boolean hasChild() {
 			return type.indexOf(getSelf())>0;
 		}
+		// int,long,float,double
+		public boolean isNumeric() {
+			if (type.equals("Integer")||type.equals("Long")||type.equals("Float")||type.equals("Double")) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+		
 	}
 	
 	public Class getClass(String clsName) throws ClassNotFoundException {
@@ -410,6 +421,7 @@ public class MessagePackMapper extends ResourceMapper {
 			line += "if (!matcher.find()) throw new java.text.ParseException(\"Property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+"+meta.self+"+\")\",0);";
 			line += "}";			
 		}
+		line += getMinmax(meta);
 
 		return line;
 	}
@@ -427,10 +439,37 @@ public class MessagePackMapper extends ResourceMapper {
 			line += "if (!matcher.find()) throw new java.text.ParseException(\"Property '"+ meta.self + "' is not valid.(regex="+meta.regex+", value=\"+val+\")\",0);";
 			line += "}";			
 		}
-
+		
+		line += getMinmax(meta);
+		
 		return line;
 	}
 
+	private String getMinmax(Meta meta) {
+		String line = "";
+		if (meta.min!=null&&!meta.min.isEmpty()) {
+			long max;
+			long min = Long.parseLong(meta.min);
+			if (meta.max!=null&&!meta.max.isEmpty()) {
+				// min~maxチェック
+				max = Long.parseLong(meta.max);
+				if (meta.isNumeric()) {
+					line += "if ("+meta.self+".longValue()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
+					line += "if ("+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+				}
+			}else {
+				// maxチェックのみ
+				max = min;
+				if (meta.isNumeric()) {
+					line += "if ("+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+				}else if (meta.isArray||meta.hasChild()) {
+					line += "if ("+max+"<"+meta.self+".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+				}
+			}
+		}
+		return line;
+	}
+	
 	private String getTempl(String entitytmpl[],int l) {
 		if (l==0) return "entry*";
 		else {
@@ -501,9 +540,12 @@ public class MessagePackMapper extends ResourceMapper {
 				meta.parent = classname;
 				meta.privatekey = null;
 				meta.isIndex = false;
-				meta.isMandatory = matcherf.group(6).equals(MANDATORY);
-				meta.regex = matcherf.group(7);
+				meta.isMandatory = matcherf.group(7).equals(MANDATORY);
+				meta.regex = matcherf.group(10);
 				meta.self = matcherf.group(2);
+				meta.min = matcherf.group(8);
+				meta.max = matcherf.group(9);
+				
 				if (matcherf.group(5).equals(MAP)) {
 					meta.isMap = true;
 				} else {
@@ -515,7 +557,7 @@ public class MessagePackMapper extends ResourceMapper {
 					else if (matcherf.group(5).indexOf(ARRAY)>=0) {
 						// for Array
 						meta.isArray = true;
-						meta.regex = meta.regex;
+						meta.min = matcherf.group(6);	// maxの要素数をminに入れる
 					}
 					
 					if (matcherf.group(4) != null) {

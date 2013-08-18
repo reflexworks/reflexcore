@@ -13,9 +13,7 @@ import java.util.zip.DataFormatException;
 import javassist.CannotCompileException;
 import javassist.NotFoundException;
 import jp.reflexworks.atom.entry.Element;
-import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.ValidatorBase;
-import jp.reflexworks.atom.feed.FeedBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 
 import org.json.JSONException;
@@ -29,23 +27,23 @@ public class MsgpackDynamicGenTest {
 		"testm3",        //  0行目はパッケージ名(service名)
 		"id#",			  // Index
 		"email",
-		"verified_email(Boolean)",// Boolean型 他に（int,date,long,float,double,booleanがある。先小文字OK、省略時はString）
+		"verified_email(Boolean)",// Boolean型 他に（int,date,long,float,doubleがある。先小文字OK、省略時はString）
 		"name",
 		"given_name",
 		"family_name",
 		"error",
-		" errors*",				// 多重度(n)、*がないと多重度(1)
+		" errors*{1}",				// 多重度(n)、*がないと多重度(1)、繰り返し最大{1}
 		"  domain",
 		"  reason",
 		"  message",
 		"  locationType",
 		"  location",
-		" code(int)",			
+		" code(int){1~100}",			// 1~100の範囲			
 		" message",
 		"subInfo",
 		" favorite",
-		"  food%abc@:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
-		"  music[]:^.{5}$",			// 配列
+		"  food%abc@{-3~15}:^.{3}$",	// %abdで暗号化、必須項目、正規表現つき
+		"  music[3]:^.{5}$",			// 配列(要素数max3)
 		" favorite2",
 		"  food",
 		"   food1",
@@ -86,7 +84,7 @@ public class MsgpackDynamicGenTest {
 		"  _$$text"
 	};
 
-	// entryを指定するとmsgpackのデシリアライズでエラーになる。ルート要素の指定が必要
+	// entryを指定するとmsgpackのデシリアライズでエラーになる。実行時にルート要素の指定が必要。msgpackはFeed固定でいいのではないか。
 //	private static String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
 	private static String json = "{ \"feed\" : {\"entry\" : [{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}},{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}]}}";
 
