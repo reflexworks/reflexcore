@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -36,6 +37,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
 import jp.reflexworks.atom.entry.Element;
+import jp.sourceforge.reflex.util.DateUtil;
 
 import org.json.JSONException;
 import org.msgpack.MessagePack;
@@ -818,7 +820,19 @@ public class MessagePackMapper extends ResourceMapper {
                 		if (e.getValue().isBooleanValue()) f.set(parent, e.getValue().asBooleanValue().getBoolean());
                 		else if (e.getValue().isIntegerValue()) f.set(parent, e.getValue().asIntegerValue().getInt());
                 		else if (e.getValue().isFloatValue()) f.set(parent, e.getValue().asFloatValue().getFloat());
-                		else if (e.getValue().isRawValue()) f.set(parent, e.getValue().toString().replace("\"",""));
+                		else if (e.getValue().isRawValue()) {
+                			String v = e.getValue().toString().replace("\"","");
+                			if (f.getType().getName().equals("java.util.Date")) {
+                				try {
+                					Date d = DateUtil.getDate(v);
+                					f.set(parent, d);
+                				}catch(Exception de) {
+                					throw new ParseException(de.getMessage()+" / "+ v, 0);
+                				}
+                			}else {
+                				f.set(parent, v);
+                			}
+                		}
                 			
 
         			}
