@@ -53,11 +53,11 @@ import com.thoughtworks.xstream.mapper.DefaultMapper;
 public class MessagePackMapper extends ResourceMapper {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-	// @・・必須項目 TODO デフォルト値を付けるか？
+	// *・・必須項目 TODO デフォルト値を付けるか？
 	// 
-	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:#|%[0-9a-zA-Z]+|\\[([0-9]+)?\\]|\\{([\\-0-9]*)~?([\\-0-9]+)?\\})?)(@?)(?::(.+))?$";
+	private static final String field_pattern = "^( *)([0-9a-zA-Z_$]+)(\\(([0-9a-zA-Z_$]+)\\))?((?:#|%[0-9a-zA-Z]+|\\[([0-9]+)?\\]|\\{([\\-0-9]*)~?([\\-0-9]+)?\\})?)(\\*?)(?::(.+))?$";
 
-	private static final String MANDATORY = "@";
+	private static final String MANDATORY = "*";
 	private static final String ENCRYPTED = "%";
 	private static final String INDEX = "#";
 	private static final String ARRAY = "[";
