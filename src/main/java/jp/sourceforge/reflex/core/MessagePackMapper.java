@@ -119,7 +119,7 @@ public class MessagePackMapper extends ResourceMapper {
 	protected String packagename;
 
 	/*
-	 * root entry　TODO Feedの場合
+	 * root entry
 	 */
 	private String getRootEntry() {
 		return packagename + ".Feed";
@@ -531,6 +531,7 @@ public class MessagePackMapper extends ResourceMapper {
 						}
 						classname = packagename + "." + meta.getSelf();
 						stack.push(classname);
+						if (!meta.type.equals("String")) throw new ParseException("Can't specify (Type) for Map type:" + line, 0);
 						meta.type = classname; // 子要素を持っている場合にタイプを自分にする
 					} else {
 						for (int i = 0; i < meta.level - level; i++) {
