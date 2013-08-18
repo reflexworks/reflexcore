@@ -719,13 +719,12 @@ public class MessagePackMapper extends ResourceMapper {
 				template = builder.buildTemplate(cls);
 				// 途中はregistryに登録
 				registry.register(cls, template);
-				msgpack.register(cls, template);
 			}
 		}
 		// 最後にmsgpackに登録
-//		if (cls!=null&&template!=null) {
-//			msgpack.register(cls, template);
-//		}
+		if (cls!=null&&template!=null) {
+			msgpack.register(cls, template);
+		}
 	}
 
 	/**
@@ -733,13 +732,13 @@ public class MessagePackMapper extends ResourceMapper {
 	 */
 	public Object fromJSON(String json) throws JSONException{
         JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
-        try {
-        	Value v = u.readValue();
+        	Value v;
+			try {
+				v = u.readValue();
+			} catch (IOException e) {
+	        	throw new JSONException(e);
+			}
         	return parseValue("",v);
-        } catch(Exception e) {
-        	e.printStackTrace();
-        	throw new JSONException(e);
-        }
 	}
 
 	public Object fromArray(String array) throws JSONException{
@@ -756,6 +755,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param classname
 	 * @param value
 	 * @return
+	 * @throws JSONException 
 	 * @throws ClassNotFoundException
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
@@ -763,12 +763,12 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @throws NoSuchFieldException
 	 * @throws ParseException 
 	 */
-	private Object parseValue(String classname,Value value) throws ClassNotFoundException, InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
+	private Object parseValue(String classname,Value value) throws JSONException  {
 
 		Object parent = null;
 		Class cc = null;
 		Field f = null;
-		
+		try {
         if (value.isMapValue()) {
         	boolean isCreated = false;
         	for(Entry<Value,Value> e:value.asMapValue().entrySet()) {
@@ -826,6 +826,9 @@ public class MessagePackMapper extends ResourceMapper {
         	}
         }
     	return parent;
+		}catch (Exception e) {
+        	throw new JSONException(e);
+		}
 		
 	}
 
