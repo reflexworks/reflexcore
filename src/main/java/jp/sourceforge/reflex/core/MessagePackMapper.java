@@ -575,6 +575,7 @@ public class MessagePackMapper extends ResourceMapper {
 						meta.type = "Double";
 					} else if (typestr.equals("boolean")) {
 						meta.type = "Boolean";
+						if (meta.min!=null) throw new ParseException("Can't specify (Type) for Boolean type:" + line, 0);
 					} else {
 						meta.type = "String"; // その他
 					}
