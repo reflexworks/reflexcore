@@ -31,7 +31,8 @@ public class FieldMapper {
 	 * sourceの各値を、targetの各フィールドにセットします.
 	 * <p>
 	 * 値がnullでなく、targetの値とイコールでない場合にtargetにセットします。<br>
-	 * sourceとtargetは同じsetter、getterを持っている必要があります。
+	 * sourceとtargetは同じsetter、getterを持っている必要があります。<br>
+	 * 参照コピーのため、プリミティブ型やString以外のクラスのコピーはコピー元と同じオブジェクトを参照します。<br>
 	 * </p>
 	 * @param source コピー元
 	 * @param target コピー先
@@ -45,6 +46,29 @@ public class FieldMapper {
 	 * <p>
 	 * 値がnullでなく、targetの値とイコールでない場合にtargetにセットします。<br>
 	 * sourceとtargetは同じsetter、getterを持っている必要があります。
+	 * 参照コピーのため、プリミティブ型やString以外のクラスのコピーはコピー元と同じオブジェクトを参照します。<br>
+	 * </p>
+	 * @param source コピー元
+	 * @param target コピー先
+	 * @param level 上位クラスのコピー実施階層
+	 * <ol>
+	 *   <li>0以下の場合上限なし。全ての継承クラスのフィールドをコピーします。</li>
+	 *   <li>1の場合自クラスのみ</li>
+	 *   <li>2の場合自クラスと、自クラスが継承しているクラス</li>
+	 *   <li>3の場合自クラスと、自クラスが継承しているクラスと、自クラスの継承しているクラスの継承クラス</li>
+	 *   <li> ... </li>
+	 * </ol>
+	 */
+	public void setValue(Object source, Object target, int level) {
+		setValue(source, target, false, false, level);	// annotationチェックしない
+	}
+
+	/**
+	 * sourceの各値を、targetの各フィールドにセットします.
+	 * <p>
+	 * 値がnullでなく、targetの値とイコールでない場合にtargetにセットします。<br>
+	 * sourceとtargetは同じsetter、getterを持っている必要があります。
+	 * 参照コピーのため、プリミティブ型やString以外のクラスのコピーはコピー元と同じオブジェクトを参照します。<br>
 	 * </p>
 	 * @param source コピー元
 	 * @param target コピー先
@@ -60,6 +84,7 @@ public class FieldMapper {
 	 * <p>
 	 * 値がnullでなく、targetの値とイコールでない場合にtargetにセットします。<br>
 	 * sourceとtargetは同じsetter、getterを持っている必要があります。<br>
+	 * 参照コピーのため、プリミティブ型やString以外のクラスのコピーはコピー元と同じオブジェクトを参照します。<br>
 	 * プリミティブ型と以下のクラス以外はセット対象外です。
 	 * <ul>
 	 * <li>
@@ -81,6 +106,7 @@ public class FieldMapper {
 	 * <p>
 	 * 値がnullでなく、targetの値とイコールでない場合にtargetにセットします。<br>
 	 * sourceとtargetは同じsetter、getterを持っている必要があります。
+	 * 参照コピーのため、プリミティブ型やString以外のクラスのコピーはコピー元と同じオブジェクトを参照します。<br>
 	 * <p>
 	 * @param source コピー元
 	 * @param target コピー先
@@ -96,6 +122,38 @@ public class FieldMapper {
 	 */
 	public void setValue(Object source, Object target, boolean isCheckAnnotation, 
 			boolean isCheckMultiObj) {
+		setValue(source, target, isCheckAnnotation, isCheckMultiObj, 0);
+	}
+		
+	/**
+	 * sourceの各値を、targetの各フィールドにセットします.
+	 * <p>
+	 * 値がnullでなく、targetの値とイコールでない場合にtargetにセットします。<br>
+	 * sourceとtargetは同じsetter、getterを持っている必要があります。
+	 * 参照コピーのため、プリミティブ型やString以外のクラスのコピーはコピー元と同じオブジェクトを参照します。<br>
+	 * <p>
+	 * @param source コピー元
+	 * @param target コピー先
+	 * @param isCheckAnnotation annotationをチェックするかどうか 。<br>
+	 *   trueの場合、@Persistentのみ項目移送します。
+	 * @param isCheckMultiObj IterableとMapを移送しないようチェックするかどうか。 <br>
+	 *   trueの場合、プリミティブ型と以下のクラス以外はセット対象外です。
+	 *   <ul><li>
+	 *     String, Integer, Long, Float, Double, Date, Short, Character, Byte, Boolean, Number,
+	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale, 
+	 *     Calendar, com.google.appengine.api.datastore.Text
+	 *   </li></ul>
+	 * @param level 上位クラスのコピー実施階層
+	 * <ol>
+	 *   <li>0以下の場合上限なし。全ての継承クラスのフィールドをコピーします。</li>
+	 *   <li>1の場合自クラスのみ</li>
+	 *   <li>2の場合自クラスと、自クラスが継承しているクラス</li>
+	 *   <li>3の場合自クラスと、自クラスが継承しているクラスと、自クラスの継承しているクラスの継承クラス</li>
+	 *   <li> ... </li>
+	 * </ol>
+	 */
+	public void setValue(Object source, Object target, boolean isCheckAnnotation, 
+			boolean isCheckMultiObj, int level) {
 		// 自クラス
 		Class targetClass = target.getClass();
 		Field[] fields = targetClass.getDeclaredFields();
@@ -103,11 +161,14 @@ public class FieldMapper {
 
 		// スーパークラス
 		Class superClass = targetClass.getSuperclass();
-		while (superClass != null && !Object.class.equals(superClass)) {
+		int cnt = 0;
+		while (superClass != null && !Object.class.equals(superClass) &&
+				(level <= 0 || level > cnt)) {
 			Class tmpClass = superClass;
 			fields = tmpClass.getDeclaredFields();
 			setValue(fields, source, target, isCheckAnnotation, isCheckMultiObj);
 			superClass = tmpClass.getSuperclass();
+			cnt++;
 		}
 	}
 	
