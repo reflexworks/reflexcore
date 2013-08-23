@@ -416,6 +416,7 @@ public class MessagePackMapper extends ResourceMapper {
 			validation.append(validateFuncE);
 			CtMethod m = CtNewMethod.make(validation.toString(), cc);
 			cc.addMethod(m);
+			System.out.println(classname+":"+validation.toString());
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -478,19 +479,19 @@ public class MessagePackMapper extends ResourceMapper {
 				// min~maxチェック
 				max = Long.parseLong(meta.max);
 				if (meta.isNumeric()) {
-					line += "if ("+meta.self+".longValue()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
-					line += "if ("+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+					line += "if ("+meta.self+"!=null&&"+meta.self+".longValue()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
+					line += "if ("+meta.self+"!=null&&"+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
 				}else if (meta.isArray||meta.hasChild()) {
-					line += "if ("+meta.self+".size()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
-					line += "if ("+max+"<"+meta.self+".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+					line += "if ("+meta.self+"!=null&&"+meta.self+".size()<"+min+") throw new java.text.ParseException(\"Minimum number of '" + meta.self + "' not met.\",0);";
+					line += "if ("+meta.self+"!=null&&"+max+"<"+meta.self+".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
 				}
 			}else {
 				// maxチェックのみ
 				max = min;
 				if (meta.isNumeric()) {
-					line += "if ("+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+					line += "if ("+meta.self+"!=null&&"+max+"<"+meta.self+".longValue()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
 				}else if (meta.isArray||meta.hasChild()) {
-					line += "if ("+max+"<"+meta.self+".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
+					line += "if ("+meta.self+"!=null&&"+max+"<"+meta.self+".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
 				}
 			}
 		}

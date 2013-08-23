@@ -108,8 +108,8 @@ public class TestMsgpackMapper {
         System.out.println("\n=== MessagePack Entry デシリアライズ ===");
 
         ValidatorBase  muserinfo = (ValidatorBase) dg.fromMessagePack(in,false);	// false でEntryをデシリアライズ
-//        System.out.println("Validtion:"+muserinfo.validate());         Entryからvalidate() は呼べない(Feedからのみ）
-
+        System.out.println("Validtion:"+muserinfo.validate());        
+        
 		assertEquals(json, dg.toJSON(muserinfo));
 	}
 
