@@ -120,10 +120,10 @@ public class MessagePackMapper extends ResourceMapper {
 	/*
 	 * root entry
 	 */
-	private String getRootEntry() {
-		return packagename + ".Feed";
+	private String getRootEntry(boolean isFeed) {
+		return isFeed ? packagename + ".Feed":packagename + ".Entry";
 	}
-
+	
 	/**
 	 * コンストラクタ
 	 * @param jo_packages
@@ -235,8 +235,8 @@ public class MessagePackMapper extends ResourceMapper {
 		msgpack.write(out, entity);
 	}
 
-	public Object fromMessagePack(byte[] msg) throws IOException, ClassNotFoundException  {
-		return msgpack.read(msg, loader.loadClass(getRootEntry()));
+	public Object fromMessagePack(byte[] msg,boolean isFeed) throws IOException, ClassNotFoundException  {
+		return msgpack.read(msg, loader.loadClass(getRootEntry(isFeed)));
 	}
 
 	public Object toArray(byte[] msg) throws IOException,
@@ -244,11 +244,34 @@ public class MessagePackMapper extends ResourceMapper {
 		return msgpack.read(msg);
 	}
 
-	public Object fromMessagePack(InputStream msg) throws IOException,
+	public Object fromMessagePack(InputStream msg,boolean isFeed) throws IOException,
 			ClassNotFoundException {
-		return msgpack.read(msg, loader.loadClass(getRootEntry()));
+		return msgpack.read(msg, loader.loadClass(getRootEntry(isFeed)));
 	}
 	
+	/**
+	 * MessagePackを使ってJSONをデシリアライズする
+	 */
+	public Object fromJSON(String json) throws JSONException{
+        JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
+        	Value v;
+			try {
+				v = u.readValue();
+			} catch (IOException e) {
+	        	throw new JSONException(e);
+			}
+        	return parseValue("",v);
+	}
+
+	public Object fromArray(String array,boolean isFeed) throws JSONException{
+        JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(array.getBytes());
+        try {
+        	return msgpack.convert(u.readValue(),loader.loadClass(getRootEntry(isFeed)));
+        } catch(Exception e) {
+        	throw new JSONException(e);
+        }
+	}
+
 	private String getSignature(String classname) {
 		String signature = "Ljava/util/List<L"+classname.replace(".", "/")+";>;";
 		return signature;
@@ -511,12 +534,11 @@ public class MessagePackMapper extends ResourceMapper {
 		Meta meta = new Meta();
 		Matcher matcherf;
 		Stack<String> stack = new Stack<String>();
-		String classname = getRootEntry();
+		String classname = getRootEntry(true);
 		stack.push(classname);
 		int level = 0;
 		
 		for (int l=0;l<entitytmpl.length;l++) {
-//			String line = getTempl(entitytmpl,l);
 			String line = entitytmpl[l];
 			matcherf = patternf.matcher(line);
 
@@ -722,35 +744,13 @@ public class MessagePackMapper extends ResourceMapper {
 				template = builder.buildTemplate(cls);
 				// 途中はregistryに登録
 				registry.register(cls, template);
+				
+				// EntryやFeedの場合はmsgpackに登録
+				if (clsName.indexOf("Entry") >= 0||clsName.indexOf("Feed") >= 0) {
+					msgpack.register(cls, template);
+				}
 			}
 		}
-		// 最後にmsgpackに登録
-		if (cls!=null&&template!=null) {
-			msgpack.register(cls, template);
-		}
-	}
-
-	/**
-	 * MessagePackを使ってJSONをデシリアライズする
-	 */
-	public Object fromJSON(String json) throws JSONException{
-        JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(json.getBytes());
-        	Value v;
-			try {
-				v = u.readValue();
-			} catch (IOException e) {
-	        	throw new JSONException(e);
-			}
-        	return parseValue("",v);
-	}
-
-	public Object fromArray(String array) throws JSONException{
-        JSONBufferUnpacker u = new JSONBufferUnpacker(msgpack).wrap(array.getBytes());
-        try {
-        	return msgpack.convert(u.readValue(),loader.loadClass(getRootEntry()));
-        } catch(Exception e) {
-        	throw new JSONException(e);
-        }
 	}
 	
 	/**

@@ -135,14 +135,14 @@ public class MsgpackDynamicGenTest {
 
 		System.out.println("\n=== fromMessagePack UserInfo(デシリアライズ) ===");
 
-        ValidatorBase  muserinfo = (ValidatorBase) dg.fromMessagePack(in);
+        ValidatorBase  muserinfo = (ValidatorBase) dg.fromMessagePack(in,true);
         System.out.println("Validtion:"+muserinfo.validate());
         
         // 項目名を省略した配列形式でもシリアライズ/デシリアライズ可能 (null は省略できない）
 		System.out.println("\n=== Array UserInfo ===");
         String array = dg.toArray(in).toString();
 		System.out.println(array);
-		Object entity3 = dg.fromArray(array);
+		Object entity3 = dg.fromArray(array,true);
         String json3 = dg.toJSON(entity3);
 		System.out.println(json3);
 
@@ -151,7 +151,7 @@ public class MsgpackDynamicGenTest {
 		List<String> entitytempllist = Arrays.asList(entitytempl2);
 		MessagePackMapper dg2 = new MessagePackMapper(entitytempllist);		
 
-		Object muserinfo2 = (Object) dg2.fromMessagePack(mbytes);
+		Object muserinfo2 = (Object) dg2.fromMessagePack(mbytes,true);
         editTestEntry(dg2,muserinfo2);
 		
         byte[] mbytes2 = dg2.toMessagePack(muserinfo2);
