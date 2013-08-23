@@ -335,7 +335,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -376,6 +376,7 @@
     </dependency>
     
   </dependencies>
+  
     <distributionManagement>
     <repository>
       <id>scp-repository</id>
