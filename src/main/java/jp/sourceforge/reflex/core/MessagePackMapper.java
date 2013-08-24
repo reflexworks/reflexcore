@@ -411,15 +411,10 @@ public class MessagePackMapper extends ResourceMapper {
 				}
 
 			}
-			try {
 			// Validation Method追加
-			validation.append(validateFuncE);
-			CtMethod m = CtNewMethod.make(validation.toString(), cc);
-			cc.addMethod(m);
-			System.out.println(classname+":"+validation.toString());
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+				validation.append(validateFuncE);
+				CtMethod m = CtNewMethod.make(validation.toString(), cc);
+				cc.addMethod(m);
 		}
 		
 		return classnames;

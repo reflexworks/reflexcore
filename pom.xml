@@ -368,6 +368,12 @@
       <artifactId>msgpack</artifactId>
       <version>0.6.7</version>
     </dependency>
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>java-sizeof</artifactId>
+      <version>0.0.4</version>
+      <scope>test</scope>
+    </dependency>
     
     <dependency>
       <groupId>org.javassist</groupId>
