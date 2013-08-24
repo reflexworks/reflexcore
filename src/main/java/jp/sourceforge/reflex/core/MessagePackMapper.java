@@ -164,21 +164,26 @@ public class MessagePackMapper extends ResourceMapper {
 		if (jo_packages instanceof String[]|jo_packages instanceof List) {
 			// Entityテンプレートからメタ情報を作成する
 			metalist = getMetalist(jo_packages);
-			registClass();
+			registerClasses();
 			
-		}else if (jo_packages instanceof Map) {
+		}else if (jo_packages instanceof Map|jo_packages instanceof String) {
+
 			// package名からregistClass
 			// パッケージ名からクラス一覧を取得
-			ClassFinder classFinder = new ClassFinder();
-			Set<String> classNames = null;
+			ClassFinder classFinder = new ClassFinder(loader);
+			Set<String> classNames = null;  
 			if (jo_packages != null) {
 				try {
 					if (jo_packages instanceof String) {
+						packagename = (String) jo_packages;			// 業務アプリのEntityクラス
 						classNames = classFinder.getClassNamesFromPackage((String)jo_packages);
 					} else if (jo_packages instanceof Map) {
 						classNames = new HashSet<String>();
-						for (Object key : ((Map)jo_packages).keySet()) {
-							classNames.addAll(classFinder.getClassNamesFromPackage((String)key));
+						for (String key : ((Map<String,String>)jo_packages).keySet()) {
+							if (key.indexOf(".atom.")<0) {
+								packagename = key;			// 業務アプリのEntityクラス
+								classNames.addAll(classFinder.getClassNamesFromPackage(key));
+							}
 						}
 					}
 				} catch (IOException e) {
@@ -191,8 +196,8 @@ public class MessagePackMapper extends ResourceMapper {
 				Set<Class<?>> registSet = new HashSet<Class<?>>();
 				for (String clsName : classNames) {
 					try {
-						Class<?> cls = Class.forName(clsName);
-						registClass(cls, registSet);
+						Class<?> cls = loader.loadClass(clsName);
+						registerStaticClasses(cls, registSet);
 					} catch (ClassNotFoundException e) {
 						logger.warning("ClassNotFoundException : " + e.getMessage());
 						throw new ParseException(e.getMessage(), 0);
@@ -203,32 +208,33 @@ public class MessagePackMapper extends ResourceMapper {
 		}
 	}
 
-	private void registClass(Class<?> cls, Set<Class<?>> registSet) {
-		if (registSet.contains(cls)) {
+	private void registerStaticClasses(Class<?> cls, Set<Class<?>> registerSet) {
+		if (registerSet.contains(cls)) {
 			return;
 		}
 		
-		registSet.add(cls);
+		registerSet.add(cls);
 		
 		// 自クラス
 		Field[] fields = cls.getDeclaredFields();
-		registFieldsClass(fields, registSet);
+		registFieldsClass(fields, registerSet);
 
 		// スーパークラス
 		Class<?> superCls = cls.getSuperclass();
 		while (superCls != null && !Object.class.equals(superCls)) {
 			fields = superCls.getDeclaredFields();
-			registFieldsClass(fields, registSet);
+			registFieldsClass(fields, registerSet);
 			superCls = superCls.getSuperclass();
 		}
-
-		msgpack.register(cls);
+		
+		System.out.println("user registry:"+cls.getName());
+		registry.register(cls);
 	}
 	
 	/**
 	 * MessagePackにクラス内フィールドの使用クラスを登録する。
 	 */
-	private void registFieldsClass(Field[] fields, Set<Class<?>> registSet) {
+	private void registFieldsClass(Field[] fields, Set<Class<?>> registerSet) {
 		for (Field fld : fields) {
 			Class<?> type = fld.getType();
 			if (!isSkip(type)) {
@@ -241,13 +247,13 @@ public class MessagePackMapper extends ResourceMapper {
 						if (actualTypes.length > 0) {
 							Class<?> actualType = (Class<?>)actualTypes[0];
 							if (!isSkip(actualType)) {
-								registClass(actualType, registSet);
+								registerStaticClasses(actualType, registerSet);
 							}
 						}
 					}
 
 				} else {
-					registClass(type, registSet);
+					registerStaticClasses(type, registerSet);
 				}
 			}
 		}
@@ -263,29 +269,38 @@ public class MessagePackMapper extends ResourceMapper {
 				return true;
 			}
 		}
+		if (isBaseclass(type.getName())) {
+				return true;
+		}
+		
 		return false;
 	}
 	
 	// プリミティブ型、java〜パッケージは除く。
 	// Listの場合、ジェネリックタイプも調べる。
 
+	private boolean isBaseclass(String name) {
+		if (name==null) return false;
+		return name.indexOf(ENTRYBASE)>=0||name.indexOf(FEEDBASE)>=0;
+	}
+	
 	
 	/**
 	 * ATOM Packageとユーザ Packageを取得する
-	 * @param entitytempl
+	 * @param jo_packages
 	 * @return
 	 */
-	private static Map<String, String> getJo_packages(Object entitytempl) {
-		Map jo_packages = new LinkedHashMap<String,String>();
-		jo_packages.putAll(ATOM_PACKAGE);
-		if (entitytempl instanceof String[]) {
-			jo_packages.put(parseLine0(((String[]) entitytempl)[0]), "");
-		}else if (entitytempl instanceof List) {
-			jo_packages.put(parseLine0(""+((List) entitytempl).get(0)), "");
-		}else if (entitytempl instanceof Map) {
-			jo_packages.putAll((Map)entitytempl);
+	private static Map<String, String> getJo_packages(Object jo_packages) {
+		Map result_packages = new LinkedHashMap<String,String>();
+		result_packages.putAll(ATOM_PACKAGE);
+		if (jo_packages instanceof String[]) {
+			result_packages.put(parseLine0(((String[]) jo_packages)[0]), "");
+		}else if (jo_packages instanceof List) {
+			result_packages.put(parseLine0(""+((List) jo_packages).get(0)), "");
+		}else if (jo_packages instanceof Map) {
+			return (Map) jo_packages;
 		}
-		return jo_packages;
+		return result_packages;
 	}
 	
 	/*
@@ -807,14 +822,14 @@ public class MessagePackMapper extends ResourceMapper {
 	 * 
 	 * @throws ParseException
 	 */
-	private void registClass() throws ParseException {
+	private void registerClasses() throws ParseException {
 
 		List<String> classnames = new ArrayList<String>();
 		classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
 		
 		try {
 			classnames.addAll(generateClass());
-			registClass(classnames);
+			registerClass(classnames);
 		} catch (CannotCompileException e) {
 			throw new ParseException("Cannot Compile:" + e.getMessage(), 0);
 		}
@@ -826,7 +841,7 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param classnames
 	 * @throws CannotCompileException
 	 */
-	private void registClass(List<String> classnames)
+	private void registerClass(List<String> classnames)
 			throws CannotCompileException {
 
 		Class<?> cls = null;
@@ -838,7 +853,7 @@ public class MessagePackMapper extends ResourceMapper {
 				loader.delegateLoadingOf(clsName);
 			}
 			
-			if (clsName.indexOf("Base") < 0) {
+			if (!isBaseclass(clsName)) {
 				try {	
 					cls = loader.loadClass(clsName);
 				} catch (ClassNotFoundException e) {
