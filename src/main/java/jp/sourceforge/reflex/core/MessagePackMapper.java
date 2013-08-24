@@ -37,8 +37,9 @@ import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
 import jp.reflexworks.atom.entry.Element;
+import jp.sourceforge.reflex.util.ClassFinder;
 import jp.sourceforge.reflex.util.DateUtil;
-
+import jp.sourceforge.reflex.util.FieldMapper;
 import org.json.JSONException;
 import org.msgpack.MessagePack;
 import org.msgpack.template.Template;
@@ -46,9 +47,11 @@ import org.msgpack.template.TemplateRegistry;
 import org.msgpack.template.builder.ReflectionTemplateBuilder;
 import org.msgpack.type.Value;
 import org.msgpack.util.json.JSONBufferUnpacker;
-
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.mapper.DefaultMapper;
+import java.util.logging.Level;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class MessagePackMapper extends ResourceMapper {
 
@@ -129,24 +132,24 @@ public class MessagePackMapper extends ResourceMapper {
 	 * @param jo_packages
 	 * @throws ParseException
 	 */
-	public MessagePackMapper(Object etitytempl) throws ParseException {
-		this(etitytempl, false, false);
+	public MessagePackMapper(Object jo_packages) throws ParseException {
+		this(jo_packages, false, false);
 	}
 	
-	public MessagePackMapper(Object etitytempl, boolean isCamel) throws ParseException {
-		this(etitytempl, isCamel, false);
+	public MessagePackMapper(Object jo_packages, boolean isCamel) throws ParseException {
+		this(jo_packages, isCamel, false);
 	}
-	public MessagePackMapper(Object etitytempl, ReflectionProvider reflectionProvider) throws ParseException {
-		this(etitytempl, false, false, reflectionProvider);
+	public MessagePackMapper(Object jo_packages, ReflectionProvider reflectionProvider) throws ParseException {
+		this(jo_packages, false, false, reflectionProvider);
 	}
-	public MessagePackMapper(Object etitytempl, boolean isCamel,
+	public MessagePackMapper(Object jo_packages, boolean isCamel,
 			boolean useSingleQuote) throws ParseException {
-		this(etitytempl, isCamel, useSingleQuote, null);
+		this(jo_packages, isCamel, useSingleQuote, null);
 	}
 	
-	public MessagePackMapper(Object entitytempl, boolean isCamel,
+	public MessagePackMapper(Object jo_packages, boolean isCamel,
 			boolean useSingleQuote, ReflectionProvider reflectionProvider) throws ParseException {
-		super(getJo_packages(entitytempl), isCamel, useSingleQuote, reflectionProvider);
+		super(getJo_packages(jo_packages), isCamel, useSingleQuote, reflectionProvider);
 
 		this.pool = new ClassPool();
 		this.pool.appendSystemPath();
@@ -158,12 +161,115 @@ public class MessagePackMapper extends ResourceMapper {
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
 
-		// Entityテンプレートからメタ情報を作成する
-		metalist = getMetalist(entitytempl);
+		if (jo_packages instanceof String[]|jo_packages instanceof List) {
+			// Entityテンプレートからメタ情報を作成する
+			metalist = getMetalist(jo_packages);
+			registClass();
+			
+		}else if (jo_packages instanceof Map) {
+			// package名からregistClass
+			// パッケージ名からクラス一覧を取得
+			ClassFinder classFinder = new ClassFinder();
+			Set<String> classNames = null;
+			if (jo_packages != null) {
+				try {
+					if (jo_packages instanceof String) {
+						classNames = classFinder.getClassNamesFromPackage((String)jo_packages);
+					} else if (jo_packages instanceof Map) {
+						classNames = new HashSet<String>();
+						for (Object key : ((Map)jo_packages).keySet()) {
+							classNames.addAll(classFinder.getClassNamesFromPackage((String)key));
+						}
+					}
+				} catch (IOException e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+					throw new ParseException(e.getMessage(), 0);
+				}
+			}
+			// MessagePackにクラスを登録
+			if (classNames != null) {
+				Set<Class<?>> registSet = new HashSet<Class<?>>();
+				for (String clsName : classNames) {
+					try {
+						Class<?> cls = Class.forName(clsName);
+						registClass(cls, registSet);
+					} catch (ClassNotFoundException e) {
+						logger.warning("ClassNotFoundException : " + e.getMessage());
+						throw new ParseException(e.getMessage(), 0);
+					}
+				}
+			}
 
-		registClass();
+		}
 	}
-	 
+
+	private void registClass(Class<?> cls, Set<Class<?>> registSet) {
+		if (registSet.contains(cls)) {
+			return;
+		}
+		
+		registSet.add(cls);
+		
+		// 自クラス
+		Field[] fields = cls.getDeclaredFields();
+		registFieldsClass(fields, registSet);
+
+		// スーパークラス
+		Class<?> superCls = cls.getSuperclass();
+		while (superCls != null && !Object.class.equals(superCls)) {
+			fields = superCls.getDeclaredFields();
+			registFieldsClass(fields, registSet);
+			superCls = superCls.getSuperclass();
+		}
+
+		msgpack.register(cls);
+	}
+	
+	/**
+	 * MessagePackにクラス内フィールドの使用クラスを登録する。
+	 */
+	private void registFieldsClass(Field[] fields, Set<Class<?>> registSet) {
+		for (Field fld : fields) {
+			Class<?> type = fld.getType();
+			if (!isSkip(type)) {
+				if (FieldMapper.isCollection(type)) {
+					// Collectionの場合、ジェネリックタイプも調べる。
+					Type genericType = fld.getGenericType();
+					if (genericType != null && genericType instanceof ParameterizedType) {
+						ParameterizedType paramType = (ParameterizedType)genericType;
+						Type[] actualTypes = paramType.getActualTypeArguments();
+						if (actualTypes.length > 0) {
+							Class<?> actualType = (Class<?>)actualTypes[0];
+							if (!isSkip(actualType)) {
+								registClass(actualType, registSet);
+							}
+						}
+					}
+
+				} else {
+					registClass(type, registSet);
+				}
+			}
+		}
+	}
+			
+	private boolean isSkip(Class<?> type) {
+		if (type.isPrimitive()) {
+			// プリミティブ型はスキップする。
+			return true;
+		}
+		if (type.getName().startsWith("java.")) {
+			if (!FieldMapper.isCollection(type)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	// プリミティブ型、java〜パッケージは除く。
+	// Listの場合、ジェネリックタイプも調べる。
+
+	
 	/**
 	 * ATOM Packageとユーザ Packageを取得する
 	 * @param entitytempl
@@ -176,6 +282,8 @@ public class MessagePackMapper extends ResourceMapper {
 			jo_packages.put(parseLine0(((String[]) entitytempl)[0]), "");
 		}else if (entitytempl instanceof List) {
 			jo_packages.put(parseLine0(""+((List) entitytempl).get(0)), "");
+		}else if (entitytempl instanceof Map) {
+			jo_packages.putAll((Map)entitytempl);
 		}
 		return jo_packages;
 	}
