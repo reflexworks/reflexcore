@@ -100,6 +100,10 @@ public class Entry extends EntryBase implements Serializable {
     
     public String b2$updated_event_log;
 
+    public String b2$created_ms;
+    
+    public String b2$checked_date;
+    
     // ---- B2名前空間　ここまで ----
 
 	/**
