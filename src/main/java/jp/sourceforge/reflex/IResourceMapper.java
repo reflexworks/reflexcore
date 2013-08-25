@@ -116,4 +116,22 @@ public interface IResourceMapper {
 	 */
 	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException;
 
+	/**
+	 * Array形式からオブジェクトを作成します。
+	 * @param array
+	 * @param isFeed
+	 * @return
+	 * @throws JSONException
+	 */
+	public Object fromArray(String array,boolean isFeed) throws JSONException;
+
+	/**
+	 * オブジェクトをArray形式にシリアライズします。
+	 * @param msg
+	 * @return
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public Object toArray(byte[] msg) throws IOException,ClassNotFoundException;
+
 }

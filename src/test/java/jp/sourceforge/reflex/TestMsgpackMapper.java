@@ -15,10 +15,11 @@ import java.util.zip.DataFormatException;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.feed.FeedBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
-import jp.sourceforge.reflex.core.ResourceMapper;
 
 import org.json.JSONException;
 import org.junit.Test;
+
+import com.carrotsearch.sizeof.ObjectTree;
 
 //import com.carrotsearch.sizeof.ObjectTree;
 
@@ -178,8 +179,6 @@ public class TestMsgpackMapper {
         EntryBase  muserinfo = (EntryBase) mp.fromMessagePack(in,ENTRY);	// false でEntryをデシリアライズ
         System.out.println("Validtion:"+muserinfo.validate());        
         
-//		System.out.println("feed object size:"+ObjectTree.dump(entry));
-
 		assertEquals(json, mp.toJSON(muserinfo));
 	}
 
@@ -271,9 +270,11 @@ public class TestMsgpackMapper {
 	
 		// XMLにシリアライズ
 		FeedBase feedobj = (FeedBase) mp.fromXML(fi);
+
 		String xml = mp.toXML(feedobj);
 		System.out.println("\n=== XML Feed シリアライズ ===");
 		System.out.println(xml);
+		System.out.println("feed object size:"+ObjectTree.dump(feedobj));
 		
 		assertTrue(true);
 	}

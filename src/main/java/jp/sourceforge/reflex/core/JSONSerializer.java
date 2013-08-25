@@ -11,6 +11,8 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONException;
+
 import jp.sourceforge.reflex.IResourceMapper;
 
 /**
@@ -452,6 +454,17 @@ public class JSONSerializer implements IResourceMapper {
 	}
 	public Object fromMessagePack(InputStream msg) throws IOException {
 		throw new IllegalStateException();
+	}
+
+	public Object fromArray(String array, boolean isFeed) throws JSONException {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	public Object toArray(byte[] msg) throws IOException,
+			ClassNotFoundException {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 }

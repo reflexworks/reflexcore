@@ -201,4 +201,15 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		throw new IllegalStateException();
 	}
 
+	public Object fromArray(String array, boolean isFeed) throws JSONException {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	public Object toArray(byte[] msg) throws IOException,
+			ClassNotFoundException {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }
