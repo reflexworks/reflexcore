@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.co.kuronekoyamato.b2web.model.Entry;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.ValidatorBase;
 
@@ -47,7 +48,7 @@ public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase 
 	/**
 	 * エントリーリスト
 	 */
-	public List<EntryBase> entry;
+	public List<Entry> entry;
 
 	public String get_$xmlns() {
 		return _$xmlns;
@@ -177,11 +178,11 @@ public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase 
 		this.updated = updated;
 	}
 
-	public List<EntryBase> getEntry() {
+	public List<Entry> getEntry() {
 		return entry;
 	}
 
-	public void setEntry(List<EntryBase> entry) {
+	public void setEntry(List<Entry> entry) {
 		this.entry = entry;
 	}
 	

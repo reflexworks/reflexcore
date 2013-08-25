@@ -74,7 +74,7 @@ public class V15EntityTest {
 	}
 
 	public static Feed getFeed() {
-
+/*
 		Feed feed = new Feed();
 		feed.entry = new ArrayList<EntryBase>();
 		Entry entry = new Entry();
@@ -91,9 +91,9 @@ public class V15EntityTest {
 		entry.content._$$text = "テスト";		
 		entry.id = "123";
 		feed.entry.add(entry);
-		
 		return feed;
-		
+		*/		
+return null;
 	}
 	
 

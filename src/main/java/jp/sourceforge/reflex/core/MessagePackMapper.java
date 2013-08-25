@@ -168,6 +168,9 @@ public class MessagePackMapper extends ResourceMapper {
 			
 		}else if (jo_packages instanceof Map|jo_packages instanceof String) {
 
+			loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
+			loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
+
 			// package名からregistClass
 			// パッケージ名からクラス一覧を取得
 			ClassFinder classFinder = new ClassFinder(loader);
@@ -196,6 +199,7 @@ public class MessagePackMapper extends ResourceMapper {
 				Set<Class<?>> registSet = new HashSet<Class<?>>();
 				for (String clsName : classNames) {
 					try {
+						loader.delegateLoadingOf(clsName);			// 既存classは先に読めるようにする
 						Class<?> cls = loader.loadClass(clsName);
 						registerStaticClasses(cls, registSet);
 					} catch (ClassNotFoundException e) {
@@ -227,7 +231,6 @@ public class MessagePackMapper extends ResourceMapper {
 			superCls = superCls.getSuperclass();
 		}
 		
-		System.out.println("user registry:"+cls.getName());
 		registry.register(cls);
 	}
 	
@@ -270,7 +273,7 @@ public class MessagePackMapper extends ResourceMapper {
 			}
 		}
 		if (isBaseclass(type.getName())) {
-				return true;
+			return true;
 		}
 		
 		return false;
