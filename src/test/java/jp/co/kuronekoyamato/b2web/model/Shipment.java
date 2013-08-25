@@ -150,6 +150,7 @@ public class Shipment implements Serializable {
 	
 	public String b2$desc_sort_key;
 
+	public String b2$shipmentdata_serch_key;
 
 	/**
 	 * お客様管理番号を取得します。
