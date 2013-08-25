@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.ValidatorBase;
 import jp.reflexworks.atom.feed.FeedBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
@@ -114,38 +115,12 @@ public class TestMsgpackMapper {
 	}
 	
 	@Test
-	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
-	
-		String NAMESPACE_B2 = "http://kuronekoyamato.co.jp/b2/1.0";
-
-		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
-		MODEL_PACKAGE.put("jp.reflexworks.atom.feed", "");
-		MODEL_PACKAGE.put("jp.reflexworks.atom.entry", "");
-		MODEL_PACKAGE.put("jp.reflexworks.atom.source", "");
-		MODEL_PACKAGE.put("jp.co.kuronekoyamato.b2web.model", NAMESPACE_B2);
-	
-		MessagePackMapper mp = new MessagePackMapper(MODEL_PACKAGE);		
-	
-		File feed1 = new File("/Users/stakezaki/git/reflexcore/src/test/resources/data/feed1.txt");
-		FileReader fi = new FileReader(feed1);
-	
-		// XMLにシリアライズ
-		FeedBase feedobj = (FeedBase) mp.fromXML(fi);
-		String xml = mp.toXML(feedobj);
-		System.out.println("\n=== XML Feed シリアライズ ===");
-		System.out.println(xml);
-		
-		assertTrue(true);
-	}
-
-
-	@Test
 	public void testJSONEntry() throws ParseException, JSONException {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
 		
 		System.out.println("JSON Entry デシリアライズ");
 		String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
-		FeedBase entry = (FeedBase) mp.fromJSON(json);
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
 				
 		System.out.println("\n=== JSON Entry シリアライズ ===");
         String json2 = mp.toJSON(entry);
@@ -159,14 +134,14 @@ public class TestMsgpackMapper {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
 		
 		String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
-		Object entry = mp.fromJSON(json);
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
 		
 		System.out.println("\n=== XML Entry シリアライズ ===");
         String xml = mp.toXML(entry);
 		System.out.println(xml);
 
 		System.out.println("\n=== XML Entry デシリアライズ ===");
-        Object entry2 = mp.fromXML(xml);
+		EntryBase entry2 = (EntryBase) mp.fromXML(xml);
 
 		assertEquals(json, mp.toJSON(entry2));
 	}
@@ -176,7 +151,7 @@ public class TestMsgpackMapper {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
 		
 		String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
-		Object entry = mp.fromJSON(json);
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
 		
 		// MessagePack test
 		System.out.println("\n=== MessagePack Entry シリアライズ ===");
@@ -214,7 +189,7 @@ public class TestMsgpackMapper {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
 		
 		String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
-		Object entry = mp.fromJSON(json);
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
 		
 		// MessagePack test
 		System.out.println("\n=== Array Entry シリアライズ ===");
@@ -225,7 +200,7 @@ public class TestMsgpackMapper {
         String array = mp.toArray(mbytes).toString();
         
 		System.out.println(array);
-		Object entity2 = mp.fromArray(array,ENTRY);  // Entry
+		EntryBase entity2 = (EntryBase) mp.fromArray(array,ENTRY);  // Entry
 
         System.out.println("\n=== Array Entry デシリアライズ ===");
         
@@ -238,12 +213,12 @@ public class TestMsgpackMapper {
 		MessagePackMapper mp2 = new MessagePackMapper(entitytempl2);	// 項目追加後	
 		
 		String json = "{ \"feed\" : {\"entry\" : [{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}},{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}]}}";
-		Object entry = mp.fromJSON(json);
+		FeedBase entry = (FeedBase) mp.fromJSON(json);
         byte[] mbytes = mp.toMessagePack(entry);	// mbytesは変更前のrawデータ
 		
 		// MessagePack test
-		System.out.println("\n=== Array Entry(クラス変更後) シリアライズ ===");
-		Object entry2 = (Object) mp2.fromMessagePack(mbytes,FEED);		
+		System.out.println("\n=== Array Feed(クラス変更後) シリアライズ ===");
+		FeedBase entry2 = (FeedBase) mp2.fromMessagePack(mbytes,FEED);		
         editTestEntry(mp2,entry2);
 		
         byte[] mbytes2 = mp2.toMessagePack(entry2);
@@ -253,12 +228,11 @@ public class TestMsgpackMapper {
 		System.out.println();
 		System.out.println(mp2.toArray(mbytes2));
         
-
-		System.out.println("\n=== XML Entry(クラス変更後) シリアライズ ===");
+		System.out.println("\n=== XML Feed(クラス変更後) シリアライズ ===");
         String xml = mp2.toXML(entry2);
 		System.out.println(xml);
 
-		System.out.println("\n=== JSON Entry(クラス変更後) シリアライズ ===");
+		System.out.println("\n=== JSON Feed(クラス変更後) シリアライズ ===");
         String json2 = mp2.toJSON(entry2);
 		System.out.println(json2);
 		
@@ -270,7 +244,7 @@ public class TestMsgpackMapper {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		// 変更前
 
 		String json = "{\"entry\" : {\"subInfo\" : {\"hobby\" : [{\"_$$text\" : \"テキストノード\"}]}}}";
-		Object entry = mp.fromJSON(json);
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
 
 		// MessagePack test
 		System.out.println("\n=== XML Entry(テキストノード) シリアライズ ===");
@@ -280,6 +254,32 @@ public class TestMsgpackMapper {
 		assertEquals(json, mp.toJSON(mp.fromXML(xml)));
 	}
 	
+	@Test
+	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	
+		String NAMESPACE_B2 = "http://kuronekoyamato.co.jp/b2/1.0";
+
+		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
+		MODEL_PACKAGE.put("jp.reflexworks.atom.feed", "");
+		MODEL_PACKAGE.put("jp.reflexworks.atom.entry", "");
+		MODEL_PACKAGE.put("jp.reflexworks.atom.source", "");
+		MODEL_PACKAGE.put("jp.co.kuronekoyamato.b2web.model", NAMESPACE_B2);
+	
+		MessagePackMapper mp = new MessagePackMapper(MODEL_PACKAGE);		
+	
+		File feed1 = new File("/Users/stakezaki/git/reflexcore/src/test/resources/data/feed1.txt");
+		FileReader fi = new FileReader(feed1);
+	
+		// XMLにシリアライズ
+		FeedBase feedobj = (FeedBase) mp.fromXML(fi);
+		String xml = mp.toXML(feedobj);
+		System.out.println("\n=== XML Feed シリアライズ ===");
+		System.out.println(xml);
+		
+		assertTrue(true);
+	}
+
+
 
 
 }

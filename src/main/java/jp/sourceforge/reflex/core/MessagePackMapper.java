@@ -192,24 +192,6 @@ public class MessagePackMapper extends ResourceMapper {
 					throw new ParseException(e.getMessage(), 0);
 				}
 			}
-			
-			CtClass cs;
-			CtClass cc; 
-			try {
-				cc = pool.get(FEEDBASE);
-				CtField f = cc.getField("entry");
-				// FeedBase の List<EntryBase>を List<packagename.Entry> に変更する
-		        SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(getSignature(packagename+".Entry"));
-		        f.setGenericSignature(st.encode()); 
-		        cc.toClass();			// 静的Packageクラスの場合は動的に変更することはないことが前提
-		        
-			} catch (NotFoundException ne) {
-				throw new ParseException(ne.getMessage(),0);
-			} catch (BadBytecode be) {
-				throw new ParseException(be.getMessage(),0);
-			} catch (CannotCompileException xe) {
-				throw new ParseException(xe.getMessage(),0);
-			}
 
 			loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
 			loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
@@ -232,7 +214,7 @@ public class MessagePackMapper extends ResourceMapper {
 		}
 	}
 
-	private void registerStaticClasses(Class<?> cls, Set<Class<?>> registerSet) {
+	private void registerStaticClasses(Class<?> cls, Set<Class<?>> registerSet) throws ParseException {
 		if (registerSet.contains(cls)) {
 			return;
 		}
@@ -250,14 +232,27 @@ public class MessagePackMapper extends ResourceMapper {
 			registFieldsClass(fields, registerSet);
 			superCls = superCls.getSuperclass();
 		}
-		
-		registry.register(cls);
+		// abstruct classを除外
+		if (!Modifier.isAbstract(cls.getModifiers())) {
+			Template template = builder.buildTemplate(cls);
+			registry.register(cls,template);
+			// EntryBaseはEntryとして登録
+			if (cls.getName().indexOf("Entry")>=0) {
+				try {
+					cls = loader.loadClass(ENTRYBASE);
+				} catch (ClassNotFoundException e) {
+					throw new ParseException(e.getMessage(), 0);
+				}
+				registry.register(cls, template);
+			}
+		}
 	}
 	
 	/**
 	 * MessagePackにクラス内フィールドの使用クラスを登録する。
+	 * @throws ParseException 
 	 */
-	private void registFieldsClass(Field[] fields, Set<Class<?>> registerSet) {
+	private void registFieldsClass(Field[] fields, Set<Class<?>> registerSet) throws ParseException {
 		for (Field fld : fields) {
 			Class<?> type = fld.getType();
 			if (!isSkip(type)) {
@@ -449,6 +444,7 @@ public class MessagePackMapper extends ResourceMapper {
 				if (classname.indexOf("Entry") >= 0) {
 					CtClass cs;
 					try {
+						loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
 						cs = pool.get(ENTRYBASE);
 						cc.setSuperclass(cs); // superclassの定義
 					} catch (NotFoundException e) {
@@ -457,6 +453,7 @@ public class MessagePackMapper extends ResourceMapper {
 				} else if (classname.indexOf("Feed") >= 0) {
 					CtClass cs;
 					try {
+						loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
 						cs = pool.get(FEEDBASE);
 						cc.setSuperclass(cs); // superclassの定義
 						CtField f = cc.getField("entry");
@@ -879,13 +876,18 @@ public class MessagePackMapper extends ResourceMapper {
 			if (!isBaseclass(clsName)) {
 				try {	
 					cls = loader.loadClass(clsName);
-				} catch (ClassNotFoundException e) {
-					throw new CannotCompileException(e);
-				}
 				
 				template = builder.buildTemplate(cls);
 				// 途中はregistryに登録
 				registry.register(cls, template);
+				// EntryBaseはEntryとして登録
+				if (clsName.indexOf("Entry")>=0) {
+					cls = loader.loadClass(ENTRYBASE);
+					registry.register(cls, template);
+				}
+				} catch (ClassNotFoundException e) {
+					throw new CannotCompileException(e);
+				}
 				
 				// EntryやFeedの場合はmsgpackに登録
 				if (clsName.indexOf("Entry") >= 0||clsName.indexOf("Feed") >= 0) {

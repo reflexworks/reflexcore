@@ -1,10 +1,7 @@
 package jp.reflexworks.atom.feed;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
-import jp.co.kuronekoyamato.b2web.model.Entry;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.ValidatorBase;
 
