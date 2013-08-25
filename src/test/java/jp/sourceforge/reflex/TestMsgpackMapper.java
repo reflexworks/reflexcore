@@ -20,7 +20,7 @@ import jp.sourceforge.reflex.core.ResourceMapper;
 import org.json.JSONException;
 import org.junit.Test;
 
-import com.carrotsearch.sizeof.ObjectTree;
+//import com.carrotsearch.sizeof.ObjectTree;
 
 public class TestMsgpackMapper {
 
@@ -145,7 +145,7 @@ public class TestMsgpackMapper {
 		
 		System.out.println("JSON Entry デシリアライズ");
 		String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
-		Object entry = mp.fromJSON(json);
+		FeedBase entry = (FeedBase) mp.fromJSON(json);
 				
 		System.out.println("\n=== JSON Entry シリアライズ ===");
         String json2 = mp.toJSON(entry);
@@ -204,7 +204,7 @@ public class TestMsgpackMapper {
         ValidatorBase  muserinfo = (ValidatorBase) mp.fromMessagePack(in,ENTRY);	// false でEntryをデシリアライズ
         System.out.println("Validtion:"+muserinfo.validate());        
         
-		System.out.println("feed object size:"+ObjectTree.dump(entry));
+//		System.out.println("feed object size:"+ObjectTree.dump(entry));
 
 		assertEquals(json, mp.toJSON(muserinfo));
 	}

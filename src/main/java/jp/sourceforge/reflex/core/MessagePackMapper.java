@@ -91,6 +91,7 @@ public class MessagePackMapper extends ResourceMapper {
 
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.feed.FeedBase";
+	private static final String VALIDATORBASE = "jp.reflexworks.atom.entry.ValidatorBase";
 
 	// Arrayの要素クラス
 	public static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
@@ -303,7 +304,7 @@ public class MessagePackMapper extends ResourceMapper {
 
 	private boolean isBaseclass(String name) {
 		if (name==null) return false;
-		return name.indexOf(ENTRYBASE)>=0||name.indexOf(FEEDBASE)>=0;
+		return name.indexOf(ENTRYBASE)>=0||name.indexOf(FEEDBASE)>=0||name.indexOf(VALIDATORBASE)>=0;
 	}
 	
 	
