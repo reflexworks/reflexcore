@@ -256,8 +256,12 @@ public class TestMsgpackMapper {
 	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 	
 		String NAMESPACE_B2 = "b2=http://kuronekoyamato.co.jp/b2/1.0";
-
+		String NAMESPACE_ATOM = "http://www.w3.org/2005/Atom";
+		
 		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
+		MODEL_PACKAGE.put("jp.reflexworks.atom.feed", NAMESPACE_ATOM);
+		MODEL_PACKAGE.put("jp.reflexworks.atom.entry", NAMESPACE_ATOM);
+		MODEL_PACKAGE.put("jp.reflexworks.atom.source", NAMESPACE_ATOM);
 		MODEL_PACKAGE.put("jp.co.kuronekoyamato.b2web.model", NAMESPACE_B2);
 	
 		MessagePackMapper mp = new MessagePackMapper(MODEL_PACKAGE);		
