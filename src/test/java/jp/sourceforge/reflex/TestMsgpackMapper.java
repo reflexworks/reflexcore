@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.zip.DataFormatException;
 
 import jp.reflexworks.atom.entry.EntryBase;
-import jp.reflexworks.atom.entry.ValidatorBase;
 import jp.reflexworks.atom.feed.FeedBase;
 import jp.sourceforge.reflex.core.MessagePackMapper;
 import jp.sourceforge.reflex.core.ResourceMapper;
@@ -176,7 +175,7 @@ public class TestMsgpackMapper {
 
         System.out.println("\n=== MessagePack Entry デシリアライズ ===");
 
-        ValidatorBase  muserinfo = (ValidatorBase) mp.fromMessagePack(in,ENTRY);	// false でEntryをデシリアライズ
+        EntryBase  muserinfo = (EntryBase) mp.fromMessagePack(in,ENTRY);	// false でEntryをデシリアライズ
         System.out.println("Validtion:"+muserinfo.validate());        
         
 //		System.out.println("feed object size:"+ObjectTree.dump(entry));

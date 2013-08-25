@@ -81,7 +81,6 @@ public class MessagePackMapper extends ResourceMapper {
 			"jp.reflexworks.atom.entry.Contributor",
 			"jp.reflexworks.atom.entry.Link",
 			"jp.reflexworks.atom.entry.Element",		// Elementは本来はATOMクラスではないがここに必要
-			"jp.reflexworks.atom.entry.ValidatorBase",		// validate() を呼び出すためのインターフェース
 			"jp.reflexworks.atom.feed.Author",
 			"jp.reflexworks.atom.feed.Category",
 			"jp.reflexworks.atom.feed.Generator",
@@ -91,7 +90,6 @@ public class MessagePackMapper extends ResourceMapper {
 
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.feed.FeedBase";
-	private static final String VALIDATORBASE = "jp.reflexworks.atom.entry.ValidatorBase";
 
 	// Arrayの要素クラス
 	public static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
@@ -299,7 +297,7 @@ public class MessagePackMapper extends ResourceMapper {
 
 	private boolean isBaseclass(String name) {
 		if (name==null) return false;
-		return name.indexOf(ENTRYBASE)>=0||name.indexOf(FEEDBASE)>=0||name.indexOf(VALIDATORBASE)>=0;
+		return name.indexOf(ENTRYBASE)>=0||name.indexOf(FEEDBASE)>=0;
 	}
 	
 	

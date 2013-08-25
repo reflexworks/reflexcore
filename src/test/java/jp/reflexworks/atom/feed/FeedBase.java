@@ -3,7 +3,6 @@ package jp.reflexworks.atom.feed;
 import java.io.Serializable;
 import java.util.List;
 import jp.reflexworks.atom.entry.EntryBase;
-import jp.reflexworks.atom.entry.ValidatorBase;
 
 /**
  * Feedの親クラス.
@@ -13,7 +12,7 @@ import jp.reflexworks.atom.entry.ValidatorBase;
  * 各プロジェクトでこのクラスを継承し、カスタマイズしたFeedクラスを生成してください。<br>
  * </p>
  */
-public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase {
+public abstract class FeedBase implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 

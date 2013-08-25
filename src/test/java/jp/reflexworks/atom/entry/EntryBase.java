@@ -16,7 +16,7 @@ import jp.reflexworks.atom.source.Source;
  * 各プロジェクトでこのクラスを継承し、カスタマイズしたEntryクラスを生成してください。<br>
  * </p>
  */
-public abstract class EntryBase implements Serializable,ValidatorBase {
+public abstract class EntryBase implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
