@@ -48,7 +48,7 @@ public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase 
 	/**
 	 * エントリーリスト
 	 */
-	public List<Entry> entry;
+	public List<EntryBase> entry;
 
 	public String get_$xmlns() {
 		return _$xmlns;
@@ -178,11 +178,11 @@ public abstract class FeedBase implements Serializable, Cloneable,ValidatorBase 
 		this.updated = updated;
 	}
 
-	public List<Entry> getEntry() {
+	public List<EntryBase> getEntry() {
 		return entry;
 	}
 
-	public void setEntry(List<Entry> entry) {
+	public void setEntry(List<EntryBase> entry) {
 		this.entry = entry;
 	}
 	

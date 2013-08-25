@@ -10,8 +10,6 @@ public class Feed extends FeedBase implements Serializable {
 	public String _$xmlns = "http://www.w3.org/2005/Atom";
 	private static final long serialVersionUID = 1L;
 
-	public List<Entry> entry;
-
 	// ---- B2名前空間定義 ----
 	public String _$xmlns$b2 = "http://kuronekoyamato.co.jp/b2/1.0";
 

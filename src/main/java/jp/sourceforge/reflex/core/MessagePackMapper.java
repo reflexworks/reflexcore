@@ -168,9 +168,6 @@ public class MessagePackMapper extends ResourceMapper {
 			
 		}else if (jo_packages instanceof Map|jo_packages instanceof String) {
 
-			loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
-			loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
-
 			// package名からregistClass
 			// パッケージ名からクラス一覧を取得
 			ClassFinder classFinder = new ClassFinder(loader);
@@ -194,6 +191,28 @@ public class MessagePackMapper extends ResourceMapper {
 					throw new ParseException(e.getMessage(), 0);
 				}
 			}
+			
+			CtClass cs;
+			CtClass cc; 
+			try {
+				cc = pool.get(FEEDBASE);
+				CtField f = cc.getField("entry");
+				// FeedBase の List<EntryBase>を List<packagename.Entry> に変更する
+		        SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(getSignature(packagename+".Entry"));
+		        f.setGenericSignature(st.encode()); 
+		        cc.toClass();			// 静的Packageクラスの場合は動的に変更することはないことが前提
+		        
+			} catch (NotFoundException ne) {
+				throw new ParseException(ne.getMessage(),0);
+			} catch (BadBytecode be) {
+				throw new ParseException(be.getMessage(),0);
+			} catch (CannotCompileException xe) {
+				throw new ParseException(xe.getMessage(),0);
+			}
+
+			loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
+			loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
+
 			// MessagePackにクラスを登録
 			if (classNames != null) {
 				Set<Class<?>> registSet = new HashSet<Class<?>>();
