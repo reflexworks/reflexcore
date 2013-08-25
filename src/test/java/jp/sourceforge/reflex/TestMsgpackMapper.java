@@ -258,9 +258,6 @@ public class TestMsgpackMapper {
 		String NAMESPACE_B2 = "http://kuronekoyamato.co.jp/b2/1.0";
 
 		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
-		MODEL_PACKAGE.put("jp.reflexworks.atom.feed", "");
-		MODEL_PACKAGE.put("jp.reflexworks.atom.entry", "");
-		MODEL_PACKAGE.put("jp.reflexworks.atom.source", "");
 		MODEL_PACKAGE.put("jp.co.kuronekoyamato.b2web.model", NAMESPACE_B2);
 	
 		MessagePackMapper mp = new MessagePackMapper(MODEL_PACKAGE);		
