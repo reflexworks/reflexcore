@@ -219,12 +219,12 @@ public class TestMsgpackMapper {
 		FeedBase entry2 = (FeedBase) mp2.fromMessagePack(mbytes,FEED);		
         editTestEntry(mp2,entry2);
 		
-        byte[] mbytes2 = mp2.toMessagePack(entry2);
-        for(int i=0;i<mbytes2.length;i++) { 
-        	System.out.print(Integer.toHexString(mbytes2[i]& 0xff)+" "); 
+        byte[] msgpack = mp2.toMessagePack(entry2);
+        for(int i=0;i<msgpack.length;i++) { 
+        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
         } 
 		System.out.println();
-		System.out.println(mp2.toArray(mbytes2));
+		System.out.println(mp2.toArray(msgpack));
         
 		System.out.println("\n=== XML Feed(クラス変更後) シリアライズ ===");
         String xml = mp2.toXML(entry2);
@@ -271,6 +271,19 @@ public class TestMsgpackMapper {
 		String xml = mp.toXML(feedobj);
 		System.out.println("\n=== XML Feed シリアライズ ===");
 		System.out.println(xml);
+		
+		String json = mp.toJSON(feedobj);
+		System.out.println("\n=== JSON Feed シリアライズ ===");
+		System.out.println(json);
+	
+		System.out.println("\n=== Messagepack Feed シリアライズ ===");
+        byte[] msgpack = mp.toMessagePack(feedobj);
+        for(int i=0;i<msgpack.length;i++) { 
+        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
+        } 
+		System.out.println();
+		System.out.println("\n=== Array Feed シリアライズ ===");
+		System.out.println(mp.toArray(msgpack));
 //		System.out.println("feed object size:"+ObjectTree.dump(feedobj));
 		
 		assertTrue(true);

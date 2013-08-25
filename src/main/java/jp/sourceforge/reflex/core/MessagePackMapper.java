@@ -242,6 +242,9 @@ public class MessagePackMapper extends ResourceMapper {
 					throw new ParseException(e.getMessage(), 0);
 				}
 				registry.register(cls, template);
+				msgpack.register(cls, template);
+			}else if (cls.getName().indexOf("Feed")>=0) {
+				msgpack.register(cls, template);
 			}
 		}
 	}
