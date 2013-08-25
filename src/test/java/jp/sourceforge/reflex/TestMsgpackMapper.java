@@ -255,7 +255,7 @@ public class TestMsgpackMapper {
 	@Test
 	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 	
-		String NAMESPACE_B2 = "http://kuronekoyamato.co.jp/b2/1.0";
+		String NAMESPACE_B2 = "b2=http://kuronekoyamato.co.jp/b2/1.0";
 
 		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
 		MODEL_PACKAGE.put("jp.co.kuronekoyamato.b2web.model", NAMESPACE_B2);
@@ -271,7 +271,7 @@ public class TestMsgpackMapper {
 		String xml = mp.toXML(feedobj);
 		System.out.println("\n=== XML Feed シリアライズ ===");
 		System.out.println(xml);
-		System.out.println("feed object size:"+ObjectTree.dump(feedobj));
+//		System.out.println("feed object size:"+ObjectTree.dump(feedobj));
 		
 		assertTrue(true);
 	}

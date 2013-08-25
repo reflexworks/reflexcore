@@ -120,6 +120,9 @@ public class RXMapper extends MapperWrapper {
 		try {
 			if (getPrintns()>=0) {
 				prefix = getPrefix(type);
+				if (prefix==null) {
+					prefix = "";
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -174,7 +177,6 @@ public class RXMapper extends MapperWrapper {
 		int e = type.getName().lastIndexOf(".");
 		String packagename = type.getName().substring(0, e);
 		String ns = (String) getJo_packagemap().get(packagename);
-
 		return cutPrefixFromNs(ns);
 
 	}
@@ -207,11 +209,11 @@ public class RXMapper extends MapperWrapper {
 
 		classname = rxutil.node2fld(classname);
 
-		String namespace = getNamespace(prefix, classname);
-		String jo_packagename = getPackagename(namespace);
+//		String namespace = getNamespace(prefix, classname);
+//		String jo_packagename = getPackagename(namespace);
 
-		if (namespace == null || (namespace != null && namespace.equals("")))
-			jo_packagename = findPackagename(classname);
+//		if (namespace == null || (namespace != null && namespace.equals("")))
+		String	jo_packagename = findPackagename(classname);
 
 		if (jo_packagename != null) {
 			return wrapped.realClass(jo_packagename + "." + classname);
@@ -242,7 +244,7 @@ public class RXMapper extends MapperWrapper {
 		return null;
 
 	}
-
+/* 不具合
 	public String getNamespace(String prefix, String classname) {
 
 		try {
@@ -270,7 +272,7 @@ public class RXMapper extends MapperWrapper {
 		return null;
 
 	}
-
+*/
 	public String realMember(Class type, String serialized) {
 		return serialized;
 	}
