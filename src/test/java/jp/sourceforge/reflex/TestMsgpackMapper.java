@@ -301,11 +301,11 @@ public class TestMsgpackMapper {
 
 		String xml = mp.toXML(feedobj);
 		System.out.println("\n=== XML Feed シリアライズ ===");
-		System.out.println(xml);
+//		System.out.println(xml);
 		
 		String json = mp.toJSON(feedobj);
 		System.out.println("\n=== JSON Feed シリアライズ ===");
-		System.out.println(json);
+//		System.out.println(json);
 	
 		System.out.println("\n=== Messagepack Feed シリアライズ ===");
         byte[] msgpack = mp.toMessagePack(feedobj);

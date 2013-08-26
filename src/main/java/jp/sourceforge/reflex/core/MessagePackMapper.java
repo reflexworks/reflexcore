@@ -175,18 +175,21 @@ public class MessagePackMapper extends ResourceMapper {
 			// package名からregistClass
 			// パッケージ名からクラス一覧を取得
 			ClassFinder classFinder = new ClassFinder(loader);
-			Set<String> classNames = null;  
+			Set<String> classnames = null;  
 			if (jo_packages != null) {
 				try {
 					if (jo_packages instanceof String) {
 						packagename = (String) jo_packages;			// 業務アプリのEntityクラス
-						classNames = classFinder.getClassNamesFromPackage((String)jo_packages);
+						classnames = new HashSet<String>();
+						classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
+						classnames.addAll(classFinder.getClassNamesFromPackage((String)jo_packages));	// ATOM Classesは先に読む必要がある
 					} else if (jo_packages instanceof Map) {
-						classNames = new HashSet<String>();
+						classnames = new HashSet<String>();
+						classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES))); // ATOM Classesは先に読む必要がある
 						for (String key : ((Map<String,String>)jo_packages).keySet()) {
 							if (key.indexOf(".atom.")<0) {
 								packagename = key;			// 業務アプリのEntityクラス
-								classNames.addAll(classFinder.getClassNamesFromPackage(key));
+								classnames.addAll(classFinder.getClassNamesFromPackage(key));
 							}
 						}
 					}
@@ -196,16 +199,13 @@ public class MessagePackMapper extends ResourceMapper {
 				}
 			}
 
-			loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
-			loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
-
 			// MessagePackにクラスを登録
-			if (classNames != null) {
+			if (classnames != null) {
 				Set<Class<?>> registSet = new HashSet<Class<?>>();
-				for (String clsName : classNames) {
+				for (String classname : classnames) {
 					try {
-						loader.delegateLoadingOf(clsName);			// 既存classは先に読めるようにする
-						Class<?> cls = loader.loadClass(clsName);
+						loader.delegateLoadingOf(classname);			// 既存classは先に読めるようにする
+						Class<?> cls = loader.loadClass(classname);
 						registerStaticClasses(cls, registSet);
 					} catch (ClassNotFoundException e) {
 						logger.warning("ClassNotFoundException : " + e.getMessage());
@@ -241,15 +241,23 @@ public class MessagePackMapper extends ResourceMapper {
 			registry.register(cls,template);
 			// EntryBaseはEntryとして登録
 			if (cls.getName().indexOf("Entry")>=0) {
+				msgpack.register(cls, template);
+				loader.delegateLoadingOf(ENTRYBASE);			
 				try {
 					cls = loader.loadClass(ENTRYBASE);
 				} catch (ClassNotFoundException e) {
 					throw new ParseException(e.getMessage(), 0);
 				}
 				registry.register(cls, template);
-				msgpack.register(cls, template);
 			}else if (cls.getName().indexOf("Feed")>=0) {
 				msgpack.register(cls, template);
+				loader.delegateLoadingOf(FEEDBASE);		
+				try {
+					cls = loader.loadClass(FEEDBASE);
+				} catch (ClassNotFoundException e) {
+					throw new ParseException(e.getMessage(), 0);
+				}
+				registry.register(cls, template);
 			}
 		}
 	}
@@ -366,6 +374,7 @@ public class MessagePackMapper extends ResourceMapper {
 	}
 	
 	public Class getClass(String clsName) throws ClassNotFoundException {
+		// ATOMの優先すべき項目名の場合はATOMクラスを読む
 		if (clsName.lastIndexOf("Link")>=0) {
 			clsName = ATOMCLASSES[ENTRYLINK];
 		}else 
@@ -375,7 +384,7 @@ public class MessagePackMapper extends ResourceMapper {
 		if (clsName.lastIndexOf("Content")>=0) {
 			clsName = ATOMCLASSES[CONTENT];
 		}
-		return loader.loadClass(clsName);   // TODO ATOMの優先すべき項目名の場合はATOMクラスを読む
+		return loader.loadClass(clsName);   
 	}
 	
 	public ClassPool getPool() {
