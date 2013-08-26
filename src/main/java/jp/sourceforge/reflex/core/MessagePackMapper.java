@@ -37,6 +37,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.BadBytecode;
 import javassist.bytecode.SignatureAttribute;
 import jp.reflexworks.atom.entry.Element;
+import jp.sourceforge.reflex.dto.CamelBean;
 import jp.sourceforge.reflex.util.ClassFinder;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.FieldMapper;
@@ -122,14 +123,7 @@ public class MessagePackMapper extends ResourceMapper {
 	private ReflectionTemplateBuilder builder;
 	private ClassPool pool;
 	private Loader loader;
-	protected String packagename;
-
-	/*
-	 * root entry
-	 */
-	private String getRootEntry(boolean isFeed) {
-		return isFeed ? packagename + ".Feed":packagename + ".Entry";
-	}
+	protected String packagename;	
 	
 	/**
 	 * コンストラクタ
@@ -240,7 +234,7 @@ public class MessagePackMapper extends ResourceMapper {
 			Template template = builder.buildTemplate(cls);
 			registry.register(cls,template);
 			// EntryBaseはEntryとして登録
-			if (cls.getName().indexOf("Entry")>=0) {
+			if (isEntry(cls.getName())) {
 				msgpack.register(cls, template);
 				loader.delegateLoadingOf(ENTRYBASE);			
 				try {
@@ -249,7 +243,7 @@ public class MessagePackMapper extends ResourceMapper {
 					throw new ParseException(e.getMessage(), 0);
 				}
 				registry.register(cls, template);
-			}else if (cls.getName().indexOf("Feed")>=0) {
+			}else if (isFeed(cls.getName())) {
 				msgpack.register(cls, template);
 				loader.delegateLoadingOf(FEEDBASE);		
 				try {
@@ -316,7 +310,25 @@ public class MessagePackMapper extends ResourceMapper {
 		return name.indexOf(ENTRYBASE)>=0||name.indexOf(FEEDBASE)>=0;
 	}
 	
+	/*
+	 * root entry
+	 */
+	private String getRootEntry(boolean isFeed) {
+		return isFeed ? packagename + ".Feed":packagename + ".Entry";
+	}
 	
+	private boolean isEntry(String classname) {
+		return classname.indexOf("Entry")>=0;
+	}
+
+	private boolean isFeed(String classname) {
+		return classname.indexOf("Feed")>=0;
+	}
+	
+	private static String toCamelcase(String name) {
+		return name.substring(0, 1).toUpperCase() + name.substring(1);
+	}
+
 	/**
 	 * ATOM Packageとユーザ Packageを取得する
 	 * @param jo_packages
@@ -356,7 +368,7 @@ public class MessagePackMapper extends ResourceMapper {
 
 		public String getSelf() {
 			if (self==null) return null;
-			return self.substring(0, 1).toUpperCase() + self.substring(1);
+			return toCamelcase(self);
 		}
 		
 		public boolean hasChild() {
@@ -373,18 +385,18 @@ public class MessagePackMapper extends ResourceMapper {
 		
 	}
 	
-	public Class getClass(String clsName) throws ClassNotFoundException {
+	public Class getClass(String classname) throws ClassNotFoundException {
 		// ATOMの優先すべき項目名の場合はATOMクラスを読む
-		if (clsName.lastIndexOf("Link")>=0) {
-			clsName = ATOMCLASSES[ENTRYLINK];
+		if (classname!=null&&classname.lastIndexOf("Link")>=0) {
+			classname = ATOMCLASSES[ENTRYLINK];
 		}else 
-		if (clsName.lastIndexOf("Contributor")>=0) {
-			clsName = ATOMCLASSES[CONTRIBUTOR];
+		if (classname!=null&&classname.lastIndexOf("Contributor")>=0) {
+			classname = ATOMCLASSES[CONTRIBUTOR];
 		}else 
-		if (clsName.lastIndexOf("Content")>=0) {
-			clsName = ATOMCLASSES[CONTENT];
+		if (classname!=null&&classname.lastIndexOf("Content")>=0) {
+			classname = ATOMCLASSES[CONTENT];
 		}
-		return loader.loadClass(clsName);   
+		return loader.loadClass(classname);   
 	}
 	
 	public ClassPool getPool() {
@@ -465,7 +477,7 @@ public class MessagePackMapper extends ResourceMapper {
 				cc = pool.get(classname);
 			} catch (NotFoundException ne1) {
 				cc = pool.makeClass(classname);
-				if (classname.indexOf("Entry") >= 0) {
+				if (isEntry(classname)) {
 					CtClass cs;
 					try {
 						loader.delegateLoadingOf(ENTRYBASE);			// 既存classは先に読めるようにする
@@ -474,19 +486,14 @@ public class MessagePackMapper extends ResourceMapper {
 					} catch (NotFoundException e) {
 						throw new CannotCompileException(e);
 					}
-				} else if (classname.indexOf("Feed") >= 0) {
+				} else if (isFeed(classname)) {
 					CtClass cs;
 					try {
 						loader.delegateLoadingOf(FEEDBASE);			// 既存classは先に読めるようにする
 						cs = pool.get(FEEDBASE);
 						cc.setSuperclass(cs); // superclassの定義
-						CtField f = cc.getField("entry");
-				        SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(getSignature(packagename+".Entry"));
-				        f.setGenericSignature(st.encode()); 
 				        
 					} catch (NotFoundException e) {
-						throw new CannotCompileException(e);
-					} catch (BadBytecode e) {
 						throw new CannotCompileException(e);
 					}
 				} 
@@ -891,21 +898,21 @@ public class MessagePackMapper extends ResourceMapper {
 		Class<?> cls = null;
 		Template template = null;
 
-		for (String clsName : classnames) {
+		for (String classname : classnames) {
 			// 静的なクラスであるatomパッケージは親のクラスローダにロード(これがないとClassCastException)
-			if (clsName.indexOf(".atom.") > 0) {
-				loader.delegateLoadingOf(clsName);
+			if (classname.indexOf(".atom.") > 0) {
+				loader.delegateLoadingOf(classname);
 			}
 			
-			if (!isBaseclass(clsName)) {
+			if (!isBaseclass(classname)) {
 				try {	
-					cls = loader.loadClass(clsName);
+					cls = loader.loadClass(classname);
 				
 				template = builder.buildTemplate(cls);
 				// 途中はregistryに登録
 				registry.register(cls, template);
 				// EntryBaseはEntryとして登録
-				if (clsName.indexOf("Entry")>=0) {
+				if (isEntry(classname)) {
 					cls = loader.loadClass(ENTRYBASE);
 					registry.register(cls, template);
 				}
@@ -914,7 +921,7 @@ public class MessagePackMapper extends ResourceMapper {
 				}
 				
 				// EntryやFeedの場合はmsgpackに登録
-				if (clsName.indexOf("Entry") >= 0||clsName.indexOf("Feed") >= 0) {
+				if (isEntry(classname)||isFeed(classname)) {
 					msgpack.register(cls, template);
 				}
 			}
@@ -950,7 +957,7 @@ public class MessagePackMapper extends ResourceMapper {
         		}
         		
         		if ((e.getValue()).isMapValue()) {
-        			String childclsname = packagename+"."+fld.substring(0, 1).toUpperCase() + fld.substring(1);
+        			String childclsname = packagename+"."+toCamelcase(fld);
         			Object child = parseValue(childclsname,e.getValue());
             		if (!classname.isEmpty()) {
             			if (!isCreated) parent = (Object) cc.newInstance();
@@ -969,7 +976,7 @@ public class MessagePackMapper extends ResourceMapper {
         				List child = new ArrayList();
         				for(Value v:e.getValue().asArrayValue().getElementArray()) {
         					if (v.isMapValue()) {
-        	        			String childclsname = packagename+"."+fld.substring(0, 1).toUpperCase() + fld.substring(1);
+        	        			String childclsname = packagename+"."+toCamelcase(fld);
                					child.add(parseValue(childclsname,v));
                					f.set(parent, child);
         					}else if (v.isRawValue()) {
