@@ -89,6 +89,63 @@ public class MessagePackMapper extends ResourceMapper {
 			"jp.reflexworks.atom.feed.Link"
 			 };
 
+	public static final String[] B2CLASSES = {"jp.co.kuronekoyamato.b2web.model.Import_item",
+		"jp.co.kuronekoyamato.b2web.model.Payment",
+		"jp.co.kuronekoyamato.b2web.model.Pattern",
+		"jp.co.kuronekoyamato.b2web.model.Pattern_list",
+		"jp.co.kuronekoyamato.b2web.model.Error",
+		"jp.co.kuronekoyamato.b2web.model.Error_list",
+		"jp.co.kuronekoyamato.b2web.model.Shipper_label",
+		"jp.co.kuronekoyamato.b2web.model.Payment_list",
+		"jp.co.kuronekoyamato.b2web.model.Email_setting",
+		"jp.co.kuronekoyamato.b2web.model.Deffered_status",
+		"jp.co.kuronekoyamato.b2web.model.Delivery_email_message",
+		"jp.co.kuronekoyamato.b2web.model.Shipment_email_message",
+		"jp.co.kuronekoyamato.b2web.model.Print_design_left",
+		"jp.co.kuronekoyamato.b2web.model.Print_design_right",
+		"jp.co.kuronekoyamato.b2web.model.Invoice",
+		"jp.co.kuronekoyamato.b2web.model.Request_from",
+		"jp.co.kuronekoyamato.b2web.model.Ship_post",
+		"jp.co.kuronekoyamato.b2web.model.Master_share",
+		"jp.co.kuronekoyamato.b2web.model.Email_setting_list",
+		"jp.co.kuronekoyamato.b2web.model.Deffered_status_list",
+		"jp.co.kuronekoyamato.b2web.model.Collect_shipped",
+		"jp.co.kuronekoyamato.b2web.model.Collect_new",
+		"jp.co.kuronekoyamato.b2web.model.Collect_issued",
+		"jp.co.kuronekoyamato.b2web.model.Hatsu_shipped",
+		"jp.co.kuronekoyamato.b2web.model.Hatsu_new",
+		"jp.co.kuronekoyamato.b2web.model.Hatsu_issued",
+		"jp.co.kuronekoyamato.b2web.model.Issue_room_setting",
+		"jp.co.kuronekoyamato.b2web.model.Delivery_email_message_list",
+		"jp.co.kuronekoyamato.b2web.model.Shipment_email_message_list",
+		"jp.co.kuronekoyamato.b2web.model.Printer_settings",
+		"jp.co.kuronekoyamato.b2web.model.General_settings",
+		"jp.co.kuronekoyamato.b2web.model.Invoice_list",
+		"jp.co.kuronekoyamato.b2web.model.Request_from_list",
+		"jp.co.kuronekoyamato.b2web.model.Ship_post_list",
+		"jp.co.kuronekoyamato.b2web.model.Master_share_list",
+		"jp.co.kuronekoyamato.b2web.model.Image_choice",
+		"jp.co.kuronekoyamato.b2web.model.Package_size",
+		"jp.co.kuronekoyamato.b2web.model.Sorting_code",
+		"jp.co.kuronekoyamato.b2web.model.Center",
+		"jp.co.kuronekoyamato.b2web.model.Telephone_address",
+		"jp.co.kuronekoyamato.b2web.model.Address",
+		"jp.co.kuronekoyamato.b2web.model.System_date",
+		"jp.co.kuronekoyamato.b2web.model.Email_notification",
+		"jp.co.kuronekoyamato.b2web.model.Status_count",
+		"jp.co.kuronekoyamato.b2web.model.Event_log",
+		"jp.co.kuronekoyamato.b2web.model.Shipment_group",
+		"jp.co.kuronekoyamato.b2web.model.Import_pattern",
+		"jp.co.kuronekoyamato.b2web.model.Content_details",
+		"jp.co.kuronekoyamato.b2web.model.Tracking",
+		"jp.co.kuronekoyamato.b2web.model.Customer",
+		"jp.co.kuronekoyamato.b2web.model.Consignee",
+		"jp.co.kuronekoyamato.b2web.model.Shipper",
+		"jp.co.kuronekoyamato.b2web.model.Shipment",
+		"jp.co.kuronekoyamato.b2web.model.Entry",
+		"jp.co.kuronekoyamato.b2web.model.Feed"
+		};
+	
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.feed.FeedBase";
 
@@ -174,12 +231,13 @@ public class MessagePackMapper extends ResourceMapper {
 				try {
 					if (jo_packages instanceof String) {
 						packagename = (String) jo_packages;			// 業務アプリのEntityクラス
-						classnames = new HashSet<String>();
+						classnames = new LinkedHashSet<String>();
 						classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
 						classnames.addAll(classFinder.getClassNamesFromPackage((String)jo_packages));	// ATOM Classesは先に読む必要がある
 					} else if (jo_packages instanceof Map) {
-						classnames = new HashSet<String>();
+						classnames = new LinkedHashSet<String>();
 						classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES))); // ATOM Classesは先に読む必要がある
+						
 						for (String key : ((Map<String,String>)jo_packages).keySet()) {
 							if (key.indexOf(".atom.")<0) {
 								packagename = key;			// 業務アプリのEntityクラス
@@ -236,8 +294,8 @@ public class MessagePackMapper extends ResourceMapper {
 			// EntryBaseはEntryとして登録
 			if (isEntry(cls.getName())) {
 				msgpack.register(cls, template);
-				loader.delegateLoadingOf(ENTRYBASE);			
 				try {
+					loader.delegateLoadingOf(ENTRYBASE);			
 					cls = loader.loadClass(ENTRYBASE);
 				} catch (ClassNotFoundException e) {
 					throw new ParseException(e.getMessage(), 0);
@@ -245,9 +303,9 @@ public class MessagePackMapper extends ResourceMapper {
 				registry.register(cls, template);
 			}else if (isFeed(cls.getName())) {
 				msgpack.register(cls, template);
-				loader.delegateLoadingOf(FEEDBASE);		
 				try {
 					cls = loader.loadClass(FEEDBASE);
+					loader.delegateLoadingOf(FEEDBASE);		
 				} catch (ClassNotFoundException e) {
 					throw new ParseException(e.getMessage(), 0);
 				}
@@ -318,11 +376,21 @@ public class MessagePackMapper extends ResourceMapper {
 	}
 	
 	private boolean isEntry(String classname) {
-		return classname.indexOf("Entry")>=0;
+		int dot = classname.lastIndexOf(".");
+		if (dot>0) {
+			String token = classname.substring(dot);
+			return token.equals(".Entry");
+		}
+		return false;
 	}
 
 	private boolean isFeed(String classname) {
-		return classname.indexOf("Feed")>=0;
+		int dot = classname.lastIndexOf(".");
+		if (dot>0) {
+			String token = classname.substring(dot);
+			return token.equals(".Feed");
+		}
+		return false;
 	}
 	
 	private static String toCamelcase(String name) {
@@ -387,14 +455,18 @@ public class MessagePackMapper extends ResourceMapper {
 	
 	public Class getClass(String classname) throws ClassNotFoundException {
 		// ATOMの優先すべき項目名の場合はATOMクラスを読む
-		if (classname!=null&&classname.lastIndexOf("Link")>=0) {
+		int dot = classname.lastIndexOf(".");
+		if (dot>0) {
+		String token = classname.substring(dot);
+		if (token.equals(".Link")) {
 			classname = ATOMCLASSES[ENTRYLINK];
 		}else 
-		if (classname!=null&&classname.lastIndexOf("Contributor")>=0) {
+		if (token.equals(".Contributor")) {
 			classname = ATOMCLASSES[CONTRIBUTOR];
 		}else 
-		if (classname!=null&&classname.lastIndexOf("Content")>=0) {
+		if (token.equals(".Content")) {
 			classname = ATOMCLASSES[CONTENT];
+		}
 		}
 		return loader.loadClass(classname);   
 	}
