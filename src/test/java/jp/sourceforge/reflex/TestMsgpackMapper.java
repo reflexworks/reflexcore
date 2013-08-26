@@ -245,13 +245,40 @@ public class TestMsgpackMapper {
 		EntryBase entry = (EntryBase) mp.fromJSON(json);
 
 		// MessagePack test
-		System.out.println("\n=== XML Entry(テキストノード) シリアライズ ===");
+		System.out.println("\n=== XML Entry(テキストノード+Link) シリアライズ ===");
         String xml = mp.toXML(entry);
 		System.out.println(xml);
 		
+		System.out.println("\n=== Messagepack Entry シリアライズ ===");
+        byte[] msgpack = mp.toMessagePack(entry);
+        for(int i=0;i<msgpack.length;i++) { 
+        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
+        } 
+
 		assertEquals(json, mp.toJSON(mp.fromXML(xml)));
 	}
-	
+
+	@Test
+	public void testTextNodeFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+		MessagePackMapper mp = new MessagePackMapper(entitytempl);		// 変更前
+
+		String json = "{\"feed\" : {\"entry\" : [{\"subInfo\" : {\"hobby\" : [{\"_$$text\" : \"テキストノード\"}]},\"link\" : [{\"_$href\" : \"/0762678511-/allA/759188985520\",\"_$rel\" : \"self\"},{\"_$href\" : \"/transferring/all/0762678511-/759188985520\",\"_$rel\" : \"alternate\"},{\"_$href\" : \"/0762678511-/@/spool/759188985520\",\"_$rel\" : \"alternate\"},{\"_$href\" : \"/0762678511-/historyA/759188985520\",\"_$rel\" : \"alternate\"}]}]}}";
+		FeedBase feed = (FeedBase) mp.fromJSON(json);
+
+		// MessagePack test
+		System.out.println("\n=== XML Entry(テキストノード+Link) シリアライズ ===");
+        String xml = mp.toXML(feed);
+		System.out.println(xml);
+		
+		System.out.println("\n=== Messagepack Entry シリアライズ ===");
+        byte[] msgpack = mp.toMessagePack(feed);
+        for(int i=0;i<msgpack.length;i++) { 
+        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
+        } 
+
+		assertEquals(json, mp.toJSON(mp.fromXML(xml)));
+	}
+
 	@Test
 	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 	
