@@ -91,6 +91,11 @@ public class MessagePackMapper extends ResourceMapper {
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
 	private static final String FEEDBASE = "jp.reflexworks.atom.feed.FeedBase";
 
+	private static final int CONTENT = 8;
+	private static final int CONTRIBUTOR = 9;
+	private static final int ENTRYLINK = 10;
+
+	
 	// Arrayの要素クラス
 	public static final String ELEMENTCLASS = "jp.reflexworks.atom.entry.Element";
 	private static final String ELEMENTSIG = "Ljava/util/List<Ljp/reflexworks/atom/entry/Element;>;";
@@ -361,7 +366,16 @@ public class MessagePackMapper extends ResourceMapper {
 	}
 	
 	public Class getClass(String clsName) throws ClassNotFoundException {
-		return loader.loadClass(clsName);
+		if (clsName.lastIndexOf("Link")>=0) {
+			clsName = ATOMCLASSES[ENTRYLINK];
+		}else 
+		if (clsName.lastIndexOf("Contributor")>=0) {
+			clsName = ATOMCLASSES[CONTRIBUTOR];
+		}else 
+		if (clsName.lastIndexOf("Content")>=0) {
+			clsName = ATOMCLASSES[CONTENT];
+		}
+		return loader.loadClass(clsName);   // TODO ATOMの優先すべき項目名の場合はATOMクラスを読む
 	}
 	
 	public ClassPool getPool() {
