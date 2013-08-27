@@ -449,6 +449,7 @@ public class MessagePackMapper extends ResourceMapper {
         	Value v;
 			try {
 				v = u.readValue();
+
 			} catch (IOException e) {
 	        	throw new JSONException(e);
 			}
@@ -965,7 +966,10 @@ public class MessagePackMapper extends ResourceMapper {
         if (value.isMapValue()) {
         	boolean isCreated = false;
         	for(Entry<Value,Value> e:value.asMapValue().entrySet()) {
-    			String fld = e.getKey().toString().replace("\"", "").replace("-", "__");  // フィールド名の変換。ハイフン
+        		String fld = e.getKey().toString().replace("\"", "");
+        		if (fld.indexOf("-")>=0) {
+        			fld = fld.replace("-", "__");
+        		}
         		if (!classname.isEmpty()) {
         			cc = this.getClass(classname);
     				f = cc.getField(fld);

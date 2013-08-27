@@ -307,14 +307,14 @@ public class TestMsgpackMapper {
 		System.out.println("xml size:"+xml.length()+" time:"+(d4.getTime()-d3.getTime()));
 		System.out.println("\n=== XML Feed デシリアライズ ===");
 		System.out.println("time:"+(d2.getTime()-d1.getTime()));
-		System.out.println(xml);
+//		System.out.println(xml);
 		
 		Date d5 = new Date();
 		String json = mp.toJSON(feedobj);
 		Date d6 = new Date();
 		System.out.println("\n=== JSON Feed シリアライズ ===");
 		System.out.println("json size:"+json.length()+" time:"+(d6.getTime()-d5.getTime()));
-		System.out.println(json);
+//		System.out.println(json);
 		Date d7 = new Date();
 		Object json2 = mp.fromJSON(json);
 		Date d8 = new Date();
@@ -327,9 +327,9 @@ public class TestMsgpackMapper {
 		Date d9 = new Date();
         byte[] msgpack = mp.toMessagePack(feedobj);
 		Date d10 = new Date();
-        for(int i=0;i<msgpack.length;i++) { 
-        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
-        } 
+//        for(int i=0;i<msgpack.length;i++) { 
+//        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
+//        } 
 		System.out.println("\nmsgpack size:"+msgpack.length+" time:"+(d10.getTime()-d9.getTime()));
 		Date d11 = new Date();
         FeedBase msgpack2 = (FeedBase) mp.fromMessagePack(msgpack,true);
@@ -342,9 +342,9 @@ public class TestMsgpackMapper {
         byte[] de = mp.deflate(msgpack);
 		Date d14 = new Date();
 		System.out.println("defleted size:"+de.length+" 圧縮率(対msgpack)："+(de.length*100/msgpack.length)+"% 圧縮率(対json)："+(de.length*100/json.length())+"% 圧縮率(対xml)："+(de.length*100/xml.length())+"%");
-        for(int i=0;i<de.length;i++) { 
-        	System.out.print(Integer.toHexString(de[i]& 0xff)+" "); 
-        } 
+//        for(int i=0;i<de.length;i++) { 
+//        	System.out.print(Integer.toHexString(de[i]& 0xff)+" "); 
+//        } 
 		System.out.println("time:"+(d14.getTime()-d13.getTime()));
 		
 		assertTrue(true);
