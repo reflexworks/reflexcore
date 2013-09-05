@@ -247,10 +247,11 @@ public class TestMsgpackMapper {
 		// エラーケース（errorsの数が２個）
 		json = "{ \"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"},{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 101,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
 		entry = (EntryBase) mp.fromJSON(json);
-		boolean isValid = true;
+		
 		try {
-			isValid = entry.validate();
+			entry.validate();
 		}catch(Exception e) {
+			// validateに失敗するとParseExceptionがスローされる
 			System.out.println(e.getMessage());
 		}
 	}
