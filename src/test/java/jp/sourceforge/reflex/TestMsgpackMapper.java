@@ -237,7 +237,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testStringEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	public void testMapEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
 	    String json = "{ \"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
 		// 正常ケース
