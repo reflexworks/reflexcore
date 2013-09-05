@@ -237,6 +237,56 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
+	public void testStringEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
+	    String json = "{ \"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
+		// 正常ケース
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
+		entry.validate();
+
+		// エラーケース（errorsの数が２個）
+		json = "{ \"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"},{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 101,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : [\"ポップス1\",\"ポップス2\",\"ポップス3\"]}}}}";
+		entry = (EntryBase) mp.fromJSON(json);
+		boolean isValid = true;
+		try {
+			isValid = entry.validate();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testBooleanEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+		MessagePackMapper mp = new MessagePackMapper(entitytempl);		
+
+		String json = "{\"entry\" : {\"verified_email\" : false}}";
+		// 正常ケース
+		EntryBase entry = (EntryBase) mp.fromJSON(json);
+		json = json.replace("false", "true");
+		entry = (EntryBase) mp.fromJSON(json);
+		
+		// MessagePack test
+		System.out.println("\n=== XML Entry(テキストノード+Link) シリアライズ ===");
+        String xml = mp.toXML(entry);
+		System.out.println(xml);
+		
+		System.out.println("\n=== Messagepack Entry シリアライズ ===");
+        byte[] msgpack = mp.toMessagePack(entry);
+        for(int i=0;i<msgpack.length;i++) { 
+        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
+        } 
+
+		// 異常ケース
+		try {
+			json = json.replace("true", "\"true\"");
+			entry = (EntryBase) mp.fromJSON(json);
+		}catch (JSONException je) {
+			System.out.println("\n=== test error === \n"+je.getMessage());
+		}
+		assertTrue(true);
+	}
+
+	@Test
 	public void testTextNodeEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 		MessagePackMapper mp = new MessagePackMapper(entitytempl);		// 変更前
 
@@ -275,6 +325,7 @@ public class TestMsgpackMapper {
         	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" "); 
         } 
 
+        
 		assertEquals(json, mp.toJSON(mp.fromXML(xml)));
 	}
 
