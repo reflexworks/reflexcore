@@ -11,6 +11,8 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONException;
+
 import jp.sourceforge.reflex.IResourceMapper;
 
 /**
@@ -206,16 +208,15 @@ public class JSONSerializer implements IResourceMapper {
 	private boolean isRealClass(Field field) {
 		if (Modifier.isFinal(field.getModifiers()))
 			return false;
-		String validname = field.getType().getName();
-		Object obj;
-		try {
-			obj = Class.forName(validname).newInstance();
-			return (obj != null);
-		} catch (Exception e) {
+		
+		String fieldname = field.getName();
+		if (fieldname!=null) {
+			String classname = fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1);
+			if (field.getType().getName().indexOf(classname)>0) return true;
 		}
 		return false;
 	}
-
+	
 	/**
 	 * @param field Field
 	 * @return boolean
@@ -285,13 +286,15 @@ public class JSONSerializer implements IResourceMapper {
 					// 配列かどうかのチェック
 					if (list.size() > 0) {
 						Object objTmp = list.get(0);
-						Field[] fldTmp = objTmp.getClass().getFields();
-						for (int t = 0; t < fldTmp.length; t++) {
-							if ("_$$col".equals(fldTmp[t].getName())) {
-								// 配列
-								isArray = true;
-								arrayCol = ((Integer) fldTmp[t].get(objTmp))
-										.intValue();
+						if (objTmp!=null) {
+							Field[] fldTmp = objTmp.getClass().getFields();
+							for (int t = 0; t < fldTmp.length; t++) {
+								if ("_$$col".equals(fldTmp[t].getName())) {
+									// 配列
+									isArray = true;
+									arrayCol = ((Integer) fldTmp[t].get(objTmp))
+											.intValue();
+								}
 							}
 						}
 					}
@@ -365,7 +368,8 @@ public class JSONSerializer implements IResourceMapper {
 								mode = context.HASH;
 							}
 							context.push(mode);
-							this.marshal(context, list.get(ln).getClass().getName(),list.get(ln), isArray);
+//							this.marshal(context, list.get(ln).getClass().getName(),list.get(ln), isArray);
+							this.marshal(context, fields[fn].getName(),list.get(ln), isArray);
 						}
 					}
 				}
@@ -442,13 +446,25 @@ public class JSONSerializer implements IResourceMapper {
 	public byte[] toMessagePack(Object entity) throws IOException {
 		throw new IllegalStateException();
 	}
+
 	public void toMessagePack(Object entity, OutputStream out) throws IOException {
 		throw new IllegalStateException();
 	}
+
 	public Object fromMessagePack(byte[] msg) throws IOException {
 		throw new IllegalStateException();
 	}
+
 	public Object fromMessagePack(InputStream msg) throws IOException {
+		throw new IllegalStateException();
+	}
+
+	public Object fromArray(String array, boolean isFeed) throws JSONException {
+		throw new IllegalStateException();
+	}
+
+	public Object toArray(byte[] msg) throws IOException,
+			ClassNotFoundException {
 		throw new IllegalStateException();
 	}
 

@@ -5,7 +5,7 @@
   <groupId>jp.sourceforge.reflex</groupId>
   <artifactId>reflexcore</artifactId>
   <packaging>jar</packaging>
-  <version>1.7.1</version>
+  <version>2.0.1</version>
   <description>Reflex core module is a serializer/deserializer tool of XML/JSON. Based on the concept of a Reflex architecture
   </description>
   <name>Reflex Core Module</name>
@@ -91,7 +91,11 @@
     <url>http://www.virtual-tech.net/</url>
   </organization>
 
-    <build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
     <defaultGoal>validate</defaultGoal>
     <pluginManagement>
       <plugins>
@@ -101,6 +105,10 @@
             <source>1.5</source>
             <target>1.5</target>
             <encoding>UTF-8</encoding>
+            <excludes>
+              <exclude>**/*Test.java</exclude>
+              <exclude>**/Test*.java</exclude>
+            </excludes>
           </configuration>
         </plugin>
         <plugin>
@@ -123,6 +131,10 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
+          <excludes>
+            <exclude>**/*Test.java</exclude>
+            <exclude>**/Test*.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -313,7 +325,7 @@
 		  <encoding>UTF-8</encoding>
 		  <charset>UTF-8</charset>
 		  <docencoding>UTF-8</docencoding>
-		  </configuration>
+		</configuration>
       </plugin>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
@@ -335,7 +347,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -366,11 +378,22 @@
     <dependency>
       <groupId>org.msgpack</groupId>
       <artifactId>msgpack</artifactId>
-      <version>0.6.7</version>
+      <version>0.6.8</version>
     </dependency>
-    
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.18.0-GA</version>
+    </dependency>
+    <dependency>
+      <groupId>com.carrotsearch</groupId>
+      <artifactId>java-sizeof</artifactId>
+      <version>0.0.4</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-    <distributionManagement>
+
+  <distributionManagement>
     <repository>
       <id>scp-repository</id>
       <name>SourceForge</name>

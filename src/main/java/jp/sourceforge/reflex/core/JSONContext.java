@@ -246,17 +246,14 @@ public class JSONContext {
 	}
 
 	/**
-	 * @param name
-	 *            Object
+	 * @param nodename
+	 *            String
 	 * @throws IOException
 	 *             printClassName
 	 */
-	public void printNodeName(String name) throws IOException {
+	public void printNodeName(String nodename) throws IOException {
 
 		if (hasKey()) {
-			String nodename = fld2node(name);
-			// .toLowerCase());
-
 			nodename = nodename.substring(nodename.lastIndexOf(".") + 1);
 			nodename = nodename.substring(0, 1).toLowerCase()
 					+ nodename.substring(1);
@@ -296,8 +293,8 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, String value) throws IOException {
-		if (value != null) {
-			this.outprint(this.Q + fld2node(key) + this.Q + " : " + this.Q
+		if (value != null&&key.indexOf("_$xml")<0) {
+					this.outprint(this.Q + key + this.Q + " : " + this.Q
 					+ escape(value) + this.Q);
 		}
 	}
@@ -323,7 +320,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, int value) throws IOException {
-		this.outprint(this.Q + fld2node(key) + this.Q + " : " + value);
+		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
 	/**
@@ -335,7 +332,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, long value) throws IOException {
-		this.outprint(this.Q + fld2node(key) + this.Q + " : " + value);
+		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
 	/**
@@ -347,7 +344,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, float value) throws IOException {
-		this.outprint(this.Q + fld2node(key) + this.Q + " : " + value);
+		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
 	/**
@@ -359,7 +356,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, double value) throws IOException {
-		this.outprint(this.Q + fld2node(key) + this.Q + " : " + value);
+		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
 	/**
@@ -371,7 +368,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, boolean value) throws IOException {
-		this.outprint(this.Q + fld2node(key) + this.Q + " : " + value);
+		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 	
 	/**
@@ -442,18 +439,6 @@ public class JSONContext {
 	public String dateformat(Date date) {
 
 		return isoformat.format(date);
-
-	}
-
-	/**
-	 * @param fld
-	 *            String
-	 * @return String
-	 */
-	public String fld2node(String fld) {
-
-		String node = fld.replace("$", "___");
-		return node;
 
 	}
 

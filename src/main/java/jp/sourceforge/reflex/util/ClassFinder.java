@@ -85,7 +85,8 @@ public class ClassFinder {
         for (String path : dir.list()) {
             File entry = new File(dir, path);
             if (entry.isFile() && isClassFile(entry.getName())) {
-        		classes.add(packageName + "." + fileNameToClassName(entry.getName()));
+            	String classname = packageName + "." + fileNameToClassName(entry.getName());
+        		classes.add(classname);
             } else if (entry.isDirectory()) {
             	// 再起呼び出しはしない
             }

@@ -190,16 +190,29 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		((RXMapper)this.getClassMapper()).setJo_packagemap(new LinkedHashMap<String, String>(jo_packages0));
 		return unmarshal(hierarchicalStreamDriver.createReader(xml), root);
 	}
+
 	public byte[] toMessagePack(Object entity) throws IOException {
 		throw new IllegalStateException();
 	}
+
 	public void toMessagePack(Object entity, OutputStream out) throws IOException {
 		throw new IllegalStateException();
 	}
-	public Object fromMessagePack(byte[] msg) throws IOException {
+
+	public Object fromMessagePack(byte[] msg) throws IOException, ClassNotFoundException {
 		throw new IllegalStateException();
 	}
-	public Object fromMessagePack(InputStream msg) throws IOException {
+
+	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException {
+		throw new IllegalStateException();
+	}
+
+	public Object fromArray(String array, boolean isFeed) throws JSONException {
+		throw new IllegalStateException();
+	}
+
+	public Object toArray(byte[] msg) throws IOException,
+			ClassNotFoundException {
 		throw new IllegalStateException();
 	}
 

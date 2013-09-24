@@ -38,8 +38,6 @@ public class RXUtil {
 	public String node2fld(String node) {
 
 		String temp = node.replace(':', '$');
-		temp = temp.replace("____", "_$");		// for JSON
-		temp = temp.replace("___", "$");		// for JSON
 		String fld = replace(temp, "-", "__");
 
 		return fld;

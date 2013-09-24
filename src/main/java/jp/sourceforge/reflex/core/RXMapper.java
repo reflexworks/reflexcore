@@ -15,7 +15,6 @@
 
 package jp.sourceforge.reflex.core;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -29,7 +28,7 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  */
 public class RXMapper extends MapperWrapper {
 
-	private ClassMapper wrapped;
+	public ClassMapper wrapped;
 	private ResourceMapper rx;
 	private RXUtil rxutil;
 	private final ThreadLocal<LinkedHashMap<String,String>> packagemap = 
@@ -120,12 +119,10 @@ public class RXMapper extends MapperWrapper {
 		try {
 			if (getPrintns()>=0) {
 				prefix = getPrefix(type);
+				if (prefix==null) {
+					prefix = "";
+				}
 			}
-/*			if (prefix != null && !prefix.equals(""))
-				prefix += ":";
-			else
-				prefix = "";
-*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -172,40 +169,6 @@ public class RXMapper extends MapperWrapper {
 		
 		return getPrefix(type.getName());
 
-		/*
-		String namespace = getNamespace(type);
-		String result = null;
-//		rx.setJo_namespacemap(new HashMap()); // initialize
-
-		Field[] fields = type.getFields();
-		for (int i = 0; i < fields.length; i++) {
-
-			String fldname = fields[i].getName();
-			if (fldname.startsWith("_$xmlns")) {
-
-				try {
-					Field fld = type.getField(fldname);
-					String _namespace = (String) fld.get(fld);
-					if (_namespace.indexOf(namespace) > -1) {
-
-						fldname = fldname.substring(7); // "_$xmlns"
-						if (fldname.equals(""))
-							result = "";
-						else
-							result = fldname.substring(1);
-
-						return rxutil.fld2node(result);
-					}
-
-				} catch (Exception e) {
-					return null;
-				}
-
-			}
-		}
-
-		return null;
-		*/
 	}
 
 	public String getNamespace(Class type) {
@@ -213,7 +176,6 @@ public class RXMapper extends MapperWrapper {
 		int e = type.getName().lastIndexOf(".");
 		String packagename = type.getName().substring(0, e);
 		String ns = (String) getJo_packagemap().get(packagename);
-
 		return cutPrefixFromNs(ns);
 
 	}
@@ -246,11 +208,11 @@ public class RXMapper extends MapperWrapper {
 
 		classname = rxutil.node2fld(classname);
 
-		String namespace = getNamespace(prefix, classname);
-		String jo_packagename = getPackagename(namespace);
+//		String namespace = getNamespace(prefix, classname);
+//		String jo_packagename = getPackagename(namespace);
 
-		if (namespace == null || (namespace != null && namespace.equals("")))
-			jo_packagename = findPackagename(classname);
+//		if (namespace == null || (namespace != null && namespace.equals("")))
+		String	jo_packagename = findPackagename(classname);
 
 		if (jo_packagename != null) {
 			return wrapped.realClass(jo_packagename + "." + classname);
@@ -259,17 +221,17 @@ public class RXMapper extends MapperWrapper {
 
 		}
 	}
-
+	
 	public String findPackagename(String classname) {
 
-//		Iterator iter = rx.getJo_packagemap().keySet().iterator();
 		Iterator iter = getJo_packagemap().keySet().iterator();
 		while (iter.hasNext()) {
 			String packagename = (String) iter.next();
 			String validname = packagename + "." + classname;
 
 			try {
-				Object obj = Class.forName(validname).newInstance();
+//				Object obj = Class.forName(validname).newInstance();
+				Object obj = wrapped.lookupType(validname);
 				if (obj != null)
 					return packagename;
 
@@ -281,7 +243,7 @@ public class RXMapper extends MapperWrapper {
 		return null;
 
 	}
-
+/* 不具合
 	public String getNamespace(String prefix, String classname) {
 
 		try {
@@ -309,14 +271,13 @@ public class RXMapper extends MapperWrapper {
 		return null;
 
 	}
-
+*/
 	public String realMember(Class type, String serialized) {
 		return serialized;
 	}
 
 	public String getPackagename(String namespace) {
 
-//		Iterator iter = rx.getJo_packagemap().entrySet().iterator();
 		Iterator iter = getJo_packagemap().entrySet().iterator();
 		while (iter.hasNext()) {
 			Map.Entry entry = (Map.Entry) iter.next();
