@@ -200,19 +200,29 @@ public class DateUtil {
 
 	/**
 	 * "yyyy-MM-dd'T'HH:mm:ss+99:99"形式の日付文字列をDateに変換します
-	 * @param dateStr 日付文字列
+	 * @param dateStr 日付文字列(yyyy-MM-dd'T'HH:mm:ss+99:99で、Tや+99:99は省略可能）
 	 * @return date
 	 */
 	public static Date getDate(String dateStr) throws ParseException {
 		String targetStr = null;
-		int idx = dateStr.lastIndexOf(":");
-		if (idx == -1 || idx + 1 >= dateStr.length()) {
-			throw new ParseException("The form at the date is not \"yyyy-MM-dd'T'HH:mm:ss+99:99\".", 0);
+		SimpleDateFormat format;
+
+		int idz = dateStr.lastIndexOf("+");
+		if (idz > 0) {
+			int idx = dateStr.lastIndexOf(":");
+			if (idx == -1 || idx + 1 >= dateStr.length()) {
+				throw new ParseException(
+						"The form at the date is not \"yyyy-MM-dd'T'HH:mm:ss+99:99\".",
+						0);
+			} else {
+				targetStr = (dateStr.substring(0, idx) + dateStr.substring(idx + 1)).replace(" ", "T");
+			}
+			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		} else {
-			targetStr = dateStr.substring(0, idx) + dateStr.substring(idx + 1);
+			targetStr = dateStr.replace(" ","T");
+			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		}
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		return format.parse(targetStr);
 	}
 	
