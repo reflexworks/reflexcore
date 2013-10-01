@@ -292,8 +292,10 @@ public class JSONContext {
 	 * @throws IOException
 	 *             exception
 	 */
+	
 	public void out(String key, String value) throws IOException {
 		if (value != null&&key.indexOf("_$xml")<0) {
+					outcomma();
 					this.outprint(this.Q + key + this.Q + " : " + this.Q
 					+ escape(value) + this.Q);
 		}
@@ -307,6 +309,7 @@ public class JSONContext {
 	 */
 	public void out(String value) throws IOException {
 		if (value != null) {
+			outcomma();
 			this.outprint(this.Q + escape(value) + this.Q);
 		}
 	}
@@ -320,6 +323,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, int value) throws IOException {
+		outcomma();
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -332,6 +336,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, long value) throws IOException {
+		outcomma();
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -344,6 +349,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, float value) throws IOException {
+		outcomma();
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -356,6 +362,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, double value) throws IOException {
+		outcomma();
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -368,6 +375,7 @@ public class JSONContext {
 	 *             exception
 	 */
 	public void out(String key, boolean value) throws IOException {
+		outcomma();
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 	
