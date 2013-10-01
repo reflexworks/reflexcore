@@ -212,7 +212,10 @@ public class DateUtil {
 		int idx = dateStr.lastIndexOf(":");
 		if (idz == -1) {
 			if (idx > 0) {
-				idz = dateStr.lastIndexOf("-", idx);
+				idz = dateStr.lastIndexOf("-");
+				if (idz > -1 && idz < idx) {
+					idz = -1;
+				}
 			}
 		}
 		if (idz > 0) {

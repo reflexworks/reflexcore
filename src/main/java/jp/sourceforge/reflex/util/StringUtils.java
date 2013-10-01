@@ -151,7 +151,67 @@ public class StringUtils {
 		}
 		return def;
 	}
-	
+
+    /**
+     * 文字列を数値に変換します.
+     * <p>
+     * 文字列がnullの場合、0を返却します.
+     * </p>
+     * @param str 文字列
+     * @return 数値
+     */
+	public static float floatValue(String str) {
+		return floatValue(str, 0);
+	}
+
+    /**
+     * 文字列を数値に変換します.
+     * <p>
+     * 文字列がnullの場合、デフォルト値を返却します.
+     * </p>
+     * @param str 文字列
+     * @param def デフォルト値
+     * @return 数値
+     */
+	public static float floatValue(String str, float def) {
+		if (str != null) {
+			try {
+				return Float.parseFloat(str);
+			} catch (NumberFormatException e) {}	// Do nothing.
+		}
+		return def;
+	}
+
+    /**
+     * 文字列を数値に変換します.
+     * <p>
+     * 文字列がnullの場合、0を返却します.
+     * </p>
+     * @param str 文字列
+     * @return 数値
+     */
+	public static double doubleValue(String str) {
+		return doubleValue(str, 0);
+	}
+
+    /**
+     * 文字列を数値に変換します.
+     * <p>
+     * 文字列がnullの場合、デフォルト値を返却します.
+     * </p>
+     * @param str 文字列
+     * @param def デフォルト値
+     * @return 数値
+     */
+	public static double doubleValue(String str, double def) {
+		if (str != null) {
+			try {
+				return Double.parseDouble(str);
+			} catch (NumberFormatException e) {}
+		}
+		return def;
+	}
+
 	/**
 	 * 文字列がnullまたは空文字かどうかチェックします.
 	 * @param str 文字列
