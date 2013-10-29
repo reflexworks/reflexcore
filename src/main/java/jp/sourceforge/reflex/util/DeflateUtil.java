@@ -21,6 +21,7 @@ public class DeflateUtil {
 		def.setLevel(Deflater.BEST_SPEED);
 		def.setInput(dataByte);
 		def.finish();
+		def.end(); 	// メモリ対策　http://qiita.com/nishemon/items/031e476de08d623bfded
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
 				dataByte.length);
@@ -55,6 +56,7 @@ public class DeflateUtil {
 			byteArrayOutputStream.write(buf, 0, resultByte);
 		}
 		byteArrayOutputStream.close();
+		inf.end(); 	// メモリ対策
 
 		return byteArrayOutputStream.toByteArray();
 	}
