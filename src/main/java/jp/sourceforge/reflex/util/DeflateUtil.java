@@ -17,11 +17,10 @@ public class DeflateUtil {
 	 */
 	public byte[] deflate(byte[] dataByte) throws IOException {
 
-		Deflater def = new Deflater();
-		def.setLevel(Deflater.BEST_SPEED);
+		Deflater def = new Deflater(Deflater.BEST_SPEED,true);	// GZIP 互換の圧縮をサポート(JSとの通信のため）
+//		def.setLevel(Deflater.BEST_SPEED);
 		def.setInput(dataByte);
 		def.finish();
-		def.end(); 	// メモリ対策　http://qiita.com/nishemon/items/031e476de08d623bfded
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
 				dataByte.length);
@@ -31,6 +30,7 @@ public class DeflateUtil {
 			byteArrayOutputStream.write(buf, 0, compByte);
 		}
 		byteArrayOutputStream.close();
+		def.end(); 	// VM外メモリ解放　http://qiita.com/nishemon/items/031e476de08d623bfded
 
 		return byteArrayOutputStream.toByteArray();
 	}
@@ -46,7 +46,7 @@ public class DeflateUtil {
 	public byte[] inflate(byte[] dataByte) throws IOException,
 			DataFormatException {
 
-		Inflater inf = new Inflater();
+		Inflater inf = new Inflater(true);
 		inf.setInput(dataByte);
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
