@@ -1,13 +1,16 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 public class DeflateUtil {
 	
+	private static final int BUF_SIZE = 4096;
 	/**
 	 * 圧縮する
 	 * 
@@ -18,13 +21,12 @@ public class DeflateUtil {
 	public byte[] deflate(byte[] dataByte) throws IOException {
 
 		Deflater def = new Deflater(Deflater.BEST_SPEED,true);	// GZIP 互換の圧縮をサポート(JSとの通信のため）
-//		def.setLevel(Deflater.BEST_SPEED);
 		def.setInput(dataByte);
 		def.finish();
 
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
 				dataByte.length);
-		byte[] buf = new byte[1024];
+		byte[] buf = new byte[BUF_SIZE];
 		while (!def.finished()) {
 			int compByte = def.deflate(buf);
 			byteArrayOutputStream.write(buf, 0, compByte);
@@ -42,23 +44,26 @@ public class DeflateUtil {
 	 * @return inflated bytes
 	 * @throws IOException
 	 * @throws DataFormatException
-	 */
-	public byte[] inflate(byte[] dataByte) throws IOException,
-			DataFormatException {
-
+	 */	
+	public byte[] inflate(byte[] databyte) {
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Inflater inf = new Inflater(true);
-		inf.setInput(dataByte);
+		InflaterInputStream inStream = new InflaterInputStream(
+				new ByteArrayInputStream(databyte), inf);
 
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		byte[] buf = new byte[1024];
-		while (!inf.finished()) {
-			int resultByte = inf.inflate(buf);
-			byteArrayOutputStream.write(buf, 0, resultByte);
+		byte[] buf = new byte[BUF_SIZE];
+		try {
+			while (true) {
+				int size = inStream.read(buf);
+				if (size <= 0)	break;
+				out.write(buf, 0, size);
+			}
+			out.close();
+		} catch (IOException e) {
 		}
-		byteArrayOutputStream.close();
 		inf.end(); 	// メモリ対策
 
-		return byteArrayOutputStream.toByteArray();
+		return out.toByteArray();
 	}
-
 }
