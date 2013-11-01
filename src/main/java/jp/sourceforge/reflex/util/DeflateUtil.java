@@ -41,8 +41,6 @@ public class DeflateUtil {
 	 * <p>
 	 * 圧縮レベル、GZIP互換かどうかはデフォルトの設定を使用します。
 	 * </p>
-	 * @param level 圧縮レベル (0 〜 9)
-	 * @param nowrap true の場合は GZIP 互換の圧縮を使用
 	 */
 	public DeflateUtil() {
 		this(DEFAULT_LEVEL, DEFAULT_NOWRAP);
@@ -180,8 +178,6 @@ public class DeflateUtil {
 				out.write(buf, 0, size);
 			}
 
-			return out.toByteArray();
-
 		} finally {
 			if (def != null) {
 				try {
@@ -197,6 +193,8 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
+
+		return out.toByteArray();
 	}
 
 	/**
@@ -227,8 +225,6 @@ public class DeflateUtil {
 			while ((size = inStream.read(buf)) > 0) {
 				out.write(buf, 0, size);
 			}
-			
-			return out.toByteArray();
 
 		} finally {
 			if (inf != null) {
@@ -245,6 +241,8 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
+		
+		return out.toByteArray();
 	}
 
 }
