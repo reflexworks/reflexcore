@@ -159,17 +159,11 @@ public class DeflateUtil {
 				def = new Deflater(level, nowrap);
 			}
 			
-			//def.setInput(dataByte);
-			//def.finish();
 			inStream = new DeflaterInputStream(
 					new ByteArrayInputStream(dataByte), def);
 			
 			byte[] buf = new byte[BUF_SIZE];
 			int size;
-			//while (!def.finished()) {
-			//	int compByte = def.deflate(buf);
-			//	out.write(buf, 0, compByte);
-			//}
 			while ((size = inStream.read(buf)) > 0) {
 				out.write(buf, 0, size);
 			}
