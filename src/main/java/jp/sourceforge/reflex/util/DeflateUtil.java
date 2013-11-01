@@ -37,7 +37,19 @@ public class DeflateUtil {
 	private Inflater inf;
 	
 	/**
-	 * コンストラクタ
+	 * コンストラクタ.
+	 * <p>
+	 * 圧縮レベル、GZIP互換かどうかはデフォルトの設定を使用します。
+	 * </p>
+	 * @param level 圧縮レベル (0 〜 9)
+	 * @param nowrap true の場合は GZIP 互換の圧縮を使用
+	 */
+	public DeflateUtil() {
+		this(DEFAULT_LEVEL, DEFAULT_NOWRAP);
+	}
+
+	/**
+	 * コンストラクタ.
 	 * @param level 圧縮レベル (0 〜 9)
 	 * @param nowrap true の場合は GZIP 互換の圧縮を使用
 	 */
