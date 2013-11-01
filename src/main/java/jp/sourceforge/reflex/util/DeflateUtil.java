@@ -1,10 +1,13 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
+import java.util.zip.DeflaterInputStream;
 import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Deflate圧縮・解凍ユーティリティ.
@@ -26,7 +29,7 @@ public class DeflateUtil {
 	/** デフォルト nowrap */
 	public static final boolean DEFAULT_NOWRAP = true;
 	
-	private static final int BUFFER = 1024;
+	private static final int BUF_SIZE = 4096;
 	
 	private int level;
 	private boolean nowrap;
@@ -148,23 +151,30 @@ public class DeflateUtil {
 			return null;
 		}
 		
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(
+		ByteArrayOutputStream out = new ByteArrayOutputStream(
 				dataByte.length);
+		DeflaterInputStream inStream = null;
 		try {
 			if (def == null) {
 				def = new Deflater(level, nowrap);
 			}
 			
-			def.setInput(dataByte);
-			def.finish();
-	
-			byte[] buf = new byte[BUFFER];
-			while (!def.finished()) {
-				int compByte = def.deflate(buf);
-				byteArrayOutputStream.write(buf, 0, compByte);
+			//def.setInput(dataByte);
+			//def.finish();
+			inStream = new DeflaterInputStream(
+					new ByteArrayInputStream(dataByte), def);
+			
+			byte[] buf = new byte[BUF_SIZE];
+			int size;
+			//while (!def.finished()) {
+			//	int compByte = def.deflate(buf);
+			//	out.write(buf, 0, compByte);
+			//}
+			while ((size = inStream.read(buf)) > 0) {
+				out.write(buf, 0, size);
 			}
 
-			return byteArrayOutputStream.toByteArray();
+			return out.toByteArray();
 
 		} finally {
 			if (def != null) {
@@ -172,8 +182,13 @@ public class DeflateUtil {
 					def.reset();
 				} catch (Exception e) {}	// Do nothing.
 			}
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (Exception e) {}	// Do nothing.
+			}
 			try {
-				byteArrayOutputStream.close();
+				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
 	}
@@ -192,22 +207,22 @@ public class DeflateUtil {
 			return null;
 		}
 
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		InflaterInputStream inStream = null;
 		try {
 			if (inf == null) {
 				inf = new Inflater(nowrap);
 			}
+			inStream = new InflaterInputStream(
+					new ByteArrayInputStream(dataByte), inf);
 			
-			inf.setInput(dataByte);
-	
-			byte[] buf = new byte[BUFFER];
-			while (!inf.finished()) {
-				int resultByte = inf.inflate(buf);
-				byteArrayOutputStream.write(buf, 0, resultByte);
+			byte[] buf = new byte[BUF_SIZE];
+			int size;
+			while ((size = inStream.read(buf)) > 0) {
+				out.write(buf, 0, size);
 			}
 			
-			return byteArrayOutputStream.toByteArray();
+			return out.toByteArray();
 
 		} finally {
 			if (inf != null) {
@@ -215,8 +230,13 @@ public class DeflateUtil {
 					inf.reset();
 				} catch (Exception e) {}	// Do nothing.
 			}
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (Exception e) {}	// Do nothing.
+			}
 			try {
-				byteArrayOutputStream.close();
+				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
 	}
