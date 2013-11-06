@@ -211,6 +211,11 @@ public class DeflateUtil {
 			return null;
 		}
 
+		// 1バイト余分な領域を加える必要がある。
+		byte[] src = new byte[dataByte.length + 1];
+		System.arraycopy(dataByte, 0, src, 0, dataByte.length);
+		src[dataByte.length] = 0;
+		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		InflaterInputStream inStream = null;
 		try {
@@ -218,7 +223,7 @@ public class DeflateUtil {
 				inf = new Inflater(nowrap);
 			}
 			inStream = new InflaterInputStream(
-					new ByteArrayInputStream(dataByte), inf);
+					new ByteArrayInputStream(src), inf);
 			
 			byte[] buf = new byte[BUF_SIZE];
 			int size;
