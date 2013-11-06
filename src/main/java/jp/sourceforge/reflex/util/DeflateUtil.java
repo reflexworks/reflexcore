@@ -212,9 +212,14 @@ public class DeflateUtil {
 		}
 
 		// 1バイト余分な領域を加える必要がある。
-		byte[] src = new byte[dataByte.length + 1];
-		System.arraycopy(dataByte, 0, src, 0, dataByte.length);
-		src[dataByte.length] = 0;
+		byte[] src = null;
+		if (nowrap) {
+			src = new byte[dataByte.length + 1];
+			System.arraycopy(dataByte, 0, src, 0, dataByte.length);
+			src[dataByte.length] = 0;
+		} else {
+			src = dataByte;
+		}
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		InflaterInputStream inStream = null;
