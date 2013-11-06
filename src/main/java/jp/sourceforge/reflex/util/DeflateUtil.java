@@ -1,13 +1,10 @@
 package jp.sourceforge.reflex.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
-import java.util.zip.DeflaterInputStream;
 import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
 /**
  * Deflate圧縮・解凍ユーティリティ.
@@ -163,6 +160,31 @@ public class DeflateUtil {
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream(
 				dataByte.length);
+		try {
+			if (def == null) {
+				def = new Deflater(level, nowrap);
+			}
+			def.setInput(dataByte);
+			def.finish();
+
+			byte[] buf = new byte[BUF_SIZE];
+			while (!def.finished()) {
+				int compByte = def.deflate(buf, 0, BUF_SIZE, Deflater.SYNC_FLUSH);
+				out.write(buf, 0, compByte);
+			}
+		
+		} finally {
+			if (def != null) {
+				try {
+					def.reset();
+				} catch (Exception e) {}	// Do nothing.
+			}
+			try {
+				out.close();
+			} catch (Exception e) {}	// Do nothing.
+		}
+		
+		/*
 		DeflaterInputStream inStream = null;
 		try {
 			if (def == null) {
@@ -193,6 +215,7 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
+		*/
 
 		return out.toByteArray();
 	}
@@ -222,6 +245,30 @@ public class DeflateUtil {
 		}
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			if (inf == null) {
+				inf = new Inflater(nowrap);
+			}
+			inf.setInput(src);
+
+			byte[] buf = new byte[BUF_SIZE];
+			while (!inf.finished()) {
+				int resultByte = inf.inflate(buf, 0, BUF_SIZE);
+				out.write(buf, 0, resultByte);
+			}
+
+		} finally {
+			if (inf != null) {
+				try {
+					inf.reset();
+				} catch (Exception e) {}	// Do nothing.
+			}
+			try {
+				out.close();
+			} catch (Exception e) {}	// Do nothing.
+		}
+		
+		/*
 		InflaterInputStream inStream = null;
 		try {
 			if (inf == null) {
@@ -251,6 +298,7 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
+		*/
 		
 		return out.toByteArray();
 	}
