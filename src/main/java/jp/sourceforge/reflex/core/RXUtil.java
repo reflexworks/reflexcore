@@ -25,9 +25,68 @@ import java.util.regex.Pattern;
 public class RXUtil {
 
 	private static final String TEXT = "com.google.appengine.api.datastore.Text";
-	
+	private static final String[] RESERVEDWORDS = {
+		"abstract",
+		"assert",
+		"boolean",
+		"break",
+		"byte",
+		"case",
+		"catch",
+		"char",
+		"class",
+		"const",
+		"continue",
+		"default",
+		"do",
+		"double",
+		"else",
+		"enum",
+		"extends",
+		"final",
+		"finally",
+		"float",
+		"for",
+		"goto",
+		"if",
+		"implements",
+		"import",
+		"instanceof",
+		"int",
+		"interface",
+		"long",
+		"native",
+		"new",
+		"package",
+		"private",
+		"protected",
+		"public",
+		"return",
+		"short",
+		"static",
+		"strictfp",
+		"super",
+		"switch",
+		"synchrnized",
+		"this",
+		"throw",
+		"throws",
+		"transient",
+		"try",
+		"void",
+		"volatile",
+		"while",
+		"true",
+		"false",
+		"null"
+	};
+
 	public String fld2node(String fld) {
 
+		// for reserved word
+		if (fld.startsWith("_")&&!fld.startsWith("_$")) {
+			fld = fld.substring(1);
+		}
 		String temp = fld.replace('$', ':');
 		String node = replace(temp, "__", "-");
 
@@ -37,6 +96,10 @@ public class RXUtil {
 
 	public String node2fld(String node) {
 
+		// for reserved word
+		if (isReservedWord(node)) {
+			node = "_"+node;
+		}
 		String temp = node.replace(':', '$');
 		String fld = replace(temp, "-", "__");
 
@@ -108,5 +171,16 @@ public class RXUtil {
 			return null;
 		}
 	}
+	
+	
+	private boolean isReservedWord(String self) {
+		for(String word:RESERVEDWORDS) {
+			if (self.equals(word)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 }
