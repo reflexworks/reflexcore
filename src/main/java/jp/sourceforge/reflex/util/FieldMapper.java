@@ -26,6 +26,12 @@ public class FieldMapper {
 
 	public static final String PERSISTENT = "@javax.jdo.annotations.Persistent";
 	public static final String PRIMARY_KEY = "@javax.jdo.annotations.PrimaryKey";
+	
+	protected boolean isReflexField;
+	
+	public FieldMapper(boolean isReflexField) {
+		this.isReflexField = isReflexField;
+	}
 
 	/**
 	 * sourceの各値を、targetの各フィールドにセットします.
@@ -178,8 +184,8 @@ public class FieldMapper {
 
 			if (!isFinal(fld) && (!isCheckAnnotation || isPersistent(fld))) {
 
-				String setter = getSetter(fld);
-				String getter = getGetter(fld);
+				String setter = getSetter(fld, isReflexField);
+				String getter = getGetter(fld, isReflexField);
 
 				try {
 					Object sourcevalue = this.getValue(source, getter);
@@ -248,8 +254,8 @@ public class FieldMapper {
 
 		for (Field fld : fields) {
 			if (!isFinal(fld)) {
-				String setter = getSetter(fld);
-				String getter = getGetter(fld);
+				String setter = getSetter(fld, isReflexField);
+				String getter = getGetter(fld, isReflexField);
 
 				Object sourcevalue = this.getValue(source, getter);
 				this.setValue(target, fld.getType(), clone(sourcevalue), setter);
@@ -263,8 +269,8 @@ public class FieldMapper {
 			fields = tmpClass.getDeclaredFields();
 			for (Field fld : fields) {
 				if (!isFinal(fld)) {
-					String setter = getSetter(fld);
-					String getter = getGetter(fld);
+					String setter = getSetter(fld, isReflexField);
+					String getter = getGetter(fld, isReflexField);
 
 					Object sourcevalue = this.getValue(source, getter);
 					this.setValue(target, fld.getType(), clone(sourcevalue), setter);
@@ -695,20 +701,39 @@ public class FieldMapper {
 	 * @param fld Field
 	 * @return getterメソッドの文字列表記
 	 */
+	/*
 	public static String getGetter(Field fld) {
 		if (fld != null) {
 			return getGetter(fld.getName(), fld.getType());
 		}
 		return null;
 	}
-	
+	*/
+
+	/**
+	 * Fieldからgetterを返します
+	 * @param fld Field
+	 * @param isReflexField 先頭に"_"がついたフィールドかどうか
+	 * @return getterメソッドの文字列表記
+	 */
+	public String getGetter(Field fld, boolean isReflexField) {
+		if (fld != null) {
+			String fldName = fld.getName();
+			if (isReflexField && fldName.startsWith("_") && !fldName.startsWith("_$")) {
+				fldName = fldName.substring(1);
+			}
+			return getGetter(fldName, fld.getType());
+		}
+		return null;
+	}
+
 	/**
 	 * Fieldからgetterを返します
 	 * @param name フィールド名
 	 * @param type フィールドのクラス
 	 * @return getterメソッドの文字列表記
 	 */
-	public static String getGetter(String name, Class type) {
+	public String getGetter(String name, Class type) {
 		String prefix = null;
 		if (type.equals(boolean.class)) {
 			prefix = "is";
@@ -726,20 +751,39 @@ public class FieldMapper {
 	 * @param fld Field
 	 * @return setterメソッドの文字列表記
 	 */
+	/*
 	public static String getSetter(Field fld) {
 		if (fld != null) {
 			return getSetter(fld.getName(), fld.getType());
 		}
 		return null;
 	}
-	
+	*/
+
+	/**
+	 * Fieldからsetterを返します
+	 * @param fld Field
+	 * @param isReflexField 先頭に"_"がついたフィールドかどうか
+	 * @return setterメソッドの文字列表記
+	 */
+	public String getSetter(Field fld, boolean isReflexField) {
+		if (fld != null) {
+			String fldName = fld.getName();
+			if (isReflexField && fldName.startsWith("_") && !fldName.startsWith("_$")) {
+				fldName = fldName.substring(1);
+			}
+			return getSetter(fldName, fld.getType());
+		}
+		return null;
+	}
+
 	/**
 	 * Fieldからsetterを返します
 	 * @param name フィールド名
 	 * @param type フィールドのクラス
 	 * @return setterメソッドの文字列表記
 	 */
-	public static String getSetter(String name, Class type) {
+	public String getSetter(String name, Class type) {
 		String prefix = "set";
 		if (type.equals(boolean.class)) {
 			if (name.startsWith("is") && name.length() > 2) {

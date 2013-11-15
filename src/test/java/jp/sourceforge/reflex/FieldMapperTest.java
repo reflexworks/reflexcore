@@ -58,7 +58,7 @@ public class FieldMapperTest {
 		try {
 			System.out.println("初期ソース: " + source);
 			
-			FieldMapper fieldMapper = new FieldMapper();
+			FieldMapper fieldMapper = new FieldMapper(false);
 			//fieldMapper.setValueExcludingMultiObj(source, target);
 			//fieldMapper.setValue(source, target, false);
 			Type2 cloneObj = (Type2)fieldMapper.clone(source);

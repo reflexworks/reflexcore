@@ -8,7 +8,7 @@ public class Content {
 	
 	public Content clone() {
 		Content cont = new Content();
-		FieldMapper fieldMapper = new FieldMapper();
+		FieldMapper fieldMapper = new FieldMapper(false);
 		return (Content)fieldMapper.clone(this);
 		//cont.content = new String(this.content);
 	}
