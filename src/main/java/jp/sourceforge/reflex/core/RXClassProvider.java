@@ -47,7 +47,6 @@ public class RXClassProvider extends RXUtil {
 	public void writeProperty(Object object, String node, Object value) {
 		try {
 			String fldname = node2fld(node);
-
 			Field field = object.getClass().getField(fldname);
 
 			if (isList(field.getType())) {
@@ -102,7 +101,8 @@ public class RXClassProvider extends RXUtil {
 		String fldname = node2fld(node);
 
 		try {
-			return object.getClass().getField(fldname).getType();
+			Class cls = object.getClass().getField(fldname).getType();
+			return cls;
 		} catch (Exception e) {
 			int s = fldname.indexOf("$");
 			if (s > 0)

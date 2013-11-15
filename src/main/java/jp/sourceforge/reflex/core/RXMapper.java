@@ -206,7 +206,7 @@ public class RXMapper extends MapperWrapper {
 			classname = elementName.substring(0, 1).toUpperCase()
 					+ elementName.substring(1); // to UpperCase
 
-		classname = rxutil.node2fld(classname);
+		classname = rxutil.node2fld(classname).substring(1);
 
 //		String namespace = getNamespace(prefix, classname);
 //		String jo_packagename = getPackagename(namespace);

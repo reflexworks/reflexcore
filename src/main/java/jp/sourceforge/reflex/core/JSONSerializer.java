@@ -211,7 +211,9 @@ public class JSONSerializer implements IResourceMapper {
     
     String fieldname = field.getName();
     if (fieldname!=null) {
-      String classname = fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1);
+//      String classname = fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1);
+      // 先頭に_が付く前提
+      String classname = fieldname.substring(1, 2).toUpperCase() + fieldname.substring(2);
       if (field.getType().getName().indexOf(classname)>0) return true;
     }
     return false;
@@ -267,7 +269,7 @@ public class JSONSerializer implements IResourceMapper {
 
     Field[] fields = source.getClass().getFields();
     
-    context.printNodeName(nodename);
+    context.printNodeName(nodename.substring(1));
     context.pushout();
 
     for (int fn = 0; fn < fields.length; fn++) {
