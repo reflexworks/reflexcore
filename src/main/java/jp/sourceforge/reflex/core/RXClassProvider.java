@@ -46,6 +46,7 @@ public class RXClassProvider extends RXUtil {
 
 	public void writeProperty(Object object, String node, Object value) {
 		try {
+
 			String fldname = node2fld(node);
 			Field field = object.getClass().getField(fldname);
 

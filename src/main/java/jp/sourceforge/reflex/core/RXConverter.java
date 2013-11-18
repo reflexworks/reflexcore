@@ -215,7 +215,7 @@ public class RXConverter implements Converter {
 		while (ita.hasNext()) {
 			String attrname = (String) ita.next();
 			String attrvalue = reader.getAttribute(attrname);
-			String attrproperty = "_$" + attrname;
+			String attrproperty = "$" + attrname;
 
 			boolean propertyExistsInClass = classProvider
 					.propertyDefinedInClass(attrproperty, result.getClass());
@@ -258,6 +258,7 @@ public class RXConverter implements Converter {
 
 			Field field;
 			try {
+
 				field = result.getClass().getField(
 						classMapper.getRxutil().node2fld(propertyName));
 				if (classMapper.getRxutil().isList(field.getType())) {
@@ -286,7 +287,6 @@ public class RXConverter implements Converter {
 
 					}
 				}
-
 				Class type = determineType(reader, result, propertyName);
 				Object value = context.convertAnother(result, type);
 
@@ -307,7 +307,7 @@ public class RXConverter implements Converter {
 		}
 
 		// textnode
-		String propertyName = "_$$text";
+		String propertyName = "$$text";
 		boolean propertyExistsInClass = classProvider.propertyDefinedInClass(
 				propertyName, result.getClass());
 		if (propertyExistsInClass) {

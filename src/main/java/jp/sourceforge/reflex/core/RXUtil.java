@@ -29,7 +29,7 @@ public class RXUtil {
 	public String fld2node(String fld) {
 
 		// for reserved word
-		if (fld.startsWith("_")&&!fld.startsWith("_$")) {
+		if (fld.startsWith("_")) {
 			fld = fld.substring(1);
 		}
 		String temp = fld.replace('$', ':');
@@ -42,9 +42,7 @@ public class RXUtil {
 	public String node2fld(String node) {
 
 		// for reserved word
-		if (!node.startsWith("_$")) {
-			node = "_"+node;
-		}
+		node = "_"+node;
 		String temp = node.replace(':', '$');
 		String fld = replace(temp, "-", "__");
 

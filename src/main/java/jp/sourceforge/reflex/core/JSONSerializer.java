@@ -7,6 +7,8 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.List;
@@ -263,7 +265,7 @@ public class JSONSerializer implements IResourceMapper {
   public void marshal(JSONContext context, String nodename,Object source, boolean flgArray) throws IOException,
       IllegalArgumentException, IllegalAccessException {
 
-    RXUtil rxUtil = new RXUtil();
+//    RXUtil rxUtil = new RXUtil();
 
     int mode;
 
@@ -410,8 +412,8 @@ public class JSONSerializer implements IResourceMapper {
         boolean i = ((Boolean) fields[fn].get(source)).booleanValue();
         context.out(fields[fn].getName(), i);
 
-      } else if (rxUtil.isText(fields[fn].getType())) {
-        String textStr = rxUtil.getTextValue(fields[fn].get(source));
+      } else if (isText(fields[fn].getType())) {
+        String textStr = getTextValue(fields[fn].get(source));
         context.out(fields[fn].getName(), textStr);
 
       } else if (isDate(fields[fn])) {
@@ -435,6 +437,42 @@ public class JSONSerializer implements IResourceMapper {
     context.popout();
 
   }
+
+	private static final String TEXT = "com.google.appengine.api.datastore.Text";
+
+	public boolean isText(Class type) {
+		if (type.getName().equals(TEXT)) {
+			return true;
+		}
+		return false;
+	}
+
+	public String getTextValue(Object source) {
+		
+    	Method method;
+    	try {
+    		method = source.getClass().getMethod("getValue", null);
+    	} catch (SecurityException e2) {
+    		e2.printStackTrace();
+    		return "";
+    	} catch (NoSuchMethodException e2) {
+    		e2.printStackTrace();
+    		return "";
+    	}
+    	
+    	Object ret;
+    	try {
+    		return (String) method.invoke(source, null);
+    	} catch (IllegalArgumentException e3) {
+    		e3.printStackTrace();
+    	} catch (IllegalAccessException e3) {
+    		e3.printStackTrace();
+    	} catch (InvocationTargetException e3) {
+    		e3.getCause().printStackTrace();
+    	}
+    	
+		return "";
+	}
 
   public byte[] toMessagePack(Object entity) throws IOException {
     throw new IllegalStateException();

@@ -296,9 +296,7 @@ public class JSONContext {
 	public void out(String key, String value) throws IOException {
 		if (value != null&&key.indexOf("_$xml")<0) {
 					// for reserved words
-					if (key.startsWith("_")&&!key.startsWith("_$")) {
-						key = key.substring(1);
-					}
+					key = key.substring(1);
 					outcomma();
 					this.outprint(this.Q + key + this.Q + " : " + this.Q
 					+ escape(value) + this.Q);
@@ -329,9 +327,7 @@ public class JSONContext {
 	public void out(String key, int value) throws IOException {
 		outcomma();
 		// for reserved words
-		if (key.startsWith("_")&&!key.startsWith("_$")) {
-			key = key.substring(1);
-		}
+		key = key.substring(1);
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -346,9 +342,7 @@ public class JSONContext {
 	public void out(String key, long value) throws IOException {
 		outcomma();
 		// for reserved words
-		if (key.startsWith("_")&&!key.startsWith("_$")) {
-			key = key.substring(1);
-		}
+		key = key.substring(1);
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -363,9 +357,7 @@ public class JSONContext {
 	public void out(String key, float value) throws IOException {
 		outcomma();
 		// for reserved words
-		if (key.startsWith("_")&&!key.startsWith("_$")) {
-			key = key.substring(1);
-		}
+		key = key.substring(1);
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -380,9 +372,7 @@ public class JSONContext {
 	public void out(String key, double value) throws IOException {
 		outcomma();
 		// for reserved words
-		if (key.startsWith("_")&&!key.startsWith("_$")) {
-			key = key.substring(1);
-		}
+		key = key.substring(1);
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -397,9 +387,7 @@ public class JSONContext {
 	public void out(String key, boolean value) throws IOException {
 		outcomma();
 		// for reserved words
-		if (key.startsWith("_")&&!key.startsWith("_$")) {
-			key = key.substring(1);
-		}
+		key = key.substring(1);
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 	

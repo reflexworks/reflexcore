@@ -719,7 +719,7 @@ public class FieldMapper {
 	public String getGetter(Field fld, boolean isReflexField) {
 		if (fld != null) {
 			String fldName = fld.getName();
-			if (isReflexField && fldName.startsWith("_") && !fldName.startsWith("_$")) {
+			if (isReflexField && fldName.startsWith("_")) {
 				fldName = fldName.substring(1);
 			}
 			return getGetter(fldName, fld.getType());

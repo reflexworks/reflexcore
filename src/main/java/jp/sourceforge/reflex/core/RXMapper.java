@@ -206,12 +206,8 @@ public class RXMapper extends MapperWrapper {
 			classname = elementName.substring(0, 1).toUpperCase()
 					+ elementName.substring(1); // to UpperCase
 
-		classname = rxutil.node2fld(classname).substring(1);
-
-//		String namespace = getNamespace(prefix, classname);
-//		String jo_packagename = getPackagename(namespace);
-
-//		if (namespace == null || (namespace != null && namespace.equals("")))
+//		classname = rxutil.node2fld(classname).substring(1);
+		
 		String	jo_packagename = findPackagename(classname);
 
 		if (jo_packagename != null) {
@@ -243,35 +239,6 @@ public class RXMapper extends MapperWrapper {
 		return null;
 
 	}
-/* 不具合
-	public String getNamespace(String prefix, String classname) {
-
-		try {
-			Class type = Class.forName(findPackagename(classname) + "."
-					+ classname);
-
-			Field[] fields = type.getFields();
-			for (int i = 0; i < fields.length; i++) {
-
-				String fldname = fields[i].getName();
-				if (prefix.equals(""))
-					prefix = "_$xmlns";
-				else
-					prefix = "_$xmlns$" + prefix;
-
-				if (fldname.startsWith(prefix)) {
-					Field fld = type.getField(fldname);
-					String _namespace = (String) fld.get(fld);
-					return _namespace;
-				}
-			}
-
-		} catch (Exception e) {
-		}
-		return null;
-
-	}
-*/
 	public String realMember(Class type, String serialized) {
 		return serialized;
 	}
