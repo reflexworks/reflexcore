@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import model.Nsbean;
-
+/*
 import jp.co.reflexworks.invoice.model.Customer;
 import jp.co.reflexworks.invoice.model.Entry;
 import jp.co.reflexworks.invoice.model.Feed;
@@ -19,9 +19,9 @@ import jp.reflexworks.atom.entry.Content;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.feed.FeedBase;
 import jp.sourceforge.reflex.core.ResourceMapper;
-
+*/
 public class V15EntityTest {
-
+/*
 	// prefix={名前空間}とする。デフォルトはprefix=を省略する。
 	public static final String NAMESPACE_VT = "vt=http://invoice.reflexworks.co.jp/vt/1.0";
 	
@@ -95,6 +95,6 @@ public class V15EntityTest {
 		return feed;
 		
 	}
-	
+	*/
 
 }
