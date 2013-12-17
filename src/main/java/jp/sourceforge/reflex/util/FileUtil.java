@@ -14,8 +14,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+
+import com.sun.jmx.snmp.defaults.DefaultPaths;
 
 //import org.apache.log4j.helpers.Loader;
 
@@ -25,11 +28,14 @@ public class FileUtil {
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	private static Logger logger = Logger.getLogger(FileUtil.class.getName());
 
+	private static final ThreadLocal<String> defaultpath = new ThreadLocal<String>();
+	private static final ThreadLocal<String> errorpath = new ThreadLocal<String>();
+
 	/**
 	 * クラスパス配下に存在する、指定ファイル名の絶対パスを返却します。
 	 */
 	public static String getResourceFilename(String resource) throws FileNotFoundException {
-
+		
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 5)))) {
 			return resource;
@@ -53,9 +59,18 @@ public class FileUtil {
 			return changeBlankString(filename);
 
 		} else {
+			// デフォルトパスがセットされていたら相対パス扱いとする
+			if (defaultpath.get()!=null) {
+				errorpath.set(defaultpath.get()+resource);
+				return defaultpath.get()+resource;
+			}
 			throw new FileNotFoundException();
 		}
 
+	}
+	
+	public static String getErrorpath() {
+		return errorpath.get();
 	}
 
 	/**
@@ -138,6 +153,7 @@ public class FileUtil {
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 6)))) {
 			URL url = new URL(resource);
+			defaultpath.set(resource.substring(0,resource.lastIndexOf("/")+1));
 
 			for (int r = 0; r <= num_retries; r++) {
 
@@ -452,4 +468,5 @@ public class FileUtil {
 		} catch (InterruptedException e) {}
 	}
 
+	
 }
