@@ -11,44 +11,34 @@ import java.util.HashMap;
 public class MemCachedMap
 {
 	
-	private static MemCachedMap memCachedMap = new MemCachedMap();
+	private static final ThreadLocal<HashMap<String,MemCachedOutputStream>> cachedmap = new ThreadLocal<HashMap<String,MemCachedOutputStream>>();
 	
-    private HashMap cachedmap;
-    
-    public MemCachedMap() {
-        cachedmap = new HashMap();
-    }
-
-    public static MemCachedMap getInstance() {
-    	return memCachedMap;
-    }
-    
-    public MemCachedOutputStream getOutputStream(String key) {
+    public static MemCachedOutputStream getOutputStream(String key) {
     	
     	MemCachedOutputStream memCachedOutputStream = new MemCachedOutputStream(key);
-    	cachedmap.put(key, memCachedOutputStream);
-
+    	HashMap<String,MemCachedOutputStream> hashmap = cachedmap.get();
+    	if (hashmap==null) {
+    		hashmap = new HashMap<String,MemCachedOutputStream>();
+    	}
+    	hashmap.put(key, memCachedOutputStream);
+    	cachedmap.set(hashmap);
+    	
     	return memCachedOutputStream;
     }
     
-	public InputStream getInputStream(String key) throws IOException {
-		return new ByteArrayInputStream(((MemCachedOutputStream)cachedmap.get(key)).getData());
+	public static InputStream getInputStream(String key) throws IOException {
+		return new ByteArrayInputStream(((MemCachedOutputStream)cachedmap.get().get(key)).getData());
 	}
 
-	public byte[] getData(String key) throws IOException {
-		try {
-			return ((MemCachedOutputStream)cachedmap.get(key)).getData();
-		} catch (Exception e) {
-			return null;
-		}
+	public static byte[] getData(String key) throws IOException {
+		return ((MemCachedOutputStream)cachedmap.get().get(key)).getData();
 	}
 
-	public void remove(String key) {
-		try {
-			((MemCachedOutputStream)cachedmap.get(key)).getOutputStream().close();
-		} catch (Exception e) {
+	public static void remove(String key) throws IOException {
+		((MemCachedOutputStream)cachedmap.get().get(key)).getOutputStream().close();
+		if (cachedmap.get()!=null) {
+			cachedmap.get().remove(key);
 		}
-		cachedmap.remove(key);
 	}
 
 

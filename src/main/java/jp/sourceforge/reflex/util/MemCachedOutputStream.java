@@ -12,7 +12,6 @@ import java.io.OutputStream;
  */
 public class MemCachedOutputStream extends OutputStream {
 
-	private String key;
 	private ByteArrayOutputStream memOutputStream;
     
     public MemCachedOutputStream() {
@@ -20,7 +19,6 @@ public class MemCachedOutputStream extends OutputStream {
     }
 
     public MemCachedOutputStream(String key) {
-    	this.key = key;
     	memOutputStream = new ByteArrayOutputStream();
     }
 
