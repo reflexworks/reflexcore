@@ -14,13 +14,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-
-import com.sun.jmx.snmp.defaults.DefaultPaths;
-
-//import org.apache.log4j.helpers.Loader;
 
 public class FileUtil {
 	
