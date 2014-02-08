@@ -4,14 +4,14 @@ import java.util.List;
 
 public class Error {
 	
-	public List<Errors> errors;
-	public Integer code;
-	public String message;
+	public List<Errors> _errors;
+	public Integer _code;
+	public String _message;
 
 	@Override
 	public String toString() {
-		return "Error [errors=" + errors + ", code=" + code + ", message="
-				+ message + "]";
+		return "Error [errors=" + _errors + ", code=" + _code + ", message="
+				+ _message + "]";
 	}
 
 }

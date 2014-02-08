@@ -6,10 +6,11 @@ import java.util.Iterator;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import jp.sourceforge.reflex.core.XML;
 import jp.sourceforge.reflex.util.DataParser;
 import jp.sourceforge.reflex.util.FileUtil;
 
-public class DataParserTest {
+public class DataParserExec {
 
 	public static void main(String[] args) {
 		
@@ -43,6 +44,14 @@ public class DataParserTest {
 			}
 		
 			System.out.println("-- Data XML parse end --");
+
+			String json = "{\"content\" : [{\"content\" : \"001あ\"},\"002い\",\"003う\"]}";
+
+			JSONObject jsonobj = new JSONObject(json);
+
+			String xml = (new XML()).toString(jsonobj);
+			System.out.println(xml);
+
 			
 		} catch (Throwable e) {
 			e.printStackTrace();

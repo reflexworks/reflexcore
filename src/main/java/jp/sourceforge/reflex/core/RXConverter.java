@@ -34,6 +34,12 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+/**
+ * @author stakezaki
+ * 
+ * marshal/unmarshalの実装クラス
+ *
+ */
 public class RXConverter implements Converter {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
@@ -48,9 +54,12 @@ public class RXConverter implements Converter {
 
 	public boolean canConvert(Class type) {
 		// some way to detect if this is one of your package.
-		return classMapper.getNamespace(type) != null;
+		return classMapper.getNs(type) != null;
 	}
 
+	/* (非 Javadoc)
+	 * @see com.thoughtworks.xstream.converters.Converter#marshal(java.lang.Object, com.thoughtworks.xstream.io.HierarchicalStreamWriter, com.thoughtworks.xstream.converters.MarshallingContext)
+	 */
 	public void marshal(Object source, HierarchicalStreamWriter writer,
 			MarshallingContext context) {
 
@@ -83,7 +92,7 @@ public class RXConverter implements Converter {
 						if (classMapper.getPrintns()==1) {
 							
 							// namespace表示
-							for (Map.Entry<String, String> e:classMapper.getJo_namespacemap().entrySet()) {
+							for (Map.Entry<String, String> e:classMapper.getJo_nsmap().entrySet()) {
 								
 								String ns = e.getKey();
 
@@ -111,19 +120,8 @@ public class RXConverter implements Converter {
 							String attrvalue = (String) fld.get(source);
 							if (attrvalue != null
 									&& attrname.startsWith("xmlns")) {
-								//if (attrname.equals("xmlns"))
-								//	defaultns = attrvalue;
 								/* 名前空間をプロパティから取得するところを廃止(2012/8/7) TODO 下位互換性
-								if (((RXMapper)classMapper).getJo_namespacemap()
-										.get(attrvalue) == null) {
-									writer.addAttribute(attrname, attrvalue);
-									String ns = attrname.substring(5); // "xmlns"
-									if (!ns.equals(""))
-										ns = ns.substring(1) + ":";
-									((RXMapper)classMapper).getJo_namespacemap()
-											.put(attrvalue, ns); // save
-											
-								}*/
+								*/
 							} else if (attrvalue != null)
 								writer.addAttribute(attrname, attrvalue);
 						}
@@ -206,6 +204,9 @@ public class RXConverter implements Converter {
 
 	}
 
+	/* (非 Javadoc)
+	 * @see com.thoughtworks.xstream.converters.Converter#unmarshal(com.thoughtworks.xstream.io.HierarchicalStreamReader, com.thoughtworks.xstream.converters.UnmarshallingContext)
+	 */
 	public Object unmarshal(final HierarchicalStreamReader reader,
 			final UnmarshallingContext context) {
 		final Object result = instantiateNewInstance(context);
@@ -258,9 +259,13 @@ public class RXConverter implements Converter {
 
 			Field field;
 			try {
-
+				try {
 				field = result.getClass().getField(
 						classMapper.getRxutil().node2fld(propertyName));
+				}catch(NoSuchFieldException ns) {
+					field = result.getClass().getField(
+							classMapper.getRxutil().node2fld(propertyName).substring(1));	// 先頭_を取り除いてretry
+				}
 				if (classMapper.getRxutil().isList(field.getType())) {
 
 					Pattern pattern = Pattern

@@ -8,10 +8,10 @@ public class Nsbean {
 
 	public String _$xmlns$atr1;
 
-	public Nsbean2 nsbean3;
+	public Nsbean2 _nsbean3;
 
-	public String minus__fld;
+	public String _minus__fld;
 
-	public String colon$fld;
+	public String _colon$fld;
 
 }

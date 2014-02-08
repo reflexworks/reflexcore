@@ -1,67 +1,53 @@
 package jp.sourceforge.reflex;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
-
-import jp.sourceforge.reflex.core.ResourceMapper;
-import model.Content;
-import model.Login;
 import model.Nsbean;
-import model.RequestHdr;
 import model2.Nsbean2;
 
-public class ReflexCoreTest {
+import jp.sourceforge.reflex.core.ResourceMapper;
+import jp.sourceforge.reflex.util.ConsistentHash;
+import jp.sourceforge.reflex.util.DateUtil;
+import jp.sourceforge.reflex.util.HashFunction;
+import jp.sourceforge.reflex.util.LTSVUtil;
+import jp.sourceforge.reflex.util.MD5;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-	public static void main(String[] args) {
-/*
-		// モデルビーンのパッケージ名を指定してmapperをnewする
-		IResourceMapper mapper = new ResourceMapper("model");
+/**
+ * Unit test for simple App.
+ */
+public class SerializeDeserializeTest extends TestCase {
+	/**
+	 * Create the test case
+	 * 
+	 * @param testName
+	 *            name of the test case
+	 */
+	public SerializeDeserializeTest(String testName) {
+		super(testName);
+	}
 
-		// 子要素が多重度０，１の例。この場合は普通にクラス名を使う
-		Login login = new Login();
-		login.requestHdr = new RequestHdr();
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(SerializeDeserializeTest.class);
+	}
 
-		login.requestHdr.clientID = "clientid";
-		login.requestHdr.ver = "version";
-		login.requestHdr.ver_$title = "xmlns1"; // 属性の指定は必ずStringで
+	/**
+	 * Rigourous Test :-)
+	 */
+	public void test() {
 
-		// XMLにシリアライズ
-		String toXML = mapper.toXML(login);
-		System.out.println("\n【XML(0,1)　シリアライズテスト】:");
-		System.out.println(toXML);
-
-		// JSONにシリアライズ
-		String toJSON = mapper.toJSON(login);
-		System.out.println("\n【JSON(0,1)　シリアライズテスト】:");
-		System.out.println(toJSON);
-
-		// 子要素が多重度０，∞で存在する場合でかつtextnodeを含む場合の例
-		login = new Login();
-
-		Content id = new Content();
-		id.content = "child's entity1";
-		Content id2 = new Content();
-		id2.content = "child's entity2";
-
-		login.content = new ArrayList();
-		login.content.add(id);
-		login.content.add(id2);
-		login._$$text = "this is a textnode"; // text node は _$$textに書く�ɏ���
-
-		// XMLにシリアライズ
-		toXML = mapper.toXML(login);
-		System.out.println("\n【XML(0,unbound)　シリアライズテスト】:");
-		System.out.println(toXML);
-
-		// JSONにシリアライズ
-		toJSON = mapper.toJSON(login);
-		System.out.println("\n【JSON(0,unbound1)　シリアライズテスト】:");
-		System.out.println(toJSON);
-*/
 		// 名前空間が付く場合はMapを指定する
 		// 例） put("xml namespace","java packagename");
 
@@ -72,16 +58,13 @@ public class ReflexCoreTest {
 
 		IResourceMapper mapper = new ResourceMapper(nsmap); // mapをパラメータにしてMapperをnewする
 
-//		ReflectionProvider rp = new PureJavaReflectionProvider();
-//		mapper = new ResourceMapper(nsmap,rp); // mapをパラメータにしてMapperをnewする
-
 		// 名前空間 nstestのビーン
 		Nsbean nsbean = new Nsbean();
  
 		// field名変換
 		// 　　QNAMEの:は$に、-は__に変換される
-		nsbean.minus__fld = " - ⇔ __ ";
-		nsbean.colon$fld = " : ⇔ $ ";
+		nsbean._minus__fld = " - ⇔ __ ";
+		nsbean._colon$fld = " : ⇔ $ ";
 
 		// XMLにシリアライズ
 		String toXML = mapper.toXML(nsbean);
@@ -103,10 +86,10 @@ public class ReflexCoreTest {
 
 		// 名前空間 nstest2のビーンを
 		Nsbean2 nsbean2 = new Nsbean2();
-		nsbean2.fld = "test fields";
+		nsbean2._fld = "test fields";
 
 		// 名前空間 nstestのビーンの子としてセット
-		nsbean.nsbean3 = nsbean2;
+		nsbean._nsbean3 = nsbean2;
 		nsbean._$xmlns$atr1 = "nstest2"; // 親に子の名前空間をつけてprefixにできるかどうかのテスト
 
 		// XMLにシリアライズ
@@ -126,6 +109,6 @@ public class ReflexCoreTest {
 		System.out.println("\n【JSON(nsbean)　シリアライズテスト】:");
 		System.out.println(toJSON);
 
-	}
 
+	}
 }

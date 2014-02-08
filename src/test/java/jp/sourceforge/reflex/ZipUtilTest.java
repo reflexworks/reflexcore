@@ -2,20 +2,56 @@ package jp.sourceforge.reflex;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 
+import jp.sourceforge.reflex.util.ConsistentHash;
+import jp.sourceforge.reflex.util.DateUtil;
+import jp.sourceforge.reflex.util.HashFunction;
+import jp.sourceforge.reflex.util.LTSVUtil;
+import jp.sourceforge.reflex.util.MD5;
+import jp.sourceforge.reflex.util.StringUtils;
 import jp.sourceforge.reflex.util.ZipUtil;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-public class ZipUtilTest {
+/**
+ * Unit test for simple App.
+ */
+public class ZipUtilTest extends TestCase {
+	/**
+	 * Create the test case
+	 * 
+	 * @param testName
+	 *            name of the test case
+	 */
+	public ZipUtilTest(String testName) {
+		super(testName);
+	}
 
-	public static void main(String[] args) {
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(ZipUtilTest.class);
+	}
+
+	/**
+	 * Rigourous Test :-)
+	 */
+	public void test() {
 
 		try {
-			String homeDir = System.getProperty("user.dir") + "\\src\\test\\resources\\zip\\";
-			
+			String homeDir = System.getProperty("user.dir") + "/src/test/resources/zip/";
+
 			String file1name = "helloworld97.xml";
 			String file2name = "helloworld98.html";
 			String file3name = "vteclogo.jpg";
@@ -75,7 +111,7 @@ public class ZipUtilTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
 
-	
+
+	}
 }

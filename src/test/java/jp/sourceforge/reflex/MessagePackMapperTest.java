@@ -9,9 +9,13 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import model3.Userinfo;
+import model3.sub.Favorite;
+import model3.sub.Hobby;
+import model3.sub.SubInfo;
 
 import org.msgpack.MessagePack;
 
+import jp.sourceforge.reflex.core.MessagePackMapper;
 import jp.sourceforge.reflex.core.ResourceMapper;
 import jp.sourceforge.reflex.util.ConsistentHash;
 import jp.sourceforge.reflex.util.DateUtil;
@@ -26,7 +30,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class MessagePackTest extends TestCase {
+public class MessagePackMapperTest extends TestCase {
 	
 	public static String NEWLINE = System.getProperty("line.separator");
 
@@ -36,7 +40,7 @@ public class MessagePackTest extends TestCase {
 	 * @param testName
 	 *            name of the test case
 	 */
-	public MessagePackTest(String testName) {
+	public MessagePackMapperTest(String testName) {
 		super(testName);
 	}
 
@@ -44,71 +48,56 @@ public class MessagePackTest extends TestCase {
 	 * @return the suite of tests being tested
 	 */
 	public static Test suite() {
-		return new TestSuite(MessagePackTest.class);
+		return new TestSuite(MessagePackMapperTest.class);
 	}
 
 	/**
 	 * Rigourous Test :-)
 	 */
 	public void test() {
-		IResourceMapper rxmapper = new ResourceMapper("model3");
-
-		String json = convertUserinfo(getJsonInfo());
-		
-		System.out.println("=== JSON UserInfo ===");
-		System.out.println(json);
-		
 		try {
-		Object info = rxmapper.fromJSON(json);
-		
-		System.out.println("=== Object UserInfo ===");
-		System.out.println(info);
+			IResourceMapper rxmapper = new MessagePackMapper("model3");
 
-		String jsonError = convertUserinfo(getJsonError());
+			String json = convertUserinfo(getJsonInfo());
+			
+			System.out.println("=== JSON UserInfo ===");
+			System.out.println(json);
+
+			Object info = rxmapper.fromJSON(json);
+
+			System.out.println("=== Object UserInfo ===");
+			System.out.println(info);
+			
+			editUserInfo((Userinfo)info);
+			
+			System.out.println("=== edit UserInfo ===");
+			System.out.println(info);
+
+			String jsonError = convertUserinfo(getJsonError());
+			
+			System.out.println("=== JSON Error ===");
+			System.out.println(jsonError);
+			
+			Object infoError = rxmapper.fromJSON(jsonError);
+			
+			System.out.println("=== Object Error ===");
+			System.out.println(infoError);
+			
+			// MessagePack test
+	        byte[] mbytes = rxmapper.toMessagePack(info);
+	        Object muserinfo = rxmapper.fromMessagePack(mbytes);
+			
+			System.out.println("=== MessagePack UserInfo ===");
+			System.out.println(muserinfo);
+	        
+	        mbytes = rxmapper.toMessagePack(infoError);
+	        muserinfo = rxmapper.fromMessagePack(mbytes);
+			
+			System.out.println("=== MessagePack Error ===");
+			System.out.println(muserinfo);
+			
 		
-		System.out.println("=== JSON Error ===");
-		System.out.println(jsonError);
-		
-		Object infoError = rxmapper.fromJSON(jsonError);
-		
-		System.out.println("=== Object Error ===");
-		System.out.println(infoError);
-		
-		// MessagePack test
-        MessagePack msgpack = new MessagePack();
-        
-        /*
-        msgpack.register(Errors.class);
-        msgpack.register(Error.class);
-        msgpack.register(Userinfo.class);
-        */
-        /*
-        Class<?> cls = Errors.class;
-        msgpack.register(cls);
-        cls = Error.class;
-        msgpack.register(cls);
-        cls = Userinfo.class;
-        msgpack.register(cls);
-        */
-        Class<?> cls = Class.forName("model3.Errors");
-        msgpack.register(cls);
-        cls = Class.forName("model3.Error");
-        msgpack.register(cls);
-        cls = Class.forName("model3.Userinfo");
-        msgpack.register(cls);
-        
-        byte[] mbytes = msgpack.write(info);
-        Object muserinfo = msgpack.read(mbytes, Userinfo.class);
-		
-		System.out.println("=== MessagePack UserInfo ===");
-		System.out.println(muserinfo);
-        
-        mbytes = msgpack.write(infoError);
-        muserinfo = msgpack.read(mbytes, Userinfo.class);
-		
-		System.out.println("=== MessagePack Error ===");
-		System.out.println(muserinfo);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
@@ -173,6 +162,25 @@ public class MessagePackTest extends TestCase {
 		buf.append(json);
 		buf.append("}");
 		return buf.toString();
+	}
+
+	public static void editUserInfo(Userinfo userInfo) {
+		SubInfo subInfo = new SubInfo();
+		Favorite favorite = new Favorite();
+		favorite._food = "カレー";
+		favorite._music = "ポップス";
+		subInfo._favorite = favorite;
+
+		List<Hobby> hobbies = new ArrayList<Hobby>();
+		Hobby hobby = new Hobby();
+		hobby._$$text = "ハイキング";
+		hobbies.add(hobby);
+		hobby = new Hobby();
+		hobby._$$text = "映画鑑賞";
+		hobbies.add(hobby);
+		subInfo._hobby = hobbies;
+		
+		userInfo.setSubInfo(subInfo);
 	}
 
 }

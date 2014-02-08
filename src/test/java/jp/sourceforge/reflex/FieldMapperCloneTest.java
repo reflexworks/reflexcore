@@ -1,19 +1,51 @@
 package jp.sourceforge.reflex;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
-import jp.sourceforge.reflex.util.FieldMapper;
-
-import model.Type2;
 import model.Content;
 import model.Element2;
+import model.Type2;
 
-public class FieldMapperTest {
+import jp.sourceforge.reflex.util.ConsistentHash;
+import jp.sourceforge.reflex.util.DateUtil;
+import jp.sourceforge.reflex.util.FieldMapper;
+import jp.sourceforge.reflex.util.HashFunction;
+import jp.sourceforge.reflex.util.MD5;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-	public static void main(String[] args) {
-		
+/**
+ * Unit test for simple App.
+ */
+public class FieldMapperCloneTest extends TestCase {
+	/**
+	 * Create the test case
+	 * 
+	 * @param testName
+	 *            name of the test case
+	 */
+	public FieldMapperCloneTest(String testName) {
+		super(testName);
+	}
+
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(FieldMapperCloneTest.class);
+	}
+
+	/**
+	 * Rigourous Test :-)
+	 */
+	public void test() {
+
 		Type2 source = new Type2();
 
 		// 値の設定
@@ -86,6 +118,6 @@ public class FieldMapperTest {
 			e.printStackTrace();
 		}
 
-	}
 
+	}
 }

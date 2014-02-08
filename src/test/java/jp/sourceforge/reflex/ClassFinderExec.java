@@ -9,7 +9,7 @@ import java.util.Enumeration;
 import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
 
-public class ClassFinderTest {
+public class ClassFinderExec {
 
 	public static final String SUFFIX_CLASS = ".class";
 	public static final int SUFFIX_CLASS_LEN = SUFFIX_CLASS.length();
@@ -20,7 +20,7 @@ public class ClassFinderTest {
     private ClassLoader classLoader;
 
     public static void main(String[] args) throws Exception {
-    	ClassFinderTest classFinder = new ClassFinderTest();
+    	ClassFinderExec classFinder = new ClassFinderExec();
     	if (args.length > 0) {
     		classFinder.printClasses(args[0]);
     	} else {
@@ -28,11 +28,11 @@ public class ClassFinderTest {
     	}
     }
 
-    public ClassFinderTest() {
+    public ClassFinderExec() {
         classLoader = Thread.currentThread().getContextClassLoader();
     }
 
-    public ClassFinderTest(ClassLoader classLoader) {
+    public ClassFinderExec(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 

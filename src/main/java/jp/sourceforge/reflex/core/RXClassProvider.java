@@ -38,7 +38,7 @@ public class RXClassProvider extends RXUtil {
 		String fldname = node2fld(node);
 
 		for (int i = 0; i < fields.length; i++) {
-			if (fields[i].getName().equals(fldname))
+			if (fields[i].getName().equals(fldname)||fields[i].getName().equals(fldname.substring(1)))	// 先頭_を取り除いたもの
 				return true;
 		}
 		return false;
@@ -48,7 +48,17 @@ public class RXClassProvider extends RXUtil {
 		try {
 
 			String fldname = node2fld(node);
-			Field field = object.getClass().getField(fldname);
+			Field field;
+			try {
+				field = object.getClass().getField(fldname);
+			} catch (NoSuchFieldException e) {
+				try {
+					field = object.getClass().getField(fldname.substring(1));	// 先頭_を取り除いてretry
+				} catch (NoSuchFieldException e1) {
+					throw new ObjectAccessException("Could not set property "
+							+ object.getClass() + "." + node, e);
+				}
+			}
 
 			if (isList(field.getType())) {
 				List listobj = (List) field.get(object);
@@ -68,9 +78,6 @@ public class RXClassProvider extends RXUtil {
 			throw new ObjectAccessException("Could not set property "
 					+ object.getClass() + "." + node, e);
 		} catch (SecurityException e) {
-			throw new ObjectAccessException("Could not set property "
-					+ object.getClass() + "." + node, e);
-		} catch (NoSuchFieldException e) {
 			throw new ObjectAccessException("Could not set property "
 					+ object.getClass() + "." + node, e);
 		} catch (IllegalAccessException e) {
@@ -108,7 +115,11 @@ public class RXClassProvider extends RXUtil {
 			int s = fldname.indexOf("$");
 			if (s > 0)
 				fldname = fldname.substring(s + 1);
-			return object.getClass().getField(fldname).getType();
+			try {
+				return object.getClass().getField(fldname).getType();
+			}catch(NoSuchFieldException ns) {
+				return object.getClass().getField(fldname.substring(1)).getType();	// 先頭_を取り除いてretry
+			}
 		}
 
 	}

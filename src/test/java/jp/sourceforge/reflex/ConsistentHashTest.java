@@ -1,14 +1,41 @@
 package jp.sourceforge.reflex;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import jp.sourceforge.reflex.util.ConsistentHash;
 import jp.sourceforge.reflex.util.HashFunction;
 import jp.sourceforge.reflex.util.MD5;
-import jp.sourceforge.reflex.util.ConsistentHash;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-public class ConsistentHashTest {
+/**
+ * Unit test for simple App.
+ */
+public class ConsistentHashTest extends TestCase {
+	/**
+	 * Create the test case
+	 * 
+	 * @param testName
+	 *            name of the test case
+	 */
+	public ConsistentHashTest(String testName) {
+		super(testName);
+	}
 
-	public static void main(String args[]) throws Exception {
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(ConsistentHashTest.class);
+	}
+
+	/**
+	 * Rigourous Test :-)
+	 */
+	public void test() {
+
 		HashFunction hashFunction = new MD5();
 		int numberOfReplicas = 500;	// レプリカを100個作成
 		List<String> nodes = new ArrayList<String>();
@@ -35,6 +62,8 @@ public class ConsistentHashTest {
 			}
 			System.out.println("");
 		}
+
+		assertTrue(true);
 		
 		/*
 		System.out.println("---- node D を削除 ----");
@@ -77,6 +106,5 @@ public class ConsistentHashTest {
 		System.out.println(group + " node = " + node);
 		*/
 
-	} 
-
+	}
 }

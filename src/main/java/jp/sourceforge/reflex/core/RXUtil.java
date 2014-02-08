@@ -18,7 +18,6 @@ package jp.sourceforge.reflex.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -29,34 +28,28 @@ public class RXUtil {
 	public String fld2node(String fld) {
 
 		// for reserved word
-		if (fld.startsWith("_")) {
-			fld = fld.substring(1);
-		}
-		String temp = fld.replace('$', ':');
-		String node = replace(temp, "__", "-");
-
-		return node;
+		if (fld.startsWith("_")) fld = fld.substring(1);
+		return replace(fld.replace('$', ':'), "__", "-");
 
 	}
+/*
+	public String node2fld(String node,boolean underscore) {
 
+		// for reserved word
+		return replace((underscore ? "_":""+node).replace(':', '$'), "-", "__");
+	}
+*/
 	public String node2fld(String node) {
 
 		// for reserved word
-		node = "_"+node;
-		String temp = node.replace(':', '$');
-		String fld = replace(temp, "-", "__");
-
-		return fld;
+		return replace(("_"+node).replace(':', '$'), "-", "__");
 	}
 
 	// for Java 1.4 users
 	public String replace(String org, String src, String tgt) {
 
-		if (org == null)
-			return null;
-		Pattern pattern = Pattern.compile(src);
-		Matcher matcher = pattern.matcher(org);
-		return matcher.replaceAll(tgt);
+		if (org == null) return null;
+		else return Pattern.compile(src).matcher(org).replaceAll(tgt);
 
 	}
 	

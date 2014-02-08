@@ -4,6 +4,6 @@ import java.util.List;
 
 public class Array {
 
-	public List element;
+	public List _element;
 
 }
