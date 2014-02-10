@@ -158,12 +158,20 @@ public class JSONContext {
 	public String Q;
 
 	/**
+	 * Flag
+	 *
+	 */
+	public boolean F;
+	
+	
+	/**
 	 * @param out
 	 *            Write
 	 */
-	public JSONContext(Writer out, String quate) {
+	public JSONContext(Writer out, String quate,boolean flag) {
 		this.out = out;
 		this.Q = quate;
+		this.F = flag;
 	}
 
 	/**
@@ -296,7 +304,9 @@ public class JSONContext {
 	public void out(String key, String value) throws IOException {
 		if (value != null&&key.indexOf("_$xml")<0) {
 					// for reserved words
-					key = key.substring(1);
+					if (F&&key.startsWith("_")&&!key.startsWith("_$")||!F) {
+						key = key.substring(1);
+					}
 					outcomma();
 					this.outprint(this.Q + key + this.Q + " : " + this.Q
 					+ escape(value) + this.Q);
@@ -327,7 +337,9 @@ public class JSONContext {
 	public void out(String key, int value) throws IOException {
 		outcomma();
 		// for reserved words
-		key = key.substring(1);
+		if (F&&key.startsWith("_")&&!key.startsWith("_$")||!F) {
+			key = key.substring(1);
+		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -342,7 +354,9 @@ public class JSONContext {
 	public void out(String key, long value) throws IOException {
 		outcomma();
 		// for reserved words
-		key = key.substring(1);
+		if (F&&key.startsWith("_")&&!key.startsWith("_$")||!F) {
+			key = key.substring(1);
+		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -357,7 +371,9 @@ public class JSONContext {
 	public void out(String key, float value) throws IOException {
 		outcomma();
 		// for reserved words
-		key = key.substring(1);
+		if (F&&key.startsWith("_")&&!key.startsWith("_$")||!F) {
+			key = key.substring(1);
+		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -372,7 +388,9 @@ public class JSONContext {
 	public void out(String key, double value) throws IOException {
 		outcomma();
 		// for reserved words
-		key = key.substring(1);
+		if (F&&key.startsWith("_")&&!key.startsWith("_$")||!F) {
+			key = key.substring(1);
+		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 
@@ -387,7 +405,9 @@ public class JSONContext {
 	public void out(String key, boolean value) throws IOException {
 		outcomma();
 		// for reserved words
-		key = key.substring(1);
+		if (F&&key.startsWith("_")&&!key.startsWith("_$")||!F) {
+			key = key.substring(1);
+		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
 	

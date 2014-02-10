@@ -113,14 +113,14 @@ public class RXClassProvider extends RXUtil {
 			return cls;
 		} catch (Exception e) {
 			int s = fldname.indexOf("$");
-			if (s > 0)
-				fldname = fldname.substring(s + 1);
 			try {
-				return object.getClass().getField(fldname).getType();
-			}catch(NoSuchFieldException ns) {
-				return object.getClass().getField(fldname.substring(1)).getType();	// 先頭_を取り除いてretry
+			if (s > 0) 
+				return object.getClass().getField(fldname.substring(s + 1)).getType();
+			} catch(NoSuchFieldException ns) {
+				return object.getClass().getField(fldname.substring(1)).getType();	// 先頭_を取り除いてretry				
 			}
 		}
+		return null;
 
 	}
 

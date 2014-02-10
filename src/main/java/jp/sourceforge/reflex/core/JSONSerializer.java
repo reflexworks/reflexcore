@@ -26,6 +26,7 @@ import jp.sourceforge.reflex.IResourceMapper;
 public class JSONSerializer implements IResourceMapper {
 
   public String Q = "\""; // Quote （シングルクォートにしたい場合はここを変更）
+  public boolean F = false;	// trueで互換モード
 
   /**
    * @param entity Object 　
@@ -118,7 +119,7 @@ public class JSONSerializer implements IResourceMapper {
     try {
       // out.append('{');
       out.write(new char[] { '{' });
-      JSONContext context = new JSONContext(out, this.Q);
+      JSONContext context = new JSONContext(out, this.Q,this.F);
       context.push(context.HASH);
       marshal(context,source.getClass().getName(), source);
       // out.append('}');
@@ -213,9 +214,10 @@ public class JSONSerializer implements IResourceMapper {
     
     String fieldname = field.getName();
     if (fieldname!=null) {
-//      String classname = fieldname.substring(0, 1).toUpperCase() + fieldname.substring(1);
+    	int i=0;
+    	if (fieldname.startsWith("_")) i++;
       // 先頭に_が付く前提
-      String classname = fieldname.substring(1, 2).toUpperCase() + fieldname.substring(2);
+      String classname = fieldname.substring(i, i+1).toUpperCase() + fieldname.substring(i+1);
       if (field.getType().getName().indexOf(classname)>0) return true;
     }
     return false;
@@ -270,8 +272,8 @@ public class JSONSerializer implements IResourceMapper {
     int mode;
 
     Field[] fields = source.getClass().getFields();
-    
-    context.printNodeName(nodename.substring(1));
+    if (nodename.startsWith("_")) nodename = nodename.substring(1);
+    context.printNodeName(nodename);
     context.pushout();
 
     for (int fn = 0; fn < fields.length; fn++) {
