@@ -26,7 +26,7 @@ import jp.sourceforge.reflex.IResourceMapper;
 public class JSONSerializer implements IResourceMapper {
 
   public String Q = "\""; // Quote （シングルクォートにしたい場合はここを変更）
-  public boolean F = true;	// trueで互換モード
+  public boolean F = false;	// trueで互換モード
 
   /**
    * @param entity Object 　
