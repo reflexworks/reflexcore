@@ -71,6 +71,7 @@ public class RXConverter implements Converter {
 			try {
 				Field fld = fields[i];
 				String fldname = fld.getName();
+
 				if (Modifier.isFinal(fld.getModifiers()))
 					continue; // ignore final modifier
 
