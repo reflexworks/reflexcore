@@ -10,88 +10,50 @@ Reflex Core Moduleの概要
 
 *  Reflex Core Module
 
-	[[1]] XMLをストリーム形式で高速に処理できるXStream（http://xstream.codehaus.org/）を改良し、XMLのSerializer/deserializerとして使えるようにしています。
-
-	[[2]] JavaBeanのDtoやEntityなどのDataObjectやGoogle App EngineのJDOをXMLやJSONにシリアライズできます。また逆にXMLやJSONからJavaにデシリアライズできます。基本的にはJavaのプロパティが1対1にマッピングされます。
-
-	[[3]] xstreamのライブラリ、xstream-1.1.2.jar、およびプルパーサ xpp3-min1.1.3.4.RC8.jarに、当ライブラリを追加することで使用できるようになります。
-
-
-**  jarファイル名/パッケージ名
-
-      reflexcore.jar / jp.sourceforge.reflex.core
-
-
-**  プロジェクトダウンロード　{{{http://reflex.sourceforge.jp/reflexcore.zip} reflexcore.zip}}
-
-
-**  maven2 pom.xml の repository および dependency
-
--------
-
-    <repository>
-      <id>reflex.sourceforge.jp</id>
-      <name>Reflex Sourceforge Repository</name>
-      <url>http://reflex.sourceforge.jp/maven2</url>
-    </repository>
-
-
-    <dependency>
-      <groupId>jp.sourceforge.reflex</groupId>
-      <artifactId>reflexcore</artifactId>
-      <version>1.0</version>
-    </dependency>
-
--------
-
-**  機能拡張点
-
-    ReflexはオリジナルのXstreamを以下のように拡張しています。
-    (以降、クラス名、プロパティ名はJavaBeanのクラス名、プロパティのfield名を、要素名、属性、名前空間、QNAME、テキストノードはXMLのそれを指すこととします。）
-
-	[[1]] プロパティの先頭は大文字（Uppercase)、xmlの要素名の先頭はデフォルトでは小文字（Lowercase)となります。
-
-	[[2]] クラス名、プロパティ名がxmlのタグ(要素名)に対応します。また、プロパティのfieldはpublicだけが対象で、privateのものやgetter/setterなどのmethodは無視されます。また、public fieldでもfinal修飾子があるものは同様に無視されます。
-
-	[[3]] 子要素が複数のものをListとして扱えます。この場合、オリジナルではタグが重複して出力されていましたがReflexでは常に１つだけが出力されます。
-
-	[[4]] 属性の指定ができます。
-
-	[[5]] テキストノードの指定ができます。
-
-	[[6]] 名前空間の指定ができます。
-
-	[[7]] 複数のパッケージ名を同じ名前空間に指定できます。(v1.0)
-
-	[[8]] 同じクラス名であってもパッケージ名が異なれば違う要素として扱います。例えば、List<foo.Sample>とList<bar.Sample>は区別されます。(v1.0)
-
-	[[9]] com.google.appengine.api.datastore.Text型をサポートしています。500文字以上になる場合はStringの代わりにText型を使用してください。(v1.0)
+	POJOからXMLやJSONにシリアライズできます。また逆にPOJOからXMLやJSONにデシリアライズできます。
+	ReflexはオリジナルのXStream（http://xstream.codehaus.org/）を拡張し、属性やテキストノード、名前空間の指定などができるようにしています。
+	(xstreamのライブラリ、xstream-1.1.2.jar、およびプルパーサ xpp3-min1.1.3.4.RC8.jarに、当ライブラリを追加することで使用できるようになります)
 	
-**  Javaの記述ルールと変換について
+**  記述ルール
+    (以降、クラス、プロパティのことをJavaのクラス、fieldとします。また、要素名、属性、名前空間、QNAME、テキストノードはXMLのこととします。）
 
-	[[1]] シリアライズ（デシリアライズ）の対象となるプロパティはpublicでなければなりません。
-
-	[[2]] クラス名、プロパティ名が要素名を示します。階層構造を持つ場合の子要素名とその実体であるクラス名は一致していなければなりません。
-
-	[[3]] 要素名にハイフン(-)が含まれる場合はアンダースコア２つ(__)に変換されます。CaseSensitiveです。
-
-	[[4]] _$$nsプロパティをつけることで、クラス名に名前空間宣言を付けることができます。
+	* クラス名、プロパティ名がxmlのタグ(要素名)に対応します。プロパティの先頭は大文字（Uppercase)になり、xml/jsonの要素名の先頭はデフォルトでは小文字（Lowercase)となります。
 	
-	[[5]] _$で始まるプロパティを先頭行から書くことでクラス名に属性を付けることができます。これは名前空間宣言を示す_$$nsプロパティの次の行でかつ要素名を示すプロパティの前の行に書く必要があります。
+	* シリアライズ（デシリアライズ）対象となるプロパティはpublicでなければなりません。privateのものやgetter/setterなどのmethodは無視されます。また、public fieldでもfinal修飾子が付くものは無視されます。
 
-	[[6]] プロパティ名に_$を付けることで属性となります。例えば、entry_$titleとすると、要素entryにtitleという属性が追加されます
+	* Java5のGenericsをすることで、parent.child.･･.bar　のように連結表記で記述できます。
 
-	[[7]] プロパティ名では要素名QNAMEの':'の代わりに'$'に置き換えたものになります。例えば、要素名のxmlns:atomはプロパティ名ではxmlns$atomとなります。ちなみに属性の場合はプロパティ名は_$xmlns$atomとなります。
+	* 型には、intなどのプリミティブ型の他、String、Dateなどを指定できます。Date型の場合は、ISO8601のタイムゾーン付きフォーマットになります。
 
-	[[8]] デフォルトの名前空間はJavaのパッケージ名に対応します。また、名前空間とパッケージ名をペアとするパラメータを複数個指定できます。
+    * 同じクラス名であってもパッケージ名が異なれば違う要素として扱います。例えば、List<foo.Sample>とList<bar.Sample>は区別されます。(v1.0)
+    
+    * com.google.appengine.api.datastore.Text型をサポートしています。500文字以上になる場合はStringの代わりにText型を使用してください。(v1.0)
+    
+    * JSONの配列(二次元）に変換する場合はプロパティfinal int _$$colの値に配列の要素数を設定します。また要素名は定義せず、テキストノード（_$$text）を使用してください。(詳しくは、JSONArrayTest)
 
-	[[9]] テキストノードはプロパティ名を_$$textとします。（_$$で始まるものは予約語です）_$$textはどのプロパティより後ろの行になければなりません。
+**  XML名前空間の指定
 
-	[[10]] Java5のGenericsをすることで、parent.child.･･.bar　のように連結表記で記述できます。
-
-	[[11]] final修飾子のプロパティは無視されます。
+	* _$$nsプロパティをつけることで、クラス名に名前空間宣言を付けることができます。JSONでは単に$$nsプロパティになります。
 	
-	[[12]] List以外のJavaのクラスでは、intなどのプリミティブ型の他、String、Dateなどを変換できます。Date型の場合は、ISO8601のタイムゾーン付きフォーマットになります。
+	* _$で始まるプロパティを先頭行から書くことでクラス名に属性を付けることができます。これは名前空間宣言を示す_$$nsプロパティの次の行でかつ要素名を示すプロパティの前の行に書く必要があります。JSONでは単なるプロパティになります。
+
+	* 名前空間をJavaのパッケージ名に関連づけします。名前空間とパッケージ名をペアとするパラメータを指定することで複数個の名前空間を指定できます。
+
+**  属性の指定
+
+	* プロパティ名に_$を付けることで属性となります。例えば、entry_$titleとすると、要素entryにtitleという属性が追加されます。JSONでは単なるプロパティになります。
+
+	* プロパティ名では要素名QNAMEの':'の代わりに'$'に置き換えたものになります。例えば、要素名のxmlns:atomはプロパティ名ではxmlns$atomとなります。JSONも同様に$に置き換えたものになります。
+
+**  テキストノード
+
+	* プロパティ名を_$$textとすることでテキストノードになります。_$$textはどのプロパティより後ろの行になければなりません。JSONでは単なる$textプロパティになります。
+
+**  特殊文字の変換
+
+    * プロパティの先頭の_(アンダースコア)は無視されます
+
+	* 要素名にハイフン(-)が含まれる場合はクラス、プロパティではアンダースコア２つ(__)に変換されます。CaseSensitiveです。
 	
 
 
