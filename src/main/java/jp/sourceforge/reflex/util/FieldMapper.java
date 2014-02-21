@@ -716,7 +716,7 @@ public class FieldMapper {
 	 * @param isReflexField 先頭に"_"がついたフィールドかどうか
 	 * @return getterメソッドの文字列表記
 	 */
-	public String getGetter(Field fld, boolean isReflexField) {
+	public static String getGetter(Field fld, boolean isReflexField) {
 		if (fld != null) {
 			String fldName = fld.getName();
 			if (isReflexField && fldName.startsWith("_")) {
@@ -733,7 +733,7 @@ public class FieldMapper {
 	 * @param type フィールドのクラス
 	 * @return getterメソッドの文字列表記
 	 */
-	public String getGetter(String name, Class type) {
+	public static String getGetter(String name, Class type) {
 		String prefix = null;
 		if (type.equals(boolean.class)) {
 			prefix = "is";
@@ -766,7 +766,7 @@ public class FieldMapper {
 	 * @param isReflexField 先頭に"_"がついたフィールドかどうか
 	 * @return setterメソッドの文字列表記
 	 */
-	public String getSetter(Field fld, boolean isReflexField) {
+	public static String getSetter(Field fld, boolean isReflexField) {
 		if (fld != null) {
 			String fldName = fld.getName();
 			if (isReflexField && fldName.startsWith("_") && !fldName.startsWith("_$")) {
@@ -783,7 +783,7 @@ public class FieldMapper {
 	 * @param type フィールドのクラス
 	 * @return setterメソッドの文字列表記
 	 */
-	public String getSetter(String name, Class type) {
+	public static String getSetter(String name, Class type) {
 		String prefix = "set";
 		if (type.equals(boolean.class)) {
 			if (name.startsWith("is") && name.length() > 2) {
