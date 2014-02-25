@@ -46,24 +46,34 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	public boolean useSingleQuote;
 	private Map<String, String> jo_packages0;
 
-	private JSONSerializer jsonc = new JSONSerializer();
+	private JSONSerializer jsonc;
 
 	public ResourceMapper(Object jo_packages) {
-		this(jo_packages, false, false);
+		this(jo_packages, false, false, false);
 	}
 
-	public ResourceMapper(Object jo_packages, boolean isCamel) {
-		this(jo_packages, isCamel, false);
+	public ResourceMapper(Object jo_packages,boolean compatible) {
+		this(jo_packages, false, false,compatible);
+	}
+
+	public ResourceMapper(Object jo_packages, boolean isCamel,boolean compatible) {
+		this(jo_packages, isCamel, false,compatible);
 	}
 	public ResourceMapper(Object jo_packages, ReflectionProvider reflectionProvider) {
-		this(jo_packages, false, false, reflectionProvider);
+		this(jo_packages, false, false, false,reflectionProvider);
 	}
 	public ResourceMapper(Object jo_packages, boolean isCamel,
-			boolean useSingleQuote) {
-		this(jo_packages, isCamel, useSingleQuote, null);
+			boolean useSingleQuote, boolean compatible) {
+		this(jo_packages, isCamel, useSingleQuote, compatible, null);
 	}
+
 	public ResourceMapper(Object jo_packages, boolean isCamel,
-			boolean useSingleQuote, ReflectionProvider reflectionProvider) {
+			boolean useSingleQuote,ReflectionProvider reflectionProvider) {
+		this(jo_packages, isCamel, useSingleQuote, false, reflectionProvider);
+	}
+
+	public ResourceMapper(Object jo_packages, boolean isCamel,
+			boolean useSingleQuote, boolean compatible,ReflectionProvider reflectionProvider) {
 		super(reflectionProvider);
 		
 		if (jo_packages instanceof Map) {
@@ -75,6 +85,8 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 			}
 		}
 
+		jsonc = new JSONSerializer(compatible);
+		
 		this.isCamel = isCamel;
 		this.useSingleQuote = useSingleQuote;
 		if (useSingleQuote) {

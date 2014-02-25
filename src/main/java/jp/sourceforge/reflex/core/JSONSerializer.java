@@ -28,6 +28,10 @@ public class JSONSerializer implements IResourceMapper {
   public String Q = "\""; // Quote （シングルクォートにしたい場合はここを変更）
   public boolean F = false;	// trueで互換モード
 
+  public JSONSerializer(boolean F) {
+	  this.F = F;
+  }
+  
   /**
    * @param entity Object 　
    * @return writer.toString();
