@@ -12,8 +12,18 @@ public class JVM {
 	private static final float majorJavaVersion;
 
 	static {
-		majorJavaVersion = Float.parseFloat(System.getProperty("java.version")
-				.substring(0, 3));
+		String javaVersionStr = System.getProperty("java.version");
+		float javaVersion = 0.0f;
+		if (javaVersionStr != null && javaVersionStr.length() >= 3) {
+			try {
+				javaVersion = Float.parseFloat(javaVersionStr);
+			} catch (Exception e) {}	// Do nothing.
+		}
+		
+		if (javaVersion < 0.1f) {
+			javaVersion = 1.6f;	// 設定がなければ1.6以上とみなす。
+		}
+		majorJavaVersion = javaVersion;
 	}
 
 	public static boolean is14() {
