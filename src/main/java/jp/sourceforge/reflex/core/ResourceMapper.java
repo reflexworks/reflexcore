@@ -52,15 +52,15 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		this(jo_packages, false, false, false);
 	}
 
-	public ResourceMapper(Object jo_packages,boolean compatible) {
-		this(jo_packages, false, false,compatible);
+	public ResourceMapper(Object jo_packages, boolean compatible) {
+		this(jo_packages, false, false, compatible);
 	}
 
-	public ResourceMapper(Object jo_packages, boolean isCamel,boolean compatible) {
-		this(jo_packages, isCamel, false,compatible);
+	public ResourceMapper(Object jo_packages, boolean isCamel, boolean compatible) {
+		this(jo_packages, isCamel, false, compatible);
 	}
 	public ResourceMapper(Object jo_packages, ReflectionProvider reflectionProvider) {
-		this(jo_packages, false, false, false,reflectionProvider);
+		this(jo_packages, false, false, false, reflectionProvider);
 	}
 	public ResourceMapper(Object jo_packages, boolean isCamel,
 			boolean useSingleQuote, boolean compatible) {
@@ -68,17 +68,17 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	}
 
 	public ResourceMapper(Object jo_packages, boolean isCamel,
-			boolean useSingleQuote,ReflectionProvider reflectionProvider) {
+			boolean useSingleQuote, ReflectionProvider reflectionProvider) {
 		this(jo_packages, isCamel, useSingleQuote, false, reflectionProvider);
 	}
 
 	public ResourceMapper(Object jo_packages, boolean isCamel,
-			boolean useSingleQuote, boolean compatible,ReflectionProvider reflectionProvider) {
+			boolean useSingleQuote, boolean compatible, ReflectionProvider reflectionProvider) {
 		super(reflectionProvider);
 		
 		if (jo_packages instanceof Map) {
 			this.jo_packages0 = (Map) jo_packages;
-		}else {
+		} else {
 			if (jo_packages instanceof String) {
 				this.jo_packages0 = new LinkedHashMap<String, String>();
 				this.jo_packages0.put((String)jo_packages, "");

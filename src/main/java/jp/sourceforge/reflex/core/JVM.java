@@ -16,7 +16,7 @@ public class JVM {
 		float javaVersion = 0.0f;
 		if (javaVersionStr != null && javaVersionStr.length() >= 3) {
 			try {
-				javaVersion = Float.parseFloat(javaVersionStr);
+				javaVersion = Float.parseFloat(javaVersionStr.substring(0, 3));
 			} catch (Exception e) {}	// Do nothing.
 		}
 		
