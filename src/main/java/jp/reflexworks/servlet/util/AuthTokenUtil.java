@@ -61,8 +61,9 @@ public class AuthTokenUtil {
 	 * @param apiKey APIKey
 	 * @return RXID文字列
 	 */
-	public static String createRXIDString(String username, String password, String apiKey) {
-		WsseAuth auth = createRxidAuth(username, password, apiKey);
+	public static String createRXIDString(String username, String password, 
+			String serviceName, String apiKey) {
+		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey);
 		return getRXIDString(auth);
 	}
 	
@@ -127,7 +128,7 @@ public class AuthTokenUtil {
 	 * @param password パスワード
 	 */
 	public static WsseAuth createWsseAuth(String username, String password) {
-		return createRxidAuth(username, password, null);
+		return createRxidAuth(username, password, null, null);
 	}
 
 	/**
@@ -136,7 +137,8 @@ public class AuthTokenUtil {
 	 * @param password パスワード
 	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
 	 */
-	public static WsseAuth createRxidAuth(String username, String password, String apiKey) {
+	public static WsseAuth createRxidAuth(String username, String password, 
+			String serviceName, String apiKey) {
 		WsseAuth auth = null;
 		
 		byte[] nonceB = new byte[8];
@@ -177,6 +179,9 @@ public class AuthTokenUtil {
 			String passwordDigestStr = new String(Base64.encodeBase64(digest), ENCODING);
 			String nonceStr = new String(Base64.encodeBase64(nonceB), ENCODING);
 
+			if (!StringUtils.isBlank(serviceName)) {
+				username = username + ":" + serviceName;
+			}
 			auth = new WsseAuth(username, passwordDigestStr, nonceStr, created);
 			auth.password = password;
 

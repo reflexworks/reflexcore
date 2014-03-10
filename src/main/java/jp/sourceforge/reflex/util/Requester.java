@@ -14,12 +14,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jp.reflexworks.servlet.ReflexServletConst;
+
 /**
  * HTTPリクエストを行うクラス
  */
-public class Requester {
+public class Requester implements ReflexServletConst {
 	
-	public static final String ENCODING = "UTF-8";
 	private static final int ERROR_STATUS = 400;
 	protected Logger logger = Logger.getLogger(this.getClass().getName());
 	
@@ -196,6 +197,20 @@ public class Requester {
 	 * @param urlStr URL
 	 * @param method method
 	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection prepare(String urlStr, String method, 
+			Map<String, String> property, int timeoutMillis) 
+	throws IOException {
+		return prepare(urlStr, method, (InputStream)null, property, timeoutMillis);
+	}
+
+	/**
+	 * HTTPリクエスト送信準備
+	 * @param urlStr URL
+	 * @param method method
+	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
 	public HttpURLConnection prepare(String urlStr, String method, 
@@ -235,7 +250,26 @@ public class Requester {
 	throws IOException {
 		return prepare(urlStr, method, inputData, property, -1);
 	}
-		
+
+	/**
+	 * HTTPリクエスト送信準備
+	 * @param urlStr URL
+	 * @param method method
+	 * @param inputData リクエストデータ
+	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection prepare(String urlStr, String method, 
+			byte[] inputData, Map<String, String> property, int timeoutMillis) 
+	throws IOException {
+		ByteArrayInputStream bin = null;
+		if (inputData != null) {
+			bin = new ByteArrayInputStream(inputData);
+		}
+		return prepare(urlStr, method, bin, property, timeoutMillis);
+	}
+
 	/**
 	 * HTTPリクエスト送信準備
 	 * @param urlStr URL
