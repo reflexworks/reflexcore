@@ -17,7 +17,10 @@ import java.util.logging.Logger;
 import jp.reflexworks.servlet.ReflexServletConst;
 
 /**
- * HTTPリクエストを行うクラス
+ * HTTPリクエストを行うクラス.
+ * <p>
+ * java.net.HttpURLConnectionを使用してHTTP通信を行います。
+ * </p>
  */
 public class Requester implements ReflexServletConst {
 	

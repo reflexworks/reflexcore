@@ -204,6 +204,9 @@ public class DateUtil {
 	 * @return date
 	 */
 	public static Date getDate(String dateStr) throws ParseException {
+		if (dateStr == null || dateStr.length() < 21) {
+			return null;
+		}
 		String targetStr = null;
 		SimpleDateFormat format;
 
@@ -212,10 +215,7 @@ public class DateUtil {
 		int idx = dateStr.lastIndexOf(":");
 		if (idz == -1) {
 			if (idx > 0) {
-				idz = dateStr.lastIndexOf("-");
-				if (idz > -1 && idz < idx) {
-					idz = -1;
-				}
+				idz = dateStr.lastIndexOf("-", dateStr.length() - 6);
 			}
 		}
 		if (idz > 0) {

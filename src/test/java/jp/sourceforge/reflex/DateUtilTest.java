@@ -118,6 +118,13 @@ public class DateUtilTest extends TestCase {
 			TimeZone timeZone = TimeZone.getTimeZone("GMT+00:00");
 			
 			System.out.println("isRange = " + DateUtil.isRange(now2, start, end, timeZone));
+			
+			// タイムゾーンチェック
+			String dateTimezoneStr = "2014-03-13T01:45:06-04:00";
+			//String dateTimezoneStr = "2014-03-13T01:45:06+04:00";
+			Date dateTimezone = DateUtil.getDate(dateTimezoneStr);
+			System.out.println("TimezoneStr = " + dateTimezoneStr + ", TimezoneDate = " + dateTimezone);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
