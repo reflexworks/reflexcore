@@ -69,6 +69,12 @@ public interface ReflexServletConst {
 	public static final String HEADER_SET_COOKIE = "Set-Cookie";
 	/** Request header : Cookie */
 	public static final String HEADER_COOKIE = "Cookie";
+	/** RXIDヘッダのキー */
+	public static final String HEADER_AUTHORIZATION = "Authorization";
+	/** RXIDヘッダのキー */
+	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
+	/** JSESSIONID */
+	public static final String COOKIE_JSESSIONID = "JSESSIONID";
 
 	/** XMLヘッダ */
 	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" ?>\n";

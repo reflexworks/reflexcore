@@ -8,6 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +18,9 @@ import jp.sourceforge.reflex.util.StringUtils;
 
 import org.apache.commons.codec.binary.Base64;
 
-public class AuthTokenUtil {
+import jp.reflexworks.servlet.ReflexServletConst;
+
+public class AuthTokenUtil implements ReflexServletConst {
 
 	private static Logger logger = Logger.getLogger(AuthTokenUtil.class.getName());
 
@@ -33,10 +37,6 @@ public class AuthTokenUtil {
 	public static final String NONCE = "Nonce";
 	/** Created */
 	public static final String CREATED = "Created";
-	/** RXIDヘッダのキー */
-	public static final String HEADER_AUTHORIZATION = "Authorization";
-	/** RXIDヘッダのキー */
-	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
 	/** RXIDヘッダのキー */
 	protected static final int HEADER_AUTHORIZATION_TOKEN_LEN = HEADER_AUTHORIZATION_TOKEN.length();
 	/** ハッシュ関数 */
@@ -319,6 +319,52 @@ public class AuthTokenUtil {
 			} catch (ParseException e) {}	// Do nothing.
 		}
 
+		return null;
+	}
+	
+	/**
+	 * レスポンスヘッダからsessionIdを取り出します.
+	 * <p>
+	 * sessionIdはSet-Cookieで設定されるため、Set-CookieからJSESSIONIDをの値を抽出します.
+	 * </p>
+	 * @param headerMaps レスポンスヘッダ
+	 * @return sessionId
+	 */
+	public static String extractSessionId(Map headerMaps) {
+		if (headerMaps != null && headerMaps.containsKey("Set-Cookie")) {
+			Object obj = headerMaps.get("Set-Cookie");
+			if (obj instanceof String) {
+				return extractSessionId((String)obj);
+			} else {	// List<String>
+				List<String> headers = (List<String>)obj;
+				for (String setCookie : headers) {
+					String sessionId = extractSessionId(setCookie);
+					if (!StringUtils.isBlank(sessionId)) {
+						return sessionId;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * レスポンスヘッダからsessionIdを取り出します.
+	 * <p>
+	 * sessionIdはSet-Cookieで設定されるため、Set-CookieからJSESSIONIDをの値を抽出します.
+	 * </p>
+	 * @param cookieStr Set-Cookieの値
+	 * @return sessionId
+	 */
+	public static String extractSessionId(String setCookie) {
+		int i = setCookie.indexOf(COOKIE_JSESSIONID);
+		if (i > -1) {
+			int i2 = setCookie.indexOf(";", i);
+			if (i2 == -1) {
+				i2 = setCookie.length();
+			}
+			return setCookie.substring(i, i2);
+		}
 		return null;
 	}
 
