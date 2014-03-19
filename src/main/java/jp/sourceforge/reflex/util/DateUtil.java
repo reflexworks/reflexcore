@@ -204,36 +204,20 @@ public class DateUtil {
 	 * @return date
 	 */
 	public static Date getDate(String dateStr) throws ParseException {
-		if (dateStr == null || dateStr.length() < 21) {
-			return null;
-		}
-		String targetStr = null;
-		SimpleDateFormat format;
 
-		// タイムゾーンは+または-から始まる
-		int idz = dateStr.lastIndexOf("+");
-		int idx = dateStr.lastIndexOf(":");
-		if (idz == -1) {
-			if (idx > 0) {
-				idz = dateStr.lastIndexOf("-", dateStr.length() - 6);
+		try {
+			return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ssZ");
+		}catch (ParseException pe) {
+			try {
+				return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ss");
+			}catch (ParseException pe2) {
+				try {
+					return getDate(dateStr,"yyyy-MM-dd HH:mm:ssZ");
+				}catch (ParseException pe3) {
+						return getDate(dateStr,"yyyy-MM-dd HH:mm:ss");
+				}
 			}
 		}
-		if (idz > 0) {
-			//int idx = dateStr.lastIndexOf(":");
-			if (idx == -1 || idx + 1 >= dateStr.length()) {
-				throw new ParseException(
-						"The form at the date is not \"yyyy-MM-dd'T'HH:mm:ss+99:99\".",
-						0);
-			} else {
-				targetStr = (dateStr.substring(0, idx) + dateStr.substring(idx + 1)).replace(" ", "T");
-			}
-			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-		} else {
-			targetStr = dateStr.replace(" ", "T");
-			format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		}
-
-		return format.parse(targetStr);
 	}
 	
 	/**
