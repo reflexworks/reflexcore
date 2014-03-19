@@ -205,19 +205,17 @@ public class DateUtil {
 	 */
 	public static Date getDate(String dateStr) throws ParseException {
 
-		try {
-			return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ssZ");
-		}catch (ParseException pe) {
-			try {
-				return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ss");
-			}catch (ParseException pe2) {
-				try {
-					return getDate(dateStr,"yyyy-MM-dd HH:mm:ssZ");
-				}catch (ParseException pe3) {
-						return getDate(dateStr,"yyyy-MM-dd HH:mm:ss");
+			dateStr = dateStr.replace(" ","T");
+			int zc = dateStr.charAt(dateStr.length()-6);
+			if (zc=='+'||zc=='-') {
+				if (dateStr.charAt(dateStr.length()-3)==':') {
+					// zoneの時間に:があるとパースできないため取り除く
+					dateStr = dateStr.substring(0,dateStr.length()-3)+dateStr.substring(dateStr.length()-2);
 				}
+				return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ssZ");
+			}else {
+				return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ss");
 			}
-		}
 	}
 	
 	/**
