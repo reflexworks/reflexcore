@@ -1,6 +1,6 @@
 /**
 *
-*  Copyright (c) 2003-2009, Virtual Technology All Rights Reserved
+*  Copyright (c) 2003-2014, Virtual Technology All Rights Reserved
 *  Licensed Materials - Property of Virtual Technology
 *
 *  Redistribution and use in source and binary forms, with or without
