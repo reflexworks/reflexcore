@@ -367,5 +367,24 @@ public class AuthTokenUtil implements ReflexServletConst {
 		}
 		return null;
 	}
+	
+	public static String hash(String str) {
+		if (StringUtils.isBlank(str)) {
+			return str;
+		}
+		try {
+			byte[] v = str.getBytes(ENCODING);
+			MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+			md.update(v);
+			byte[] digest = md.digest();
+			return new String(Base64.encodeBase64(digest), ENCODING);
+
+		} catch (UnsupportedEncodingException e) {
+			// Do nothing.
+		} catch (NoSuchAlgorithmException e) {
+			// Do nothing.
+		}
+		return null;
+	}
 
 }
