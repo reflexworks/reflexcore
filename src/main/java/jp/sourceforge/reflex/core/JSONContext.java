@@ -305,6 +305,7 @@ public class JSONContext {
 		if (value != null&&key.indexOf("_$xml")<0) {
 					// for reserved words
 					if (!F) {
+						if (key.charAt(0)=='_')
 						key = key.substring(1);
 					}else {
 					if (key.startsWith("_")&&!key.startsWith("_$")) {
@@ -343,6 +344,7 @@ public class JSONContext {
 		outcomma();
 		// for reserved words
 		if (!F) {
+			if (key.charAt(0)=='_')
 			key = key.substring(1);
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
@@ -365,6 +367,7 @@ public class JSONContext {
 		outcomma();
 		// for reserved words
 		if (!F) {
+			if (key.charAt(0)=='_')
 			key = key.substring(1);
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
@@ -387,6 +390,7 @@ public class JSONContext {
 		outcomma();
 		// for reserved words
 		if (!F) {
+			if (key.charAt(0)=='_')
 			key = key.substring(1);
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
@@ -409,6 +413,7 @@ public class JSONContext {
 		outcomma();
 		// for reserved words
 		if (!F) {
+			if (key.charAt(0)=='_')
 			key = key.substring(1);
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
@@ -431,6 +436,7 @@ public class JSONContext {
 		outcomma();
 		// for reserved words
 		if (!F) {
+			if (key.charAt(0)=='_')
 			key = key.substring(1);
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
