@@ -75,6 +75,12 @@ public interface ReflexServletConst {
 	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
 	/** JSESSIONID */
 	public static final String COOKIE_JSESSIONID = "JSESSIONID";
+	/** Platform */
+	public static final String HEADER_PLATFORM = "X-PLATFORM";
+	/** Platform Token */
+	public static final String HEADER_PLATFORM_TOKEN = "X-PLATFORM-TOKEN";
+	/** アクセスキーヘッダの値の先頭に使用 */
+	public static final String HEADER_AUTHORIZATION_ACCESSKEY = "AccessKey ";
 
 	/** XMLヘッダ */
 	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" ?>\n";
