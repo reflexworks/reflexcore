@@ -78,6 +78,18 @@ public class AuthTokenUtil implements ReflexServletConst {
 		}
 		return null;
 	}
+	
+	/**
+	 * アクセスキーの先頭に"AccessKey "を付けて返却します.
+	 * @param accesskey アクセスキー
+	 * @return "AccessKey {アクセスキー}"
+	 */
+	public static String editAccessKeyHeader(String accesskey) {
+		if (!StringUtils.isBlank(accesskey)) {
+			return HEADER_AUTHORIZATION_ACCESSKEY + accesskey;
+		}
+		return null;
+	}
 
 	/**
 	 * WSSE文字列を作成します(RequestHeader用)
@@ -225,16 +237,35 @@ public class AuthTokenUtil implements ReflexServletConst {
 	}
 	
 	/**
+	 * "AccessKey {アクセスキー}"文字列からアクセスキーを取り出します.
+	 * @param authorizationStr "AccessKey {アクセスキー}"文字列
+	 * @return アクセスキー
+	 */
+	public static String extractRXID(String authorizationStr) {
+		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_TOKEN);
+	}
+	
+	/**
 	 * "Token {RXID}"文字列からRXIDを取り出します.
 	 * @param authorizationStr "Token {RXID}"文字列
 	 * @return RXID
 	 */
-	public static String extractRXID(String authorizationStr) {
-		if (authorizationStr == null || 
-				!authorizationStr.startsWith(HEADER_AUTHORIZATION_TOKEN)) {
+	public static String extractAccessKey(String authorizationStr) {
+		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_ACCESSKEY);
+	}
+	
+	/**
+	 * "{prefix} {認証キー}"文字列から認証キーを取り出します.
+	 * @param authorizationStr "{prefix} {認証キー}"
+	 * @return 認証キー
+	 */
+	public static String extractAuthorization(String authorizationStr, 
+			String prefix) {
+		if (authorizationStr == null || StringUtils.isBlank(prefix) ||
+				!authorizationStr.startsWith(prefix)) {
 			return null;
 		}
-		return authorizationStr.substring(HEADER_AUTHORIZATION_TOKEN_LEN);
+		return authorizationStr.substring(prefix.length());
 	}
 
 	/**
