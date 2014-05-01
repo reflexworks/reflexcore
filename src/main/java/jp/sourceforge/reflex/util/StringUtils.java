@@ -271,5 +271,47 @@ public class StringUtils {
 		}
 		return ret.substring(start, end);
 	}
+	
+	/**
+	 * String配列を文字列にします.
+	 * @param array String配列
+	 * @return 文字列
+	 */
+	public static String toString(String[] array) {
+		StringBuilder buf = new StringBuilder();
+		if (array != null) {
+			buf.append("[");
+			boolean isFirst = true;
+			for (String str : array) {
+				if (isFirst) {
+					isFirst = false;
+				} else {
+					buf.append(", ");
+				}
+				buf.append(str);
+			}
+			buf.append("]");
+		} else {
+			buf.append("null");
+		}
+		return buf.toString();
+	}
+	
+	/**
+	 * 配列に指定された文字列を追加します.
+	 * @param array 配列
+	 * @param str 追加文字列
+	 * @return 指定された文字列を追加した配列
+	 */
+	public static String[] add(String[] array, String str) {
+		if (array == null || array.length == 0) {
+			return new String[]{str};
+		}
+		
+		String[] dest = new String[array.length + 1];
+		System.arraycopy(array, 0, dest, 0, array.length);
+		dest[array.length] = str;
+		return dest;
+	}
 
 }
