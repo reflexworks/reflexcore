@@ -27,9 +27,13 @@ public class FileUtil {
 	private static final ThreadLocal<String> errorpath = new ThreadLocal<String>();
 
 	/**
-	 * クラスパス配下に存在する、指定ファイル名の絶対パスを返却します。
+	 * クラスパス配下に存在する、指定ファイル名の絶対パスを返却します.
+	 * <p>
+	 * URLエンコードされたパスはデコードして返却します.
+	 * </p>
 	 */
-	public static String getResourceFilename(String resource) throws FileNotFoundException {
+	public static String getResourceFilename(String resource) 
+	throws FileNotFoundException {
 		
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 5)))) {
@@ -51,7 +55,7 @@ public class FileUtil {
 				filename = "jar:" + filename;
     		}
 
-			return changeBlankString(filename);
+			return URLDecoderPlus.urlDecode(filename);
 
 		} else {
 			// デフォルトパスがセットされていたら相対パス扱いとする
