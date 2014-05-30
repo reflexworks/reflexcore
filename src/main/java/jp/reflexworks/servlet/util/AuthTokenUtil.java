@@ -151,6 +151,10 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 */
 	public static WsseAuth createRxidAuth(String username, String password, 
 			String serviceName, String apiKey) {
+		if (StringUtils.isBlank(username) || password ==  null) {
+			return null;
+		}
+		
 		WsseAuth auth = null;
 		
 		byte[] nonceB = new byte[8];
