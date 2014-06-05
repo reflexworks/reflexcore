@@ -51,8 +51,12 @@ public interface ReflexServletConst {
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	/** Header : Content Encoding */
 	public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
-	/** Header value : Content-Encoding: deflate */
-	public static final String HEADER_CONTENT_ENCODING_DEFLATE = "deflate";
+	/** Header : Accept Encoding */
+	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+	/** Header value : deflate */
+	public static final String HEADER_VALUE_DEFLATE = "deflate";
+	/** Header value : gzip */
+	public static final String HEADER_VALUE_GZIP = "gzip";
 	/** Response Header : X-Content-Type-Options: nosniff */
 	public static final String HEADER_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
 	/** Response Header value : X-Content-Type-Options: nosniff */
@@ -81,6 +85,9 @@ public interface ReflexServletConst {
 	public static final String HEADER_PLATFORM_TOKEN = "X-PLATFORM-TOKEN";
 	/** アクセスキーヘッダの値の先頭に使用 */
 	public static final String HEADER_AUTHORIZATION_ACCESSKEY = "AccessKey ";
+	
+	/** ヘッダの値の区切り文字 */
+	public static final String HEADER_VALUE_DELIMITER = ",";
 
 	/** XMLヘッダ */
 	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" ?>\n";
