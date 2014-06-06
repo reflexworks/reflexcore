@@ -43,14 +43,21 @@ public class Requester implements ReflexServletConst {
 			return;
 		}
 		
-		HttpURLConnection http = request(urlStr, method, inputData, property);
-		InputStream in = null;
-		if (http.getResponseCode() >= ERROR_STATUS) {
-			in = http.getErrorStream();
-		} else {
-			in = http.getInputStream();
+		HttpURLConnection http = null;
+		try {
+			http = request(urlStr, method, inputData, property);
+			InputStream in = null;
+			if (http.getResponseCode() >= ERROR_STATUS) {
+				in = http.getErrorStream();
+			} else {
+				in = http.getInputStream();
+			}
+			write(in, out);
+		} finally {
+			try {
+				http.disconnect();
+			} catch (Exception e) {}	// Do nothing.
 		}
-		write(in, out);
 	}
 	
 	/**
@@ -69,14 +76,22 @@ public class Requester implements ReflexServletConst {
 			return;
 		}
 		
-		HttpURLConnection http = requestString(urlStr, method, inputDataStr, property);
-		InputStream in = null;
-		if (http.getResponseCode() >= ERROR_STATUS) {
-			in = http.getErrorStream();
-		} else {
-			in = http.getInputStream();
+		HttpURLConnection http = null;
+		try {
+			http = requestString(urlStr, method, inputDataStr, property);
+			InputStream in = null;
+			if (http.getResponseCode() >= ERROR_STATUS) {
+				in = http.getErrorStream();
+			} else {
+				in = http.getInputStream();
+			}
+			write(in, out);
+
+		} finally {
+			try {
+				http.disconnect();
+			} catch (Exception e) {}	// Do nothing.
 		}
-		write(in, out);
 	}
 
 	/**
