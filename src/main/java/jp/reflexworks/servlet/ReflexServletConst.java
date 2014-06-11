@@ -13,7 +13,6 @@ public interface ReflexServletConst {
 	public static final String CONTENT_TYPE_REFLEX_XML = 
 			CONTENT_TYPE_XML + ";charset=" + ENCODING;
 	/** Content-Type : JSON */
-	//public static final String CONTENT_TYPE_JSON = "text/javascript";
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	/** Content-Type : JSON, charset : UTF-8 */
 	public static final String CONTENT_TYPE_REFLEX_JSON = 
