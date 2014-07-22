@@ -3,7 +3,7 @@ package jp.reflexworks.servlet;
 /**
  * ReflexServletで使用する定数
  */
-public interface ReflexServletConst {
+public interface ReflexServletConst extends HttpStatus {
 
 	/** エンコード*/
 	public static final String ENCODING = "UTF-8";
