@@ -1,7 +1,7 @@
 package jp.sourceforge.reflex;
 
 import static org.junit.Assert.*;
-import jp.reflexworks.servlet.util.AuthTokenUtil;
+import jp.sourceforge.reflex.util.SHA256;
 
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class HashTest {
 		//String str = "testpass12345";
 		String str = "terada2014";
 		
-		String hashStr = AuthTokenUtil.hash(str);
+		String hashStr = SHA256.hashString(str);
 		
 		System.out.println("str = " + str + ", hashStr = " + hashStr);
 		

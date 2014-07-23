@@ -1,7 +1,6 @@
 package jp.reflexworks.servlet.util;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.ParseException;
@@ -14,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.sourceforge.reflex.util.DateUtil;
+import jp.sourceforge.reflex.util.SHA256;
 import jp.sourceforge.reflex.util.StringUtils;
 
 import org.apache.commons.codec.binary.Base64;
@@ -41,7 +41,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	protected static final int HEADER_AUTHORIZATION_TOKEN_LEN = HEADER_AUTHORIZATION_TOKEN.length();
 	/** ハッシュ関数 */
 	//public static final String HASH_ALGORITHM = "SHA-1";
-	public static final String HASH_ALGORITHM = "SHA-256";
+	//public static final String HASH_ALGORITHM = "SHA-256";
 	/** 乱数生成のための関数 */
 	public static final String RANDOM_ALGORITHM = "SHA1PRNG";
 	
@@ -49,7 +49,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	public static final String RXID = "_RXID";	// URLパラメータのみ
 	
 	/** エンコード */
-	public static final String ENCODING = "UTF-8";
+	//public static final String ENCODING = "UTF-8";
 	
 	/** RXID Delimiter **/
 	protected static final String RXID_DELIMITER = "-";
@@ -188,11 +188,13 @@ public class AuthTokenUtil implements ReflexServletConst {
 			System.arraycopy(passwordB, 0, v, apiKeyLen + nonceB.length + createdB.length, 
 					passwordB.length);
 
-			MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
-			md.update(v);
-			byte[] digest = md.digest();
+			//MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+			//md.update(v);
+			//byte[] digest = md.digest();
+			//
+			//String passwordDigestStr = new String(Base64.encodeBase64(digest), ENCODING);
 			
-			String passwordDigestStr = new String(Base64.encodeBase64(digest), ENCODING);
+			String passwordDigestStr = SHA256.hashString(v);
 			String nonceStr = new String(Base64.encodeBase64(nonceB), ENCODING);
 
 			if (!StringUtils.isBlank(serviceName)) {
@@ -403,23 +405,13 @@ public class AuthTokenUtil implements ReflexServletConst {
 		return null;
 	}
 	
+	/**
+	 * 文字列をハッシュ化する
+	 * @param str 文字列
+	 * @return ハッシュ化し、Base64エンコーディングした文字列
+	 */
 	public static String hash(String str) {
-		if (StringUtils.isBlank(str)) {
-			return str;
-		}
-		try {
-			byte[] v = str.getBytes(ENCODING);
-			MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
-			md.update(v);
-			byte[] digest = md.digest();
-			return new String(Base64.encodeBase64(digest), ENCODING);
-
-		} catch (UnsupportedEncodingException e) {
-			// Do nothing.
-		} catch (NoSuchAlgorithmException e) {
-			// Do nothing.
-		}
-		return null;
+		return SHA256.hashString(str);
 	}
 
 }
