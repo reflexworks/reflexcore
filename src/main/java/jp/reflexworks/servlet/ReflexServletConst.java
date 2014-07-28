@@ -84,7 +84,9 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_PLATFORM_TOKEN = "X-PLATFORM-TOKEN";
 	/** アクセスキーヘッダの値の先頭に使用 */
 	public static final String HEADER_AUTHORIZATION_ACCESSKEY = "AccessKey ";
-	
+	/** Response header : ユーザ番号(UID) */
+	public static final String HEADER_X_UID = "X-UID";
+
 	/** ヘッダの値の区切り文字 */
 	public static final String HEADER_VALUE_DELIMITER = ",";
 
