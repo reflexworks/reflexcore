@@ -89,6 +89,8 @@ public interface ReflexServletConst extends HttpStatus {
 
 	/** ヘッダの値の区切り文字 */
 	public static final String HEADER_VALUE_DELIMITER = ",";
+	/** アクセスキーのUID区切り文字 */
+	public static final String ACCESSKEY_UID_DELIMITER = "-";
 
 	/** XMLヘッダ */
 	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" ?>\n";
