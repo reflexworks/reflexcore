@@ -126,7 +126,7 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		try {
 			return fromXML((new XML()).toString(new JSONObject(getBody(json))));
 		} catch (IOException e) {
-			throw new JSONException(new IOException());
+			throw new JSONException(e);
 		}
 	}
 
