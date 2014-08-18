@@ -86,6 +86,10 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_AUTHORIZATION_ACCESSKEY = "AccessKey ";
 	/** Response header : ユーザ番号(UID) */
 	public static final String HEADER_X_UID = "X-UID";
+	/** WWW-Authenticate */
+	public static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
+	/** Header value : None */
+	public static final String HEADER_VALUE_NONE = "None";
 
 	/** ヘッダの値の区切り文字 */
 	public static final String HEADER_VALUE_DELIMITER = ",";
