@@ -1,10 +1,14 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 /**
  * Deflate圧縮・解凍ユーティリティ.
@@ -160,6 +164,7 @@ public class DeflateUtil {
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream(
 				dataByte.length);
+		/*
 		try {
 			if (def == null) {
 				def = new Deflater(level, nowrap);
@@ -183,6 +188,7 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
+		*/
 		
 		/*
 		DeflaterInputStream inStream = null;
@@ -216,7 +222,22 @@ public class DeflateUtil {
 			} catch (Exception e) {}	// Do nothing.
 		}
 		*/
-
+		
+		// Androidでは DeflaterOutputStream を使用するのが効率が良いらしい。
+		DeflaterOutputStream dout = null;
+		try {
+			if (def == null) {
+				def = new Deflater(level, nowrap);
+			}
+			dout = new DeflaterOutputStream(out, def, BUF_SIZE);
+			dout.write(dataByte);
+			
+		} finally {
+			if (dout != null) {
+				dout.close();
+			}
+		}
+		
 		return out.toByteArray();
 	}
 
@@ -245,6 +266,7 @@ public class DeflateUtil {
 		}
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		/*
 		try {
 			if (inf == null) {
 				inf = new Inflater(nowrap);
@@ -267,15 +289,15 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
+		*/
 		
-		/*
 		InflaterInputStream inStream = null;
 		try {
 			if (inf == null) {
 				inf = new Inflater(nowrap);
 			}
 			inStream = new InflaterInputStream(
-					new ByteArrayInputStream(src), inf);
+					new ByteArrayInputStream(src), inf, BUF_SIZE);
 			
 			byte[] buf = new byte[BUF_SIZE];
 			int size;
@@ -298,7 +320,6 @@ public class DeflateUtil {
 				out.close();
 			} catch (Exception e) {}	// Do nothing.
 		}
-		*/
 		
 		return out.toByteArray();
 	}
