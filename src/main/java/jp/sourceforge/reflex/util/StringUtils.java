@@ -313,5 +313,31 @@ public class StringUtils {
 		dest[array.length] = str;
 		return dest;
 	}
+	
+	/**
+	 * 文字列が数値(Integer)かどうか判定します。
+	 * @param str 文字列
+	 * @return Integerの場合true
+	 */
+	public static boolean isInteger(String str) {
+		try {
+			Integer.parseInt(str);
+			return true;
+		} catch (Exception e) {}	// Do nothing.
+		return false;
+	}
+
+	/**
+	 * 文字列が数値(Long)かどうか判定します。
+	 * @param str 文字列
+	 * @return Longの場合true
+	 */
+	public static boolean isLong(String str) {
+		try {
+			Long.parseLong(str);
+			return true;
+		} catch (Exception e) {}	// Do nothing.
+		return false;
+	}
 
 }
