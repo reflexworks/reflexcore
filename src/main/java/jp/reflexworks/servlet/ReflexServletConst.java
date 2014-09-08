@@ -46,12 +46,20 @@ public interface ReflexServletConst extends HttpStatus {
 
 	/** Header : Content Type */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
+	/** Header : Content Type (lower case) */
+	public static final String HEADER_CONTENT_TYPE_LOWERCASE = HEADER_CONTENT_TYPE.toLowerCase();
 	/** Header : Content Length */
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
+	/** Header : Content Length (lower case) */
+	public static final String HEADER_CONTENT_LENGTH_LOWERCASE = HEADER_CONTENT_LENGTH.toLowerCase();
 	/** Header : Content Encoding */
 	public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
+	/** Header : Content Encoding (lower case) */
+	public static final String HEADER_CONTENT_ENCODING_LOWERCASE = HEADER_CONTENT_ENCODING.toLowerCase();
 	/** Header : Accept Encoding */
 	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+	/** Header : Accept Encoding (lower case) */
+	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = HEADER_ACCEPT_ENCODING.toLowerCase();
 	/** Header value : deflate */
 	public static final String HEADER_VALUE_DEFLATE = "deflate";
 	/** Header value : gzip */
@@ -133,5 +141,7 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final int FORMAT_MESSAGEPACK = 3;
 	/** Format : multipart/form-data */
 	public static final int FORMAT_MULTIPART_FORMDATA = 4;
+	/** Format : Binary */
+	public static final int FORMAT_BINARY = 5;
 
 }
