@@ -233,7 +233,14 @@ public class DeflateUtil {
 			
 		} finally {
 			if (dout != null) {
-				dout.close();
+				try {
+					dout.close();
+				} catch (Exception e) {}	// Do nothing.
+			}
+			if (def != null) {
+				try {
+					def.reset();
+				} catch (Exception e) {}	// Do nothing.
 			}
 		}
 		
