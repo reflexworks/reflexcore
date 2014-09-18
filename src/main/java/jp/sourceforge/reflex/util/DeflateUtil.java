@@ -2,6 +2,8 @@ package jp.sourceforge.reflex.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -35,6 +37,18 @@ public class DeflateUtil {
 	private boolean nowrap;
 	private Deflater def;
 	private Inflater inf;
+	private boolean isReused;
+	
+	/**
+	 * コンストラクタ.
+	 * <p>
+	 * 圧縮レベル、GZIP互換かどうかはデフォルトの設定を使用します。<br>
+	 * Deflater、Inflaterを使い回すので、最後にend()を呼び出してください。
+	 * </p>
+	 */
+	public DeflateUtil() {
+		this(DEFAULT_LEVEL, DEFAULT_NOWRAP, true);
+	}
 	
 	/**
 	 * コンストラクタ.
@@ -42,18 +56,27 @@ public class DeflateUtil {
 	 * 圧縮レベル、GZIP互換かどうかはデフォルトの設定を使用します。
 	 * </p>
 	 */
-	public DeflateUtil() {
-		this(DEFAULT_LEVEL, DEFAULT_NOWRAP);
+	public DeflateUtil(boolean isReused) {
+		this(DEFAULT_LEVEL, DEFAULT_NOWRAP, isReused);
 	}
 
 	/**
 	 * コンストラクタ.
+	 * <p>
+	 * 圧縮レベル、GZIP互換かどうかを指定します。<br>
+	 * Deflater、Inflaterを使い回すので、最後にend()を呼び出してください。
+	 * </p>
 	 * @param level 圧縮レベル (0 〜 9)
 	 * @param nowrap true の場合は GZIP 互換の圧縮を使用
 	 */
 	public DeflateUtil(int level, boolean nowrap) {
+		this(level, nowrap, true);
+	}
+	
+	private DeflateUtil(int level, boolean nowrap, boolean isReused) {
 		this.level = level;
 		this.nowrap = nowrap;
+		this.isReused = isReused;
 	}
 	
 	/**
@@ -224,17 +247,29 @@ public class DeflateUtil {
 		
 		// Androidでは DeflaterOutputStream を使用するのが効率が良いらしい。
 		DeflaterOutputStream dout = null;
+		BufferedOutputStream bout = null;
 		try {
-			if (def == null) {
-				def = new Deflater(level, nowrap);
+			if (isReused) {
+				if (def == null) {
+					def = new Deflater(level, nowrap);
+				}
+				dout = new DeflaterOutputStream(out, def, BUF_SIZE);
+			} else {
+				dout = new DeflaterOutputStream(out);
 			}
-			dout = new DeflaterOutputStream(out, def, BUF_SIZE);
-			dout.write(dataByte);
+			bout = new BufferedOutputStream(dout);
+			
+			bout.write(dataByte);
 			
 		} finally {
 			if (dout != null) {
 				try {
 					dout.close();
+				} catch (Exception e) {}	// Do nothing.
+			}
+			if (bout != null) {
+				try {
+					bout.close();
 				} catch (Exception e) {}	// Do nothing.
 			}
 			if (def != null) {
@@ -298,12 +333,17 @@ public class DeflateUtil {
 		*/
 		
 		InflaterInputStream inStream = null;
+		BufferedInputStream bin = null;
 		try {
-			if (inf == null) {
-				inf = new Inflater(nowrap);
+			if (isReused) {
+				if (inf == null) {
+					inf = new Inflater(nowrap);
+				}
+				inStream = new InflaterInputStream(
+						new ByteArrayInputStream(src), inf, BUF_SIZE);
+			} else {
+				inStream = new InflaterInputStream(new ByteArrayInputStream(src));
 			}
-			inStream = new InflaterInputStream(
-					new ByteArrayInputStream(src), inf, BUF_SIZE);
 			
 			byte[] buf = new byte[BUF_SIZE];
 			int size;
