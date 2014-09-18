@@ -26,8 +26,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jp.sourceforge.reflex.IResourceMapper;
+import jp.sourceforge.reflex.exception.JSONException;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;

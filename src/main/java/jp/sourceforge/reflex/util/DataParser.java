@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
+import jp.sourceforge.reflex.exception.JSONException;
 import jp.sourceforge.reflex.util.FileUtil;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.XML;
-import org.json.JSONException;
 
 public class DataParser {
 

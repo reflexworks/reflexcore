@@ -26,8 +26,9 @@ package jp.sourceforge.reflex.core;
 
 import java.util.Iterator;
 
+import jp.sourceforge.reflex.exception.JSONException;
+
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XMLTokener;
 

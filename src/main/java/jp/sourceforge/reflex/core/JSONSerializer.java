@@ -13,9 +13,9 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONException;
 
 import jp.sourceforge.reflex.IResourceMapper;
+import jp.sourceforge.reflex.exception.JSONException;
 
 /**
  * JSONSerializerクラス

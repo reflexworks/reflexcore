@@ -1,10 +1,8 @@
 package jp.sourceforge.reflex;
 
 import java.util.List;
-import java.util.Iterator;
 
 import org.json.JSONObject;
-import org.json.JSONException;
 
 import jp.sourceforge.reflex.core.XML;
 import jp.sourceforge.reflex.util.DataParser;

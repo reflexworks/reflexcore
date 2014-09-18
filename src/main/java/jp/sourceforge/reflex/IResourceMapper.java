@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 
-import org.json.JSONException;
+import jp.sourceforge.reflex.exception.JSONException;
+
 
 /**
  * XML、JSONからのオブジェクトデシリアライズ、
