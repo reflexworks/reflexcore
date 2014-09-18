@@ -260,6 +260,7 @@ public class DeflateUtil {
 			bout = new BufferedOutputStream(dout);
 			
 			bout.write(dataByte);
+			bout.flush();
 			
 		} finally {
 			if (dout != null) {
@@ -296,7 +297,8 @@ public class DeflateUtil {
 			return null;
 		}
 
-		// 1バイト余分な領域を加える必要がある。
+		/*
+		// 1バイト余分な領域を加える必要がある。-> InflaterInputStream を使用する場合は不要らしい。
 		byte[] src = null;
 		if (nowrap) {
 			src = new byte[dataByte.length + 1];
@@ -305,7 +307,8 @@ public class DeflateUtil {
 		} else {
 			src = dataByte;
 		}
-		
+		*/
+
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		/*
 		try {
@@ -335,19 +338,20 @@ public class DeflateUtil {
 		InflaterInputStream inStream = null;
 		BufferedInputStream bin = null;
 		try {
+			ByteArrayInputStream srcStream = new ByteArrayInputStream(dataByte);
 			if (isReused) {
 				if (inf == null) {
 					inf = new Inflater(nowrap);
 				}
-				inStream = new InflaterInputStream(
-						new ByteArrayInputStream(src), inf, BUF_SIZE);
+				inStream = new InflaterInputStream(srcStream, inf, BUF_SIZE);
 			} else {
-				inStream = new InflaterInputStream(new ByteArrayInputStream(src));
+				inStream = new InflaterInputStream(srcStream);
 			}
+			bin = new BufferedInputStream(inStream);
 			
 			byte[] buf = new byte[BUF_SIZE];
 			int size;
-			while ((size = inStream.read(buf)) > 0) {
+			while ((size = bin.read(buf)) > -1) {
 				out.write(buf, 0, size);
 			}
 
@@ -360,6 +364,11 @@ public class DeflateUtil {
 			if (inStream != null) {
 				try {
 					inStream.close();
+				} catch (Exception e) {}	// Do nothing.
+			}
+			if (bin != null) {
+				try {
+					bin.close();
 				} catch (Exception e) {}	// Do nothing.
 			}
 			try {
