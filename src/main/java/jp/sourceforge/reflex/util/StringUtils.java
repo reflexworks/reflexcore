@@ -18,6 +18,21 @@ public class StringUtils {
 	}
 	
 	/**
+	 * nullの場合空データを返却します.
+	 * <p>
+	 * nullでない場合は引数をそのまま返却します.
+	 * </p>
+	 * @param data 文字列
+	 * @return nullの場合空データ、その他は引数そのまま
+	 */
+	public static byte[] null2blank(byte[] data) {
+		if (data == null) {
+			return new byte[0];
+		}
+		return data;
+	}
+	
+	/**
 	 * trim.
 	 * <p>
 	 * nullの場合空文字を返却します.
