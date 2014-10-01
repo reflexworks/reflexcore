@@ -109,13 +109,15 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	}
 
 	public String toJSON(Object entity) {
+		if (entity==null) return null;
 		Writer writer = new StringWriter();
 		jsonc.marshal(entity, writer);
 		return writer.toString();
 	}
 
 	public void toJSON(Object entity, Writer writer) {
-		jsonc.marshal(entity, writer);
+		if (entity==null) return;
+		else jsonc.marshal(entity, writer);
 	}
 
 	public Object fromJSON(String json) throws JSONException {
@@ -149,6 +151,7 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	 * Serialize an object to a pretty-printed XML String.
 	 */
 	public String toXML(Object obj) {
+		if (obj==null) return null;
 		return toXML(obj, true);
 	}
 
@@ -169,7 +172,8 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	 * Serialize an object to the given Writer as pretty-printed XML.
 	 */
 	public void toXML(Object obj, Writer out) {
-		toXML(obj, out, true);
+		if (obj==null) return;
+		else toXML(obj, out, true);
 	}
 
 	/**
@@ -186,19 +190,23 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	}
 
 	public Object fromXML(String xml) {
-		return fromXML(new StringReader(xml));
+		if (xml==null) return null;
+		else return fromXML(new StringReader(xml));
 	}
 
 	public Object fromXML(Reader xml) {
+		if (xml==null) return null;
 		((RXMapper)this.getClassMapper()).setJo_packagemap(new LinkedHashMap<String, String>(jo_packages0));
 		return unmarshal(hierarchicalStreamDriver.createReader(xml), null);
 	}
 
 	public Object fromXML(String xml, Object root) {
+		if (xml==null) return null;
 		return fromXML(new StringReader(xml), root);
 	}
 
 	public Object fromXML(Reader xml, Object root) {
+		if (xml==null) return null;
 		((RXMapper)this.getClassMapper()).setJo_packagemap(new LinkedHashMap<String, String>(jo_packages0));
 		return unmarshal(hierarchicalStreamDriver.createReader(xml), root);
 	}
