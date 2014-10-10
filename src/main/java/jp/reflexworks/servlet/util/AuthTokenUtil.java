@@ -413,5 +413,104 @@ public class AuthTokenUtil implements ReflexServletConst {
 	public static String hash(String str) {
 		return SHA256.hashString(str);
 	}
+	
+	/**
+	 * RXID文字列からWSSE認証情報を作成します
+	 * @param value RXID文字列
+	 * @param isRxid ワンタイム利用かどうか
+	 * @return WSSE認証情報
+	 */
+	public static WsseAuth parseRXID(String value) {
+		WsseAuth auth = null;
+		if (value != null) {
+			// 短縮形式
+			// 不正文字列の場合処理しないでnullを返す
+			int p1 = value.indexOf(RXID_DELIMITER);
+			int p2 = -1;
+			int p3 = -1;
+			if (p1 > 0) {
+				p2 = value.substring(p1 + 1).indexOf(RXID_DELIMITER) + 1;
+			}
+			if (p2 > 0) {
+				p2 += p1;
+				p3 = value.substring(p2 + 1).indexOf(RXID_DELIMITER) + 1;
+			}
+			if (p3 > 0) {
+				p3 += p2;
+				try {
+					String createdStr = getDateTimeOfWSSE(value.substring(0, p1));
+					String nonceStr = rot13(value.substring(p1 + 1, p2));
+					String passwordDigestStr = rot13(value.substring(p2 + 1, p3)); 
+					String username = rot13(value.substring(p3 + 1)); 
+					if (createdStr != null && nonceStr != null && 
+							passwordDigestStr != null && username != null) {
+						auth = new WsseAuth(username, passwordDigestStr, 
+								nonceStr, createdStr);
+					}
+				} catch (ParseException e) {}	// Do nothing.
+			}
+		}
+		
+		if (auth != null) {
+			auth.isRxid = true;
+		}
+		return auth;
+	}
+
+	/**
+	 * リクエストヘッダからWSSE認証情報を取り出します
+	 * @param header リクエストヘッダに指定されたWSSE文字列
+	 * @return WSSE認証情報
+	 */
+	public static WsseAuth parseWSSEheader(String header) {
+		String authUsername = null;
+		String authPassworddigest = null;
+		String authNonce = null;
+		String authCreated = null;
+
+		String[] words = header.split(",");
+		int idx, i;
+
+		for (i = 0; i < words.length; i++) {
+			String rec = words[i];
+			int len = rec.length();
+
+			if (((idx = rec.indexOf('=')) > 0) && (idx < (len-1)))  {
+				String key = rec.substring(0, idx).trim();
+				String val = rec.substring(idx+1, len).trim();
+				int	stx = 0;
+				int edx = val.length() - 1;
+				char	c;
+				if (((c = val.charAt(stx)) == '"') || (c == '\''))	stx++;
+				if (((c = val.charAt(edx)) == '"') || (c == '\''))	edx--;
+				val = val.substring(stx, edx+1);
+
+				if (key.indexOf(USER) >= 0) {
+					authUsername = val;
+				}
+				else if (key.equals(PASSWORDDIGEST)) {
+					authPassworddigest = val;
+				}
+				else if (key.equals(NONCE)) {
+					authNonce = val;
+				}
+				else if (key.equals(CREATED)) {
+					authCreated = val;
+				}
+			}
+		}
+
+		//認証パラメータの取り出せない場合は終了
+		if ((authUsername != null) &&
+				(authPassworddigest != null) &&
+				(authNonce != null) &&
+				(authCreated != null)) {
+			WsseAuth auth = new WsseAuth(authUsername, authPassworddigest, 
+					authNonce, authCreated);
+			return auth;
+		}
+		
+		return null;
+	}
 
 }
