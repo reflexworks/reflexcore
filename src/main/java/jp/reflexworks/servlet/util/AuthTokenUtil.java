@@ -47,13 +47,13 @@ public class AuthTokenUtil implements ReflexServletConst {
 	
 	/** RXID */
 	public static final String RXID = "_RXID";	// URLパラメータのみ
-	
-	/** エンコード */
-	//public static final String ENCODING = "UTF-8";
+
+	/** RXIDのユーザ名とサービス名のセパレータ */
+	public static final String RXIDNAME_SEPARATOR = ":";
 	
 	/** RXID Delimiter **/
-	protected static final String RXID_DELIMITER = "-";
-	
+	public static final String RXID_DELIMITER = "-";
+
 	/**
 	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
 	 * @param username ユーザ名
@@ -198,7 +198,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 			String nonceStr = new String(Base64.encodeBase64(nonceB), ENCODING);
 
 			if (!StringUtils.isBlank(serviceName)) {
-				username = username + ":" + serviceName;
+				username = username + RXIDNAME_SEPARATOR + serviceName;
 			}
 			auth = new WsseAuth(username, passwordDigestStr, nonceStr, created);
 			auth.password = password;
@@ -511,6 +511,49 @@ public class AuthTokenUtil implements ReflexServletConst {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * RXIDのユーザ名「{ユーザ名}:{サービス名}」から、ユーザ名(0)とサービス名(1)を分割して返却します.
+	 * @param rxidname RXIDのユーザ名
+	 * @return ユーザ名(0)とサービス名(1)を分割した文字列配列
+	 */
+	public static String[] getUsernameAndService(WsseAuth wsseAuth) {
+		String rxidname = null;
+		if (wsseAuth != null) {
+			rxidname = wsseAuth.username;
+		}
+		if (rxidname != null) {
+			String[] names = new String[2];
+			int idx = rxidname.lastIndexOf(RXIDNAME_SEPARATOR);
+			if (idx > -1) {
+				names[0] = rxidname.substring(0, idx);
+				names[1] = rxidname.substring(idx + 1);
+			} else {
+				names[0] = rxidname;
+			}
+			return names;
+		}
+		return null;
+	}
+	
+	/**
+	 * ユーザ名とサービス名から、RXIDのユーザ名「{ユーザ名}:{サービス名}」を生成します.
+	 * @param username ユーザ名
+	 * @param serviceName サービス名
+	 * @return RXIDのユーザ名「{ユーザ名}:{サービス名}」
+	 */
+	public static String editUsernameAndService(String username, String serviceName) {
+		if (StringUtils.isBlank(username)) {
+			return null;
+		}
+		StringBuilder buf = new StringBuilder();
+		buf.append(username);
+		if (!StringUtils.isBlank(serviceName)) {
+			buf.append(RXIDNAME_SEPARATOR);
+			buf.append(serviceName);
+		}
+		return buf.toString();
 	}
 
 }
