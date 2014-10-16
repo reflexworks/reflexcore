@@ -47,23 +47,30 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Header : Content Type */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	/** Header : Content Type (lower case) */
-	public static final String HEADER_CONTENT_TYPE_LOWERCASE = HEADER_CONTENT_TYPE.toLowerCase();
+	public static final String HEADER_CONTENT_TYPE_LOWERCASE = 
+			HEADER_CONTENT_TYPE.toLowerCase();
 	/** Header : Content Length */
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	/** Header : Content Length (lower case) */
-	public static final String HEADER_CONTENT_LENGTH_LOWERCASE = HEADER_CONTENT_LENGTH.toLowerCase();
+	public static final String HEADER_CONTENT_LENGTH_LOWERCASE = 
+			HEADER_CONTENT_LENGTH.toLowerCase();
 	/** Header : Content Encoding */
 	public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
 	/** Header : Content Encoding (lower case) */
-	public static final String HEADER_CONTENT_ENCODING_LOWERCASE = HEADER_CONTENT_ENCODING.toLowerCase();
+	public static final String HEADER_CONTENT_ENCODING_LOWERCASE = 
+			HEADER_CONTENT_ENCODING.toLowerCase();
 	/** Header : Accept Encoding */
 	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 	/** Header : Accept Encoding (lower case) */
-	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = HEADER_ACCEPT_ENCODING.toLowerCase();
+	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = 
+			HEADER_ACCEPT_ENCODING.toLowerCase();
 	/** Header value : deflate */
 	public static final String HEADER_VALUE_DEFLATE = "deflate";
 	/** Header value : gzip */
 	public static final String HEADER_VALUE_GZIP = "gzip";
+	/** Header value : gzip, deflate */
+	public static final String HEADER_VALUE_GZIP_DEFLATE = HEADER_VALUE_GZIP + ", " + 
+			HEADER_VALUE_DEFLATE;
 	/** Response Header : X-Content-Type-Options: nosniff */
 	public static final String HEADER_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
 	/** Response Header value : X-Content-Type-Options: nosniff */
@@ -105,7 +112,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String ACCESSKEY_UID_DELIMITER = "-";
 
 	/** XMLヘッダ */
-	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + "\" ?>\n";
+	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + 
+			"\" ?>\n";
 	/** json */
 	public static final String JSON = "json";
 	/** xml */
