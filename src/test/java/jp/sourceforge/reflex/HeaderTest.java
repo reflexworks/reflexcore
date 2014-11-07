@@ -14,6 +14,8 @@ public class HeaderTest {
 		"OVERRIDE=;Path=/;Expires=Thu, 01 Jan 1970 00:00:00 GMT",
 		"TEST=ab:cd-ef,gh/ij;Path=/;Expires=Wed, 05-Nov-15 05:04:42 GMT"
 	};
+	
+	private static final int EXPIRE_CNT = 2;
 
 	@Test
 	public void testCookieDate() throws UnsupportedEncodingException {
@@ -25,7 +27,9 @@ public class HeaderTest {
 			String[] keyValue = HeaderUtil.getSetCookieValue(testStr);
 			if (keyValue != null) {
 				System.out.println(keyValue[0] + "=" + keyValue[1]);
-				cnt++;
+				if (!"".equals(keyValue[1])) {
+					cnt++;
+				}
 			} else {
 				System.out.println("key-value is null");
 			}
@@ -33,7 +37,7 @@ public class HeaderTest {
 		
 		System.out.println("--- test CookieDate end ---");
 		
-		assertTrue(cnt == 2);
+		assertTrue(cnt == EXPIRE_CNT);
 	}
 
 }

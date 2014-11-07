@@ -322,7 +322,7 @@ public class HeaderUtil {
 	 * <p>
 	 * Cookieの形式「Set-Cookie:{name}={value};Path={path};Expires={expires}」
 	 * から、{value}の部分だけを抽出して返却します。<br>
-	 * Expiresがシステム日時より過去の場合、nullを返却します。<br>
+	 * Expiresがシステム日時より過去の場合、値を空文字("")で返却します。<br>
 	 * Expiresは以下のフォーマットに対応します。
 	 * <ol>
 	 *   <li>"EEE, dd MMM yyyy HH:mm:ss z"</li>
@@ -339,42 +339,48 @@ public class HeaderUtil {
 			Date now = new Date();
 			String[] valueParts = value.split(";");
 			boolean isFirst = true;
+			String key = null;
+			String val = null;
 			for (String valuePart : valueParts) {
 				int idx = valuePart.indexOf("=");
-				String key = null;
-				String val = null;
+				String tmpKey = null;
+				String tmpVal = null;
 				if (idx == -1) {
-					key = valuePart;
-					val = "";
+					tmpKey = valuePart;
+					tmpVal = "";
 				} else {
-					key = valuePart.substring(0, idx);
-					val = valuePart.substring(idx + 1);
+					tmpKey = valuePart.substring(0, idx);
+					tmpVal = valuePart.substring(idx + 1);
 				}
 				if (isFirst) {
 					// 先頭はkey=value
-					ret = new String[]{key, val};
+					key = tmpKey;
+					val = tmpVal;
 					isFirst = false;
 				} else {
 					// 2番目以降はCookieの属性(path, expires等)
-					if (EXPIRES.equalsIgnoreCase(key)) {
+					if (EXPIRES.equalsIgnoreCase(tmpKey)) {
 						Date cookieDate = null;
 						try {
-							cookieDate = format1.parse(val);
+							cookieDate = format1.parse(tmpVal);
 						} catch (ParseException e) {
 							try {
-								cookieDate = format2.parse(val);
+								cookieDate = format2.parse(tmpVal);
 							} catch (ParseException ee) {
-								logger.info("ParseException expires = " + val);
-								ret = null;
+								logger.info("ParseException expires = " + tmpVal);
+								val = "";
 							}
 						}
 						if (cookieDate != null && now.before(cookieDate)) {
 							// OK
 						} else {
-							ret = null;
+							val = "";
 						}
 					}
 				}
+			}
+			if (!isFirst) {
+				ret = new String[]{key, val};
 			}
 		}
 		return ret;
