@@ -1,16 +1,29 @@
 package jp.reflexworks.servlet.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.logging.Logger;
 
 import jp.sourceforge.reflex.util.StringUtils;
+import jp.reflexworks.servlet.ReflexServletConst;
 
 public class HeaderUtil {
 	
 	public static final String VALUE_SEPARATOR = ",";
+	public enum Option {ALL, FIRST, LAST};
+	public static final String FORMAT_EXPIRE_1 = "EEE, dd-MMM-yy HH:mm:ss z";
+	public static final String FORMAT_EXPIRE_2 = "EEE, dd MMM yy HH:mm:ss z";
+	public static final String EXPIRES = "Expires";
 	
+	private static Logger logger = Logger.getLogger(HeaderUtil.class.getName());
+
 	/**
 	 * ヘッダに指定されたキーと値を追加します.
 	 * <p>
@@ -54,6 +67,27 @@ public class HeaderUtil {
 		}
 		return val;
 	}
+	
+	/**
+	 * ヘッダから指定されたキーの値を取得します.
+	 * <p>
+	 * 指定されたキーで取得できない場合、キーを小文字にして取得します。
+	 * </p>
+	 * @param headers ヘッダ
+	 * @param key キー
+	 * @return 値
+	 */
+	public static List<String> getHeaderValueList(Map<String, List<String>> headers,
+			String key) {
+		if (headers == null || StringUtils.isBlank(key)) {
+			return null;
+		}
+		List<String> val = headers.get(key);
+		if (val == null) {
+			val = headers.get(key.toLowerCase(Locale.ENGLISH));
+		}
+		return val;
+	}
 
 	/**
 	 * ヘッダから指定されたキーの値を取得します.
@@ -70,6 +104,51 @@ public class HeaderUtil {
 			String key) {
 		String val = getHeaderValue(headers, key);
 		return getHeaderValues(val);
+	}
+
+	/**
+	 * ヘッダから指定されたキーの値を取得します.
+	 * <p>
+	 * 指定されたキーで取得できない場合、キーを小文字にして取得します。<br>
+	 * 値がカンマ区切りで定義されている場合、内容をリストにして返却します。<br>
+	 * 値はトリミングして返却します。
+	 * </p>
+	 * @param headers ヘッダ
+	 * @param key キー
+	 * @param option 指定されたキーのヘッダが複数ある場合。nullの場合LASTとします。<br>
+	 * <ul>
+	 *   <li>ALL: 全て</li>
+	 *   <li>FIRST: 先頭の値を有効とする</li>
+	 *   <li>LAST: 最後の値を有効とする</li>
+	 * </ul>
+	 * @return カンマ指定された値をリストにして返却
+	 */
+	public static Set<String> getHeaderValuesList(Map<String, List<String>> headers,
+			String key, Option option) {
+		List<String> val = getHeaderValueList(headers, key);
+		if (val != null && val.size() > 0) {
+			if (option == null) {
+				option = Option.LAST;	// default
+			}
+			if (option == Option.FIRST) {
+				return getHeaderValues(val.get(0));
+			} else if (option == Option.LAST) {
+				return getHeaderValues(val.get(val.size() - 1));
+			} else {	// ALL
+				Set<String> ret = null;
+				for (String str : val) {
+					Set<String> tmp = getHeaderValues(str);
+					if (tmp != null) {
+						if (ret == null) {
+							ret = new LinkedHashSet<String>();
+						}
+						ret.addAll(tmp);
+					}
+				}
+				return ret;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -135,6 +214,26 @@ public class HeaderUtil {
 	}
 	
 	/**
+	 * ヘッダに指定されたキーの指定された値が設定されているかチェックします.
+	 * <p>
+	 * ヘッダの値がカンマ区切りになっている場合、カンマで区切られた値を一つづつチェックします。
+	 * </p>
+	 * @param headers ヘッダ
+	 * @param key キー
+	 * @param value 値
+	 * @return ヘッダに指定されたキーの指定された値が設定されている場合true
+	 */
+	public static boolean containsHeaderList(Map<String, List<String>> headers, 
+			String key, String value, Option option) {
+		if (headers == null || StringUtils.isBlank(key) || 
+				StringUtils.isBlank(value) || !headers.containsKey(key)) {
+			return false;
+		}
+		Set<String> values = getHeaderValuesList(headers, key, option);
+		return containsHeader(values, value);
+	}
+
+	/**
 	 * ヘッダに値が設定されているかチェックします.
 	 * <p>
 	 * ヘッダの値がカンマ区切りになっている場合、カンマで区切られた値を一つづつチェックします。
@@ -167,6 +266,118 @@ public class HeaderUtil {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * ヘッダからSet-Cookieの指定したキーの値を取得します.
+	 * <p>
+	 * Set-Cookie は、Set-Cookie・キー共に複数指定されている事がある。<br>
+	 * ブラウザでは最後の値が有効になるため、戻り値も最後の値を返却する。
+	 * </p>
+	 * @param headers ヘッダ
+	 * @param cookieName Cookieのキー
+	 * @return Cookieの値
+	 */
+	public static String getSetCookieValue(Map<String, List<String>> headers,
+			String cookieName) {
+		String ret = null;
+		if (headers != null && headers.containsKey(ReflexServletConst.HEADER_SET_COOKIE) &&
+				!StringUtils.isBlank(cookieName)) {
+			List<String> values = headers.get(ReflexServletConst.HEADER_SET_COOKIE);
+			for (String value : values) {
+				String tmp = getSetCookieValue(cookieName, value);
+				if (tmp != null) {
+					ret = tmp;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	private static String getSetCookieValue(String key, String value) {
+		if (StringUtils.isBlank(key) || StringUtils.isBlank(value)) {
+			return null;
+		}
+		int idx2 = value.indexOf(";");
+		if (idx2 == -1) {
+			idx2 = value.length();
+		}
+		int idx1 = value.indexOf("=");
+		if (idx1 == -1) {
+			idx1 = idx2;
+		}
+		String name = value.substring(0, idx1);
+		if (key.equals(name)) {
+			if (idx1 >= idx2) {
+				return "";
+			} else {
+				return value.substring(idx1 + 1, idx2);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Set-Cookieの文字列から、キーと値の部分だけを取り出して返却します.
+	 * <p>
+	 * Cookieの形式「Set-Cookie:{name}={value};Path={path};Expires={expires}」
+	 * から、{value}の部分だけを抽出して返却します。<br>
+	 * Expiresがシステム日時より過去の場合、nullを返却します。<br>
+	 * Expiresは以下のフォーマットに対応します。
+	 * <ol>
+	 *   <li>"EEE, dd MMM yyyy HH:mm:ss z"</li>
+	 *   <li>"EEE, dd-MMM-yyyy HH:mm:ss z"</li>
+	 * </p>
+	 * @param value Set-Cookiesの文字列
+	 * @return [0]キー、[1]値
+	 */
+	public static String[] getSetCookieValue(String value) {
+		String[] ret = null;
+		if (!StringUtils.isBlank(value)) {
+			DateFormat format1 = new SimpleDateFormat(FORMAT_EXPIRE_1, Locale.US);
+			DateFormat format2 = new SimpleDateFormat(FORMAT_EXPIRE_2, Locale.US);
+			Date now = new Date();
+			String[] valueParts = value.split(";");
+			boolean isFirst = true;
+			for (String valuePart : valueParts) {
+				int idx = valuePart.indexOf("=");
+				String key = null;
+				String val = null;
+				if (idx == -1) {
+					key = valuePart;
+					val = "";
+				} else {
+					key = valuePart.substring(0, idx);
+					val = valuePart.substring(idx + 1);
+				}
+				if (isFirst) {
+					// 先頭はkey=value
+					ret = new String[]{key, val};
+					isFirst = false;
+				} else {
+					// 2番目以降はCookieの属性(path, expires等)
+					if (EXPIRES.equalsIgnoreCase(key)) {
+						Date cookieDate = null;
+						try {
+							cookieDate = format1.parse(val);
+						} catch (ParseException e) {
+							try {
+								cookieDate = format2.parse(val);
+							} catch (ParseException ee) {
+								logger.info("ParseException expires = " + val);
+								ret = null;
+							}
+						}
+						if (cookieDate != null && now.before(cookieDate)) {
+							// OK
+						} else {
+							ret = null;
+						}
+					}
+				}
+			}
+		}
+		return ret;
 	}
 
 }

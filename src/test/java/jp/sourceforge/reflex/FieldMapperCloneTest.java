@@ -3,19 +3,12 @@ package jp.sourceforge.reflex;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import model.Content;
 import model.Element2;
 import model.Type2;
 
-import jp.sourceforge.reflex.util.ConsistentHash;
-import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.FieldMapper;
-import jp.sourceforge.reflex.util.HashFunction;
-import jp.sourceforge.reflex.util.MD5;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
