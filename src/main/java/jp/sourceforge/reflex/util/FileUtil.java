@@ -1,16 +1,18 @@
 package jp.sourceforge.reflex.util;
 
-import java.io.File;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,6 +23,9 @@ public class FileUtil {
 	
 	public static final int BUFFER_SIZE = 8192;
 	public static final String DEFAULT_ENCODING = "UTF-8";
+	public static final String USER_DIR = "user.dir";
+	public static final String LINE_SEPARATOR = "line.separator";
+
 	private static Logger logger = Logger.getLogger(FileUtil.class.getName());
 
 	private static final ThreadLocal<String> defaultpath = new ThreadLocal<String>();
@@ -115,7 +120,7 @@ public class FileUtil {
 		return ret;
 	}
 
-	public InputStream getResourceStream(Class instance, String resource) 
+	public static InputStream getResourceStream(Class instance, String resource) 
 	throws FileNotFoundException {
 		InputStream inStream = instance.getResourceAsStream(resource);
 		return inStream;
@@ -125,7 +130,7 @@ public class FileUtil {
 	 * 指定されたパスまたはURLに存在する、ファイルのInputStreamを返却します。
 	 * @param resource 指定されたパスまたはURL
 	 */
-	public InputStream getResourceStream(String resource)
+	public static InputStream getResourceStream(String resource)
 	throws IOException {
 		return getResourceStream(resource, false);
 	}
@@ -135,7 +140,7 @@ public class FileUtil {
 	 * @param resource 指定されたパスまたはURL
 	 * @param reqGZip gzip送受信する・しないを指定する（URLの場合有効）
 	 */
-	public InputStream getResourceStream(String resource, boolean reqGZip)
+	public static InputStream getResourceStream(String resource, boolean reqGZip)
 	throws IOException {
 		return getResourceStream(resource, reqGZip, 0);
 	}
@@ -146,7 +151,8 @@ public class FileUtil {
 	 * @param reqGZip gzip送受信する・しないを指定する（URLの場合有効）
 	 * @param num_retries リトライ回数
 	 */
-	public InputStream getResourceStream(String resource, boolean reqGZip, int num_retries)
+	public static InputStream getResourceStream(String resource, 
+			boolean reqGZip, int num_retries)
 	throws IOException {
 		InputStream inStream = null;
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
@@ -205,7 +211,7 @@ public class FileUtil {
 	 * 指定されたパスまたはURLに存在する、ファイルのInputStreamを返却します。
 	 * @param resource 指定されたパスまたはURL
 	 */
-	public InputStream getUrlStream(String resource)
+	public static InputStream getUrlStream(String resource)
 	throws IOException {
 		return getUrlStream(resource, 0);
 	}
@@ -215,7 +221,7 @@ public class FileUtil {
 	 * @param resource 指定されたパスまたはURL
 	 * @param num_retries リトライ回数
 	 */
-	public InputStream getUrlStream(String resource, int num_retries)
+	public static InputStream getUrlStream(String resource, int num_retries)
 	throws IOException {
 		InputStream inStream = null;
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
@@ -287,7 +293,7 @@ public class FileUtil {
 	 * @return byte array
 	 * @throws IOException
 	 */
-	public byte[] readInputStream(InputStream in) throws IOException {
+	public static byte[] readInputStream(InputStream in) throws IOException {
 		return readInputStream(in, BUFFER_SIZE);
 	}
 
@@ -298,7 +304,7 @@ public class FileUtil {
 	 * @return byte array
 	 * @throws IOException
 	 */
-	public byte[] readInputStream(InputStream in, int bufferSize)
+	public static byte[] readInputStream(InputStream in, int bufferSize)
 	throws IOException {
 		byte[] data = null;
 		int dataPos = 0;
@@ -323,26 +329,29 @@ public class FileUtil {
 
 	/**
 	 * InputStreamから文字列を読み、Stringにして返却します
+	 * <p>
+	 * ストリームは本メソッド内でクローズします。
+	 * </p>
 	 * @param in InputStream
 	 * @return InputStreamから読み込んだ文字列
-	 * @throws IOException
 	 */
-	public String readString(InputStream in) throws IOException {
+	public static String readString(InputStream in) throws IOException {
 		return readString(new InputStreamReader(in));
 	}
 
 	/**
-	 * Readerから文字列を読み、Stringにして返却します
+	 * Readerから文字列を読み、Stringにして返却します.
+	 * <p>
+	 * Readerは本メソッド内でクローズします。
+	 * </p>
 	 * @param reader Reader
 	 * @return Readerから読み込んだ文字列
-	 * @throws IOException
 	 */
-	public String readString(Reader reader) throws IOException {
-
+	public static String readString(Reader reader) throws IOException {
 		BufferedReader breader = null;
-		PrintWriter pwriter = null;
 		StringWriter swriter = null;
 		String result = null;
+		String newline = getLineSeparator();
 		if (reader instanceof BufferedReader) {
 			breader = (BufferedReader)reader;
 		} else {
@@ -350,21 +359,27 @@ public class FileUtil {
 		}
 		try {
 			swriter = new StringWriter();
-			pwriter = new PrintWriter(swriter);
+			boolean isFirst = true;
 			String line;
 			while ((line = breader.readLine()) != null) {
-				pwriter.println(line);
+				if (isFirst) {
+					isFirst = false;
+				} else {
+					swriter.write(newline);
+				}
+				swriter.write(line);
 			}
-			pwriter.flush();
+			swriter.flush();
 			result = swriter.toString();
 		} finally {
-			if (pwriter != null) {
-				pwriter.close();
-			} else if (swriter != null) {
+			if (swriter != null) {
 				swriter.close();
 			}
+			if (breader != null) {
+				breader.close();
+			}
 		}
-		return (result);
+		return result;
 	}
 
 	/**
@@ -372,7 +387,7 @@ public class FileUtil {
 	 * @param in InputStream
 	 * @param out OutputStream
 	 */
-	public void fromInputToOutput(InputStream in, OutputStream out) 
+	public static void fromInputToOutput(InputStream in, OutputStream out) 
 	throws IOException {
 		fromInputToOutput(in, out, 4096);
 	}
@@ -383,7 +398,8 @@ public class FileUtil {
 	 * @param out OutputStream
 	 * @param bufferSize バッファサイズ
 	 */
-	public void fromInputToOutput(InputStream in, OutputStream out, int bufferSize) 
+	public static void fromInputToOutput(InputStream in, OutputStream out, 
+			int bufferSize) 
 	throws IOException {
 		byte buffer[] = new byte[bufferSize];
 
@@ -399,7 +415,7 @@ public class FileUtil {
 	 * @param filename ファイル名
 	 * @return InputStream
 	 */
-	public InputStream getInputStreamFromFile(String filename) {
+	public static InputStream getInputStreamFromFile(String filename) {
 		InputStream in = null;
 		File propertyFile = new File(filename);
 		if (propertyFile.exists()) {
@@ -411,7 +427,7 @@ public class FileUtil {
 		}
 		
 		if (in == null) {
-			ClassLoader loader = this.getClass().getClassLoader();
+			ClassLoader loader = FileUtil.class.getClassLoader();
 			URL propertyURL = loader.getResource(filename);
 			if (propertyURL != null) {
 				try {
@@ -425,20 +441,41 @@ public class FileUtil {
 	}
 	
 	/**
+	 * ファイル名から出力ストリームを取得します.
+	 * @param filename ファイル名
+	 * @return OutputStream
+	 */
+	public static OutputStream getOutputStreamFromFile(String filename) {
+		OutputStream out = null;
+		File propertyFile = new File(filename);
+		try {
+			out = new FileOutputStream(propertyFile);
+		} catch (IOException e) {
+			logger.warning(e.getMessage());
+		}
+		return out;
+	}
+
+	/**
 	 * ファイル名からReaderを取得します.
+	 * <p>
+	 * UTF-8でエンコーディングしたReaderを返却します。
+	 * </p>
 	 * @param filename ファイル名
 	 * @return Reader
 	 */
-	public BufferedReader getReaderFromFile(String filename) {
+	public static BufferedReader getReaderFromFile(String filename) {
 		return getReaderFromFile(filename, null);
 	}
 
 	/**
 	 * ファイル名からReaderを取得します.
 	 * @param filename ファイル名
+	 * @param enctype エンコードタイプ。デフォルト値はUTF-8。
 	 * @return Reader
 	 */
-	public BufferedReader getReaderFromFile(String filename, String enctype) {
+	public static BufferedReader getReaderFromFile(String filename, 
+			String enctype) {
 		String encoding = enctype;
 		if (encoding == null || encoding.length() == 0) {
 			encoding = DEFAULT_ENCODING;
@@ -456,16 +493,91 @@ public class FileUtil {
 		}
 		return reader;
 	}
+	
+	/**
+	 * ファイル名からWriterを取得します.
+	 * <p>
+	 * UTF-8エンコーディングするWriterを返却します。
+	 * </p>
+	 * @param filename ファイル名
+	 * @return Writer
+	 */
+	public static BufferedWriter getWriterFromFile(String filename) {
+		return getWriterFromFile(filename, DEFAULT_ENCODING);
+	}
+	
+	/**
+	 * ファイル名からWriterを取得します.
+	 * @param filename ファイル名
+	 * @param enctype エンコードタイプ。デフォルト値はUTF-8。
+	 * @return Writer
+	 */
+	public static BufferedWriter getWriterFromFile(String filename,
+			String enctype) {
+		String encoding = enctype;
+		if (encoding == null || encoding.length() == 0) {
+			encoding = DEFAULT_ENCODING;
+		}
+
+		OutputStream out = getOutputStreamFromFile(filename);
+		
+		BufferedWriter writer = null;
+		if (out != null) {
+			try {
+				writer = new BufferedWriter(new OutputStreamWriter(out, encoding));
+			} catch (UnsupportedEncodingException e) {
+				logger.warning("UnsupportedEncodingException: " + e.getMessage());
+			}
+		}
+		return writer;
+	}
+	
+	/**
+	 * カレントディレクトリを取得します.
+	 * <p>
+	 * System.getProperty("user.dir") の結果を返却します。
+	 * </p>
+	 * @return カレントディレクトリ
+	 */
+	public static String getUserDir() {
+		return System.getProperty(USER_DIR);
+	}
+	
+	/**
+	 * ディレクトリの区切り文字を取得します.
+	 * <p>
+	 * File.separator を返却します。
+	 * </p>
+	 * @return ディレクトリの区切り文字
+	 */
+	public static String getFileSeparator() {
+		return File.separator;
+	}
+	
+	/**
+	 * 改行コードを取得します.
+	 * <p>
+	 * System.getProperty("line.separator") の結果を返却します。
+	 * </p>
+	 * @return 改行コード
+	 */
+	public static String getLineSeparator() {
+		String separator = "\n";
+		try {
+			separator = System.getProperty(LINE_SEPARATOR);
+		} catch(SecurityException e) {}	// Do nothing.
+		return separator;
+	}
 
 	/**
 	 * 指定ミリ秒実行を止めます
 	 * @param msec 停止ミリ秒
 	 */
-	public synchronized void sleep(long msec) {
+	public static synchronized void sleep(long msec) {
 		try {
-			wait(msec);
+			//wait(msec);
+			Thread.sleep(msec);
 		} catch (InterruptedException e) {}
 	}
-
 	
 }
