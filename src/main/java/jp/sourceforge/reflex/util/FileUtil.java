@@ -39,7 +39,9 @@ public class FileUtil {
 	 */
 	public static String getResourceFilename(String resource) 
 	throws FileNotFoundException {
-		
+		if (StringUtils.isBlank(resource)) {
+			return null;
+		}
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 5)))) {
 			return resource;
@@ -154,6 +156,9 @@ public class FileUtil {
 	public static InputStream getResourceStream(String resource, 
 			boolean reqGZip, int num_retries)
 	throws IOException {
+		if (StringUtils.isBlank(resource)) {
+			return null;
+		}
 		InputStream inStream = null;
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 6)))) {
@@ -223,6 +228,9 @@ public class FileUtil {
 	 */
 	public static InputStream getUrlStream(String resource, int num_retries)
 	throws IOException {
+		if (StringUtils.isBlank(resource)) {
+			return null;
+		}
 		InputStream inStream = null;
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 6)))) {
@@ -306,6 +314,9 @@ public class FileUtil {
 	 */
 	public static byte[] readInputStream(InputStream in, int bufferSize)
 	throws IOException {
+		if (in == null) {
+			return null;
+		}
 		byte[] data = null;
 		int dataPos = 0;
 		byte[] temp = null;
@@ -348,6 +359,9 @@ public class FileUtil {
 	 * @return Readerから読み込んだ文字列
 	 */
 	public static String readString(Reader reader) throws IOException {
+		if (reader == null) {
+			return null;
+		}
 		BufferedReader breader = null;
 		StringWriter swriter = null;
 		String result = null;
@@ -401,6 +415,9 @@ public class FileUtil {
 	public static void fromInputToOutput(InputStream in, OutputStream out, 
 			int bufferSize) 
 	throws IOException {
+		if (in == null || out == null) {
+			return;
+		}
 		byte buffer[] = new byte[bufferSize];
 
 		// InputStreamから読み込んでOutputStreamへ書き込む繰り返し
@@ -416,6 +433,9 @@ public class FileUtil {
 	 * @return InputStream
 	 */
 	public static InputStream getInputStreamFromFile(String filename) {
+		if (StringUtils.isBlank(filename)) {
+			return null;
+		}
 		InputStream in = null;
 		File propertyFile = new File(filename);
 		if (propertyFile.exists()) {
@@ -446,6 +466,9 @@ public class FileUtil {
 	 * @return OutputStream
 	 */
 	public static OutputStream getOutputStreamFromFile(String filename) {
+		if (StringUtils.isBlank(filename)) {
+			return null;
+		}
 		OutputStream out = null;
 		File propertyFile = new File(filename);
 		try {
