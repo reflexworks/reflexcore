@@ -385,5 +385,116 @@ public class HeaderUtil {
 		}
 		return ret;
 	}
+	
+	/**
+	 * URLに、指定したキーと値をクエリパラメータとして追加します.
+	 * <p>
+	 * {url}{?|&}{key}={value} の形式で追加します。<br>
+	 * urlに同じキーが指定されている場合、新しい値に置き換えます。
+	 * </p>
+	 * @param url URL
+	 * @param key キー
+	 * @param value 値
+	 * @return 編集したURL
+	 */
+	public static String addQueryParam(String url, String key, String value) {
+		if (StringUtils.isBlank(key)) {
+			return url;
+		}
+		String editUrl = StringUtils.null2blank(removeQueryParam(url, key));
+		StringBuilder sb = new StringBuilder();
+		sb.append(editUrl);
+		sb.append(getQueryConnector(editUrl));
+		sb.append(key);
+		if (!StringUtils.isBlank(value)) {
+			sb.append("=");
+			sb.append(value);
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * URLから、指定したキーのクエリパラメータを削除します.
+	 * @param url URL
+	 * @param key キー
+	 * @return 編集したURL
+	 */
+	public static String removeQueryParam(String url, String key) {
+		if (StringUtils.isBlank(key)) {
+			return null;
+		}
+		String[] queryAndParam = getURLandQueryString(url);
+		String queryString = queryAndParam[1];
+		if (queryString != null) {
+			String[] queryParts = queryString.split("&");
+			StringBuilder sb = new StringBuilder();
+			sb.append(queryAndParam[0]);
+			boolean isFirst = true;
+			for (String queryPart : queryParts) {
+				if (!key.equals(queryPart) &&
+						!queryPart.startsWith(key + "=")) {
+					if (isFirst) {
+						isFirst = false;
+						sb.append("?");
+					} else {
+						sb.append("&");
+					}
+					sb.append(queryPart);
+				}
+			}
+			return sb.toString();
+		}
+		return url;
+	}
+	
+	/**
+	 * URLからクエリ文字列を抽出します.
+	 * <p>
+	 * URL(http://xxxx.xx/xxx?xxx=xx) の?以降の部分を返却します。
+	 * </p>
+	 * @param url URL
+	 * @return [0]PathInfoまで。[1]クエリ文字列
+	 */
+	public static String[] getURLandQueryString(String url) {
+		String[] ret = new String[2];
+		if (!StringUtils.isBlank(url)) {
+			int idx = url.indexOf("?");
+			if (idx > -1) {
+				ret[0] = url.substring(0, idx);
+				ret[1] = url.substring(idx + 1);
+			} else {
+				ret[0] = url;
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * URLからクエリ文字列を抽出します.
+	 * <p>
+	 * URL(http://xxxx.xx/xxx?xxx=xx) の?以降の部分を返却します。
+	 * </p>
+	 * @param url URL
+	 * @return クエリ文字列
+	 */
+	public static String getQueryString(String url) {
+		String[] urlAndQuery = getURLandQueryString(url);
+		return urlAndQuery[1];
+	}
+	
+	/**
+	 * URLのクエリ文字列に追加する文字を返却します.
+	 * <p>
+	 * 指定されたURLにクエリ文字列が無い場合は"?"、クエリ文字列が既にある場合は"&"を返します。
+	 * </p>
+	 * @param url URL
+	 * @return クエリ文字列に追加する文字 ("?"か"&")
+	 */
+	public static String getQueryConnector(String url) {
+		if (url != null && url.indexOf("?") > -1) {
+			return "&";
+		}
+		return "?";
+	}
 
 }
