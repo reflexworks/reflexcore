@@ -591,6 +591,45 @@ public class FileUtil {
 		} catch(SecurityException e) {}	// Do nothing.
 		return separator;
 	}
+	
+	/**
+	 * ファイルやディレクトリを削除します.
+	 * <p>
+	 * ディレクトリ指定された場合、再帰的にファイルを削除します。
+	 * </p>
+	 * @param dir ファイルまたはディレクトリ
+	 */
+	public static void delete(File dir) {
+		if (dir != null && dir.exists()) {
+			if (dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				if (files != null) {
+					for (File file : files) {
+						delete(file);
+					}
+				}
+			}
+			dir.delete();
+		}
+	}
+	
+	/**
+	 * ディレクトリ配下のファイルを削除します.
+	 * <p>
+	 * 指定されたディレクトリは残します。
+	 * </p>
+	 * @param dir ディレクトリ
+	 */
+	public static void deleteFiles(File dir) {
+		if (dir != null && dir.exists() && dir.isDirectory()) {
+			File[] files = dir.listFiles();
+			if (files != null) {
+				for (File file : files) {
+					delete(file);
+				}
+			}
+		}
+	}
 
 	/**
 	 * 指定ミリ秒実行を止めます
