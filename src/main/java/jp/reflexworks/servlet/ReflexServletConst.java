@@ -83,6 +83,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_HOST = "Host";
 	/** Response header : Location */
 	public static final String HEADER_LOCATION = "Location";
+	/** Reqest Header : Origin */
+	public static final String HEADER_ORIGIN = "Origin";
 	/** Response header : Set-Cookie */
 	public static final String HEADER_SET_COOKIE = "Set-Cookie";
 	/** Request header : Cookie */
@@ -105,6 +107,23 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
 	/** Header value : None */
 	public static final String HEADER_VALUE_NONE = "None";
+	/** Response header : Access-Control-Allow-Origin */
+	public static final String ACCESS_CONTROL_ALLOW_ORIGIN = 
+			"Access-Control-Allow-Origin";
+	/** Response header : Access-Control-Allow-Headers */
+	public static final String ACCESS_CONTROL_ALLOW_HEADERS = 
+			"Access-Control-Allow-Headers";
+	/** Request header : Access-Control-Request-Headers */
+	public static final String ACCESS_CONTROL_REQUEST_HEADERS = 
+			"Access-Control-Request-Headers";
+	/** Response header : Access-Control-Allow-Methods */
+	public static final String ACCESS_CONTROL_ALLOW_METHODS = 
+			"Access-Control-Allow-Methods";
+	/** Response header : Access-Control-Max-Age */
+	public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
+	/** Response header : Access-Control-Allow-Credentials */
+	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = 
+			"Access-Control-Allow-Credentials";
 
 	/** ヘッダの値の区切り文字 */
 	public static final String HEADER_VALUE_DELIMITER = ",";
