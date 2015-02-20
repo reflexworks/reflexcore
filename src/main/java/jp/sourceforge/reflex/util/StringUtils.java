@@ -1,7 +1,7 @@
 package jp.sourceforge.reflex.util;
 
 public class StringUtils {
-	
+
 	/**
 	 * nullの場合空文字を返却します.
 	 * <p>
@@ -16,7 +16,7 @@ public class StringUtils {
 		}
 		return s;
 	}
-	
+
 	/**
 	 * nullの場合空データを返却します.
 	 * <p>
@@ -31,7 +31,7 @@ public class StringUtils {
 		}
 		return data;
 	}
-	
+
 	/**
 	 * trim.
 	 * <p>
@@ -52,47 +52,47 @@ public class StringUtils {
 	 * @param s 文字列
 	 * @return 文字列をtrimした結果
 	 */
-    public static String trimUni(String s){
-        int len = s.length();
-        int st = 0;
-        char[] val = s.toCharArray();
+	public static String trimUni(String s){
+		int len = s.length();
+		int st = 0;
+		char[] val = s.toCharArray();
 
-        while (st < len && (val[st] <= ' ' || val[st] == '　')) {
-            st++;
-        }
-        while (st < len && (val[len - 1] <= ' ' || val[len - 1] == '　')) {
-            len--;
-        }
-        
-        if(st > 0 || len < s.length()) {
-            return s.substring(st, len);
-        }
-        
-        return s;
-    }
-    
-    /**
-     * 文字列をbooleanに変換します.
-     * <p>
-     * 文字列がnullの場合、falseを返却します.
-     * </p>
-     * @param str 文字列
-     * @return true/false
-     */
-    public static boolean booleanValue(String str) {
-    	return booleanValue(str, false);
-    }
-    
-    /**
-     * 文字列をbooleanに変換します.
-     * <p>
-     * 文字列がnullの場合、デフォルト値を返却します.
-     * </p>
-     * @param str 文字列
-     * @param def デフォルト値
-     * @return true/false
-     */
-    public static boolean booleanValue(String str, boolean def) {
+		while (st < len && (val[st] <= ' ' || val[st] == '　')) {
+			st++;
+		}
+		while (st < len && (val[len - 1] <= ' ' || val[len - 1] == '　')) {
+			len--;
+		}
+
+		if(st > 0 || len < s.length()) {
+			return s.substring(st, len);
+		}
+
+		return s;
+	}
+
+	/**
+	 * 文字列をbooleanに変換します.
+	 * <p>
+	 * 文字列がnullの場合、falseを返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @return true/false
+	 */
+	public static boolean booleanValue(String str) {
+		return booleanValue(str, false);
+	}
+
+	/**
+	 * 文字列をbooleanに変換します.
+	 * <p>
+	 * 文字列がnullの場合、デフォルト値を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return true/false
+	 */
+	public static boolean booleanValue(String str, boolean def) {
 		if (def) {
 			// デフォルトはtrue
 			if ("false".equalsIgnoreCase(str)) {
@@ -106,29 +106,29 @@ public class StringUtils {
 		}
 		return def;
 	}
-    
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、0を返却します.
-     * </p>
-     * @param str 文字列
-     * @return 数値
-     */
-    public static int intValue(String str) {
-    	return intValue(str, 0);
-    }
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、デフォルト値を返却します.
-     * </p>
-     * @param str 文字列
-     * @param def デフォルト値
-     * @return 数値
-     */
-    public static int intValue(String str, int def) {
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、0を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @return 数値
+	 */
+	public static int intValue(String str) {
+		return intValue(str, 0);
+	}
+
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、デフォルト値を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return 数値
+	 */
+	public static int intValue(String str, int def) {
 		if (str != null) {
 			try {
 				return Integer.parseInt(str);
@@ -137,27 +137,27 @@ public class StringUtils {
 		return def;
 	}
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、0を返却します.
-     * </p>
-     * @param str 文字列
-     * @return 数値
-     */
-    public static long longValue(String str) {
-    	return longValue(str, 0);
-    }
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、0を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @return 数値
+	 */
+	public static long longValue(String str) {
+		return longValue(str, 0);
+	}
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、デフォルト値を返却します.
-     * </p>
-     * @param str 文字列
-     * @param def デフォルト値
-     * @return 数値
-     */
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、デフォルト値を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return 数値
+	 */
 	public static long longValue(String str, long def) {
 		if (str != null) {
 			try {
@@ -167,27 +167,27 @@ public class StringUtils {
 		return def;
 	}
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、0を返却します.
-     * </p>
-     * @param str 文字列
-     * @return 数値
-     */
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、0を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @return 数値
+	 */
 	public static float floatValue(String str) {
 		return floatValue(str, 0);
 	}
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、デフォルト値を返却します.
-     * </p>
-     * @param str 文字列
-     * @param def デフォルト値
-     * @return 数値
-     */
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、デフォルト値を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return 数値
+	 */
 	public static float floatValue(String str, float def) {
 		if (str != null) {
 			try {
@@ -197,27 +197,27 @@ public class StringUtils {
 		return def;
 	}
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、0を返却します.
-     * </p>
-     * @param str 文字列
-     * @return 数値
-     */
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、0を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @return 数値
+	 */
 	public static double doubleValue(String str) {
 		return doubleValue(str, 0);
 	}
 
-    /**
-     * 文字列を数値に変換します.
-     * <p>
-     * 文字列がnullの場合、デフォルト値を返却します.
-     * </p>
-     * @param str 文字列
-     * @param def デフォルト値
-     * @return 数値
-     */
+	/**
+	 * 文字列を数値に変換します.
+	 * <p>
+	 * 文字列がnullの場合、デフォルト値を返却します.
+	 * </p>
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return 数値
+	 */
 	public static double doubleValue(String str, double def) {
 		if (str != null) {
 			try {
@@ -238,7 +238,7 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 文字列がnullまたは空文字、スペースのみかどうかチェックします.
 	 * @param str 文字列
@@ -265,7 +265,7 @@ public class StringUtils {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * ダブルクォーテーションが両端に付いている場合除去します.
 	 * @param str 文字列
@@ -286,7 +286,7 @@ public class StringUtils {
 		}
 		return ret.substring(start, end);
 	}
-	
+
 	/**
 	 * String配列を文字列にします.
 	 * @param array String配列
@@ -311,7 +311,7 @@ public class StringUtils {
 		}
 		return buf.toString();
 	}
-	
+
 	/**
 	 * 配列に指定された文字列を追加します.
 	 * @param array 配列
@@ -322,13 +322,13 @@ public class StringUtils {
 		if (array == null || array.length == 0) {
 			return new String[]{str};
 		}
-		
+
 		String[] dest = new String[array.length + 1];
 		System.arraycopy(array, 0, dest, 0, array.length);
 		dest[array.length] = str;
 		return dest;
 	}
-	
+
 	/**
 	 * 文字列が数値(Integer)かどうか判定します。
 	 * @param str 文字列
@@ -354,7 +354,7 @@ public class StringUtils {
 		} catch (Exception e) {}	// Do nothing.
 		return false;
 	}
-	
+
 	/**
 	 * "$" をエスケープ文字 "\$" に変換します.
 	 * <p>
@@ -373,7 +373,7 @@ public class StringUtils {
 		}
 		return str;
 	}
-	
+
 	/**
 	 * 置換.
 	 * <p>
