@@ -358,7 +358,7 @@ public class StringUtils {
 	/**
 	 * "$" をエスケープ文字 "\$" に変換します.
 	 * <p>
-	 * {@link String#replaceAll(String, String)} の引数に$があると
+	 * {@link String#replaceAll(String, String)} の引数に$があると<br>
 	 * java.lang.IllegalArgumentException: Illegal group reference 例外が発生します。<br>
 	 * 内部で変換文字を $1、$2、... と表現しているためです。<br>
 	 * 例外を防ぐには、replaceAllの引数は "$" を "\$" にエスケープすれば正常に置換されます。<br>
@@ -370,6 +370,31 @@ public class StringUtils {
 	public static String escapeDollar(String str) {
 		if (!isBlank(str)) {
 			return str.replaceAll("\\$", "\\\\\\$");
+		}
+		return str;
+	}
+	
+	/**
+	 * 置換.
+	 * <p>
+	 * 置換する文字列(replacement) に "$" がある場合、"\$"に変換して置換します。<br>
+	 * <br>
+	 * {@link String#replaceAll(String, String)} の引数に$があると<br>
+	 * java.lang.IllegalArgumentException: Illegal group reference 例外が発生します。<br>
+	 * 内部で変換文字を $1、$2、... と表現しているためです。<br>
+	 * 例外を防ぐには、replaceAllの引数は "$" を "\$" にエスケープすれば正常に置換されます。<br>
+	 * 一致判定の正規表現、置き換え文字列共にエスケープが必要です。<br>
+	 * </p>
+	 * @param str 置換対象文字列
+	 * @param regex 置換対象の正規表現
+	 * @param replacement 置換する文字列
+	 * @return 置換結果文字列
+	 */
+	public static String replaceAll(String str, String regex, String replacement) {
+		if (!StringUtils.isBlank(str) && !StringUtils.isBlank(regex) && 
+				replacement != null) {
+			String tmpReplacement = escapeDollar(replacement);
+			return str.replaceAll(regex, tmpReplacement);
 		}
 		return str;
 	}
