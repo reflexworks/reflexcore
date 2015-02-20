@@ -354,5 +354,24 @@ public class StringUtils {
 		} catch (Exception e) {}	// Do nothing.
 		return false;
 	}
+	
+	/**
+	 * "$" をエスケープ文字 "\$" に変換します.
+	 * <p>
+	 * {@link String#replaceAll(String, String)} の引数に$があると
+	 * java.lang.IllegalArgumentException: Illegal group reference 例外が発生します。<br>
+	 * 内部で変換文字を $1、$2、... と表現しているためです。<br>
+	 * 例外を防ぐには、replaceAllの引数は "$" を "\$" にエスケープすれば正常に置換されます。<br>
+	 * 一致判定の正規表現、置き換え文字列共にエスケープが必要です。<br>
+	 * </p>
+	 * @param str 文字列
+	 * @return $をエスケープした文字列
+	 */
+	public static String escapeDollar(String str) {
+		if (!isBlank(str)) {
+			return str.replaceAll("\\$", "\\\\\\$");
+		}
+		return str;
+	}
 
 }
