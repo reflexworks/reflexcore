@@ -306,7 +306,7 @@ public class JSONContext {
 					// for reserved words
 					if (!F) {
 						if (key.charAt(0)=='_')
-						key = key.substring(1);
+							key = key.substring(1).replace("$", "___");;
 					}else {
 					if (key.startsWith("_")&&!key.startsWith("_$")) {
 						key = key.substring(1);
@@ -345,7 +345,7 @@ public class JSONContext {
 		// for reserved words
 		if (!F) {
 			if (key.charAt(0)=='_')
-			key = key.substring(1);
+				key = key.substring(1).replace("$", "___");;
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
 			key = key.substring(1);
@@ -368,7 +368,7 @@ public class JSONContext {
 		// for reserved words
 		if (!F) {
 			if (key.charAt(0)=='_')
-			key = key.substring(1);
+				key = key.substring(1).replace("$", "___");;
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
 			key = key.substring(1);
@@ -391,7 +391,7 @@ public class JSONContext {
 		// for reserved words
 		if (!F) {
 			if (key.charAt(0)=='_')
-			key = key.substring(1);
+				key = key.substring(1).replace("$", "___");;
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
 			key = key.substring(1);
@@ -414,7 +414,7 @@ public class JSONContext {
 		// for reserved words
 		if (!F) {
 			if (key.charAt(0)=='_')
-			key = key.substring(1);
+				key = key.substring(1).replace("$", "___");;
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
 			key = key.substring(1);
@@ -437,7 +437,7 @@ public class JSONContext {
 		// for reserved words
 		if (!F) {
 			if (key.charAt(0)=='_')
-			key = key.substring(1);
+			key = key.substring(1).replace("$", "___");;
 		}else {
 		if (key.startsWith("_")&&!key.startsWith("_$")) {
 			key = key.substring(1);
