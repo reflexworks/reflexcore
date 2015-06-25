@@ -31,15 +31,9 @@ public class JSONSerializer implements IResourceMapper {
 
   public String Q = "\""; // Quote （シングルクォートにしたい場合はここを変更）
   public boolean F = false;	// trueで互換モード
-  public boolean F2 = false;	// trueでnummap表示
 
   public JSONSerializer(boolean F) {
 	  this.F = F;
-  }
-
-  public JSONSerializer(boolean F,boolean F2) {
-	  this.F = F;
-	  this.F2 = F2;
   }
 
   /**
@@ -59,6 +53,16 @@ public class JSONSerializer implements IResourceMapper {
   public void toJSON(Object entity, Writer writer) {
     marshal(entity, writer);
   }
+
+  public String toJSON(Object entity, boolean dispChildNum) {
+	    Writer writer = new StringWriter();
+	    marshal(entity, writer,dispChildNum);
+	    return writer.toString();
+	}
+
+	public void toJSON(Object entity, Writer writer, boolean dispChildNum) {
+	    marshal(entity, writer,dispChildNum);
+	}
 
   public Object fromJSON(String json) {
     // please use ResourceMapper
@@ -129,11 +133,18 @@ public class JSONSerializer implements IResourceMapper {
    * @param out Writer
    */
   public void marshal(Object source, Writer out) {
+	  this.marshal(source, out,false);
+  }
+  /**
+   * @param source Object
+   * @param out Writer
+   */
+  public void marshal(Object source, Writer out,boolean dispchildnum) {
 
     try {
       // out.append('{');
       out.write(new char[] { '{' });
-      JSONContext context = new JSONContext(out, this.Q,this.F);
+      JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
       context.push(context.HASH);
       marshal(context,source.getClass().getName(), source);
       // out.append('}');
@@ -451,7 +462,7 @@ public class JSONSerializer implements IResourceMapper {
       }
       
     }
-	  if (nummap!=null&&this.F2) {
+	  if (nummap!=null&&context.dispChildNum) {
 		  int i=1;
 		  for(Map.Entry<String, Integer> e : nummap.entrySet()) {
   			  context.outcomma();

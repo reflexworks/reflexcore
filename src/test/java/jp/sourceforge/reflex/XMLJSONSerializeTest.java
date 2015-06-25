@@ -40,7 +40,7 @@ public class XMLJSONSerializeTest extends TestCase {
 	public void test() {
 
 		// モデルビーンのパッケージ名を指定してmapperをnewする
-		IResourceMapper mapper = new ResourceMapper("model",new JSONSerializer(false,true));
+		IResourceMapper mapper = new ResourceMapper("model");
 		
 		// 子要素が多重度０，１の例。この場合は普通にクラス名を使う
 		Login login = new Login();
@@ -108,8 +108,8 @@ public class XMLJSONSerializeTest extends TestCase {
 		System.out.println("\n【XML(0,unbound)　シリアライズテスト】:");
 		System.out.println(toXML);
 
-		// JSONにシリアライズ
-		toJSON = mapper.toJSON(login);
+		// JSONにシリアライズ(子要素のNumberを表示)
+		toJSON = mapper.toJSON(login,true);
 		System.out.println("\n【JSON(0,unbound1)　シリアライズテスト】:");
 		System.out.println(toJSON);
 

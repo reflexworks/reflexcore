@@ -52,10 +52,6 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		this(jo_packages, false, false, false);
 	}
 
-	public ResourceMapper(Object jo_packages, JSONSerializer jsonc) {
-		this(jo_packages, false, false, false,null,jsonc);
-	}
-
 	public ResourceMapper(Object jo_packages, boolean compatible) {
 		this(jo_packages, false, false, compatible);
 	}
@@ -64,20 +60,20 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		this(jo_packages, isCamel, false, compatible);
 	}
 	public ResourceMapper(Object jo_packages, ReflectionProvider reflectionProvider) {
-		this(jo_packages, false, false, false, reflectionProvider,null);
+		this(jo_packages, false, false, false, reflectionProvider);
 	}
 	public ResourceMapper(Object jo_packages, boolean isCamel,
 			boolean useSingleQuote, boolean compatible) {
-		this(jo_packages, isCamel, useSingleQuote, compatible, null,null);
+		this(jo_packages, isCamel, useSingleQuote, compatible, null);
 	}
 
 	public ResourceMapper(Object jo_packages, boolean isCamel,
 			boolean useSingleQuote, ReflectionProvider reflectionProvider) {
-		this(jo_packages, isCamel, useSingleQuote, false, reflectionProvider,null);
+		this(jo_packages, isCamel, useSingleQuote, false, reflectionProvider);
 	}
 
 	public ResourceMapper(Object jo_packages, boolean isCamel,
-			boolean useSingleQuote, boolean compatible, ReflectionProvider reflectionProvider,JSONSerializer jsonc) {
+			boolean useSingleQuote, boolean compatible, ReflectionProvider reflectionProvider) {
 		super(reflectionProvider);
 		
 		if (jo_packages instanceof Map) {
@@ -89,11 +85,7 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 			}
 		}
 
-		if (jsonc!=null) {
-			this.jsonc = jsonc;
-		}else {
-			this.jsonc = new JSONSerializer(compatible);
-		}
+		jsonc = new JSONSerializer(compatible);
 		
 		this.isCamel = isCamel;
 		this.useSingleQuote = useSingleQuote;
@@ -116,6 +108,13 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		registerConverter(new RXISO8601TimestampConverter(), PRIORITY_NORMAL);
 	}
 
+	public String toJSON(Object entity,boolean dispChildNum) {
+		if (entity==null) return null;
+		Writer writer = new StringWriter();
+		jsonc.marshal(entity, writer,dispChildNum);
+		return writer.toString();
+	}
+
 	public String toJSON(Object entity) {
 		if (entity==null) return null;
 		Writer writer = new StringWriter();
@@ -126,6 +125,11 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	public void toJSON(Object entity, Writer writer) {
 		if (entity==null) return;
 		else jsonc.marshal(entity, writer);
+	}
+
+	public void toJSON(Object entity, Writer writer,boolean dispChildNum) {
+		if (entity==null) return;
+		else jsonc.marshal(entity, writer,dispChildNum);
 	}
 
 	public Object fromJSON(String json) throws JSONException {
