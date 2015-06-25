@@ -1,10 +1,14 @@
 package model;
 
+import java.util.List;
+
 import jp.sourceforge.reflex.util.FieldMapper;
 
 public class Content {
 
 	public String content;
+	public List content2;
+	
 	
 	public Content clone() {
 		Content cont = new Content();

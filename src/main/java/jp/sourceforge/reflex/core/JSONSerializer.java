@@ -10,9 +10,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Set;
 
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.exception.JSONException;
@@ -27,11 +31,17 @@ public class JSONSerializer implements IResourceMapper {
 
   public String Q = "\""; // Quote （シングルクォートにしたい場合はここを変更）
   public boolean F = false;	// trueで互換モード
+  public boolean F2 = false;	// trueでnummap表示
 
   public JSONSerializer(boolean F) {
 	  this.F = F;
   }
-  
+
+  public JSONSerializer(boolean F,boolean F2) {
+	  this.F = F;
+	  this.F2 = F2;
+  }
+
   /**
    * @param entity Object 　
    * @return writer.toString();
@@ -251,7 +261,7 @@ public class JSONSerializer implements IResourceMapper {
    */
   public void marshal(JSONContext context, String nodename,Object source) throws IOException,
       IllegalArgumentException, IllegalAccessException {
-    this.marshal(context, nodename, source, false);
+    this.marshal(context, nodename, source, false,null);
   }
 
   /**
@@ -268,7 +278,7 @@ public class JSONSerializer implements IResourceMapper {
    * @throws IllegalAccessException
    *             exception
    */
-  public void marshal(JSONContext context, String nodename,Object source, boolean flgArray) throws IOException,
+  public void marshal(JSONContext context, String nodename,Object source, boolean flgArray,Map<String,Integer> nummap) throws IOException,
       IllegalArgumentException, IllegalAccessException {
 
 //    RXUtil rxUtil = new RXUtil();
@@ -378,8 +388,10 @@ public class JSONSerializer implements IResourceMapper {
                 mode = context.HASH;
               }
               context.push(mode);
-//              this.marshal(context, list.get(ln).getClass().getName(),list.get(ln), isArray);
-              this.marshal(context, fields[fn].getName(),list.get(ln), isArray);
+              if (nummap==null) nummap = new HashMap<String,Integer>();
+              nummap.put(fields[fn].getName(), ln);
+              this.marshal(context, fields[fn].getName(),list.get(ln), isArray,nummap);
+              nummap.remove(fields[fn].getName());
             }
           }
         }
@@ -437,8 +449,16 @@ public class JSONSerializer implements IResourceMapper {
           this.marshal(context, fields[fn].getName() ,child);
         }
       }
-
+      
     }
+	  if (nummap!=null&&this.F2) {
+		  int i=1;
+		  for(Map.Entry<String, Integer> e : nummap.entrySet()) {
+  			  context.outcomma();
+  			  context.out("__num"+(nummap.size()-i+1),e.getValue());
+  			  i++;
+			}
+	  }
 
     context.popout();
 
