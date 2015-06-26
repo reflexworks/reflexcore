@@ -463,11 +463,10 @@ public class JSONSerializer implements IResourceMapper {
       
     }
 	  if (nummap!=null&&context.dispChildNum) {
-		  int i=1;
 		  for(Map.Entry<String, Integer> e : nummap.entrySet()) {
   			  context.outcomma();
-  			  context.out("____num"+(nummap.size()-i+1),e.getValue());
-  			  i++;
+  			  context.out("____num",e.getValue());
+  			  break;
 			}
 	  }
 
