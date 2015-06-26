@@ -162,16 +162,22 @@ public class JSONContext {
 	 *
 	 */
 	public boolean F;
-	
+
+	/**
+	 * dispChildNumFlag
+	 *
+	 */
+	public boolean dispChildNum;
 	
 	/**
 	 * @param out
 	 *            Write
 	 */
-	public JSONContext(Writer out, String quate,boolean flag) {
+	public JSONContext(Writer out, String quate,boolean flag,boolean dispChildNum) {
 		this.out = out;
 		this.Q = quate;
 		this.F = flag;
+		this.dispChildNum = dispChildNum;
 	}
 
 	/**

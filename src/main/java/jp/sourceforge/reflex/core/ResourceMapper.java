@@ -108,6 +108,13 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 		registerConverter(new RXISO8601TimestampConverter(), PRIORITY_NORMAL);
 	}
 
+	public String toJSON(Object entity,boolean dispChildNum) {
+		if (entity==null) return null;
+		Writer writer = new StringWriter();
+		jsonc.marshal(entity, writer,dispChildNum);
+		return writer.toString();
+	}
+
 	public String toJSON(Object entity) {
 		if (entity==null) return null;
 		Writer writer = new StringWriter();
@@ -118,6 +125,11 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	public void toJSON(Object entity, Writer writer) {
 		if (entity==null) return;
 		else jsonc.marshal(entity, writer);
+	}
+
+	public void toJSON(Object entity, Writer writer,boolean dispChildNum) {
+		if (entity==null) return;
+		else jsonc.marshal(entity, writer,dispChildNum);
 	}
 
 	public Object fromJSON(String json) throws JSONException {

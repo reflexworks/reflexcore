@@ -30,6 +30,20 @@ public interface IResourceMapper {
 	public void toJSON(Object entity, Writer writer);
 
 	/**
+	 * オブジェクトをJSON文字列にシリアライズします。
+	 * @param entity オブジェクト
+	 * @return JSON文字列
+	 */
+	public String toJSON(Object entity,boolean dispChildNum);
+
+	/**
+	 * オブジェクトをJSON文字列にシリアライズします。
+	 * @param entity オブジェクト
+	 * @param writer JSON文字列の出力先
+	 */
+	public void toJSON(Object entity, Writer writer,boolean dispChildNum);
+
+	/**
 	 * JSON文字列からオブジェクトを作成します。
 	 * @param json JSON文字列
 	 * @return オブジェクト

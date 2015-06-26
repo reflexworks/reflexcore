@@ -10,9 +10,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Set;
 
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.exception.JSONException;
@@ -31,7 +35,7 @@ public class JSONSerializer implements IResourceMapper {
   public JSONSerializer(boolean F) {
 	  this.F = F;
   }
-  
+
   /**
    * @param entity Object 　
    * @return writer.toString();
@@ -49,6 +53,16 @@ public class JSONSerializer implements IResourceMapper {
   public void toJSON(Object entity, Writer writer) {
     marshal(entity, writer);
   }
+
+  public String toJSON(Object entity, boolean dispChildNum) {
+	    Writer writer = new StringWriter();
+	    marshal(entity, writer,dispChildNum);
+	    return writer.toString();
+	}
+
+	public void toJSON(Object entity, Writer writer, boolean dispChildNum) {
+	    marshal(entity, writer,dispChildNum);
+	}
 
   public Object fromJSON(String json) {
     // please use ResourceMapper
@@ -119,11 +133,18 @@ public class JSONSerializer implements IResourceMapper {
    * @param out Writer
    */
   public void marshal(Object source, Writer out) {
+	  this.marshal(source, out,false);
+  }
+  /**
+   * @param source Object
+   * @param out Writer
+   */
+  public void marshal(Object source, Writer out,boolean dispchildnum) {
 
     try {
       // out.append('{');
       out.write(new char[] { '{' });
-      JSONContext context = new JSONContext(out, this.Q,this.F);
+      JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
       context.push(context.HASH);
       marshal(context,source.getClass().getName(), source);
       // out.append('}');
@@ -251,7 +272,7 @@ public class JSONSerializer implements IResourceMapper {
    */
   public void marshal(JSONContext context, String nodename,Object source) throws IOException,
       IllegalArgumentException, IllegalAccessException {
-    this.marshal(context, nodename, source, false);
+    this.marshal(context, nodename, source, false,null);
   }
 
   /**
@@ -268,7 +289,7 @@ public class JSONSerializer implements IResourceMapper {
    * @throws IllegalAccessException
    *             exception
    */
-  public void marshal(JSONContext context, String nodename,Object source, boolean flgArray) throws IOException,
+  public void marshal(JSONContext context, String nodename,Object source, boolean flgArray,Map<String,Integer> nummap) throws IOException,
       IllegalArgumentException, IllegalAccessException {
 
 //    RXUtil rxUtil = new RXUtil();
@@ -378,8 +399,10 @@ public class JSONSerializer implements IResourceMapper {
                 mode = context.HASH;
               }
               context.push(mode);
-//              this.marshal(context, list.get(ln).getClass().getName(),list.get(ln), isArray);
-              this.marshal(context, fields[fn].getName(),list.get(ln), isArray);
+              if (nummap==null) nummap = new HashMap<String,Integer>();
+              nummap.put(fields[fn].getName(), ln);
+              this.marshal(context, fields[fn].getName(),list.get(ln), isArray,nummap);
+              nummap.remove(fields[fn].getName());
             }
           }
         }
@@ -437,8 +460,16 @@ public class JSONSerializer implements IResourceMapper {
           this.marshal(context, fields[fn].getName() ,child);
         }
       }
-
+      
     }
+	  if (nummap!=null&&context.dispChildNum) {
+		  int i=1;
+		  for(Map.Entry<String, Integer> e : nummap.entrySet()) {
+  			  context.outcomma();
+  			  context.out("____num"+(nummap.size()-i+1),e.getValue());
+  			  i++;
+			}
+	  }
 
     context.popout();
 
