@@ -142,6 +142,13 @@ public class JSONSerializer implements IResourceMapper {
   public void marshal(Object source, Writer out,boolean dispchildnum) {
 
     try {
+    if(dispchildnum) {
+        JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
+        context.push(context.HASH);
+        marshal(context,"", source);
+        out.flush();
+    	
+    }else {
       // out.append('{');
       out.write(new char[] { '{' });
       JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
@@ -150,6 +157,7 @@ public class JSONSerializer implements IResourceMapper {
       // out.append('}');
       out.write(new char[] { '}' });
       out.flush();
+    }
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -292,13 +300,13 @@ public class JSONSerializer implements IResourceMapper {
   public void marshal(JSONContext context, String nodename,Object source, boolean flgArray,Map<String,Integer> nummap) throws IOException,
       IllegalArgumentException, IllegalAccessException {
 
-//    RXUtil rxUtil = new RXUtil();
-
     int mode;
 
     Field[] fields = source.getClass().getFields();
-    if (nodename.startsWith("_")) nodename = nodename.substring(1);
-    context.printNodeName(nodename);
+    if (nodename!=null&&!nodename.equals("")) {
+    	if (nodename.startsWith("_")) nodename = nodename.substring(1);
+    	context.printNodeName(nodename);
+    }
     context.pushout();
 
     for (int fn = 0; fn < fields.length; fn++) {
