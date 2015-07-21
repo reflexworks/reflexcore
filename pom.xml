@@ -132,8 +132,9 @@
       <artifactId>msgpack</artifactId>
       <!--  
       <version>0.6.8</version>
-      -->
       <version>0.6.11</version>
+      -->
+      <version>0.6.12</version>
     </dependency>
     <!--  
     <dependency>
