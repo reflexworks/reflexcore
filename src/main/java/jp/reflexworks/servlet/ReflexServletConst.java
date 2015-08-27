@@ -1,5 +1,7 @@
 package jp.reflexworks.servlet;
 
+import java.util.Locale;
+
 /**
  * ReflexServletで使用する定数
  */
@@ -52,22 +54,22 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	/** Header : Content Type (lower case) */
 	public static final String HEADER_CONTENT_TYPE_LOWERCASE = 
-			HEADER_CONTENT_TYPE.toLowerCase();
+			HEADER_CONTENT_TYPE.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Length */
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	/** Header : Content Length (lower case) */
 	public static final String HEADER_CONTENT_LENGTH_LOWERCASE = 
-			HEADER_CONTENT_LENGTH.toLowerCase();
+			HEADER_CONTENT_LENGTH.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Encoding */
 	public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
 	/** Header : Content Encoding (lower case) */
 	public static final String HEADER_CONTENT_ENCODING_LOWERCASE = 
-			HEADER_CONTENT_ENCODING.toLowerCase();
+			HEADER_CONTENT_ENCODING.toLowerCase(Locale.ENGLISH);
 	/** Header : Accept Encoding */
 	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 	/** Header : Accept Encoding (lower case) */
 	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = 
-			HEADER_ACCEPT_ENCODING.toLowerCase();
+			HEADER_ACCEPT_ENCODING.toLowerCase(Locale.ENGLISH);
 	/** Header value : deflate */
 	public static final String HEADER_VALUE_DEFLATE = "deflate";
 	/** Header value : gzip */

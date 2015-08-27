@@ -10,13 +10,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Locale;
 
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.exception.JSONException;
@@ -250,7 +248,7 @@ public class JSONSerializer implements IResourceMapper {
     	int i=0;
     	if (fieldname.startsWith("_")) i++;
       // 先頭に_が付く前提
-      String classname = fieldname.substring(i, i+1).toUpperCase() + fieldname.substring(i+1);
+      String classname = fieldname.substring(i, i+1).toUpperCase(Locale.ENGLISH) + fieldname.substring(i+1);
       if (field.getType().getName().indexOf(classname)>0) return true;
     }
     return false;
