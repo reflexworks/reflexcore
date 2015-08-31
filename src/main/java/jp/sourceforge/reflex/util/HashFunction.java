@@ -2,6 +2,6 @@ package jp.sourceforge.reflex.util;
 
 public interface HashFunction {
 
-	int hash(Object key);
+	String hash(Object key);
 
 }
