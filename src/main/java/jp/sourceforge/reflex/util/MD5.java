@@ -9,11 +9,10 @@ import java.util.logging.Logger;
 public class MD5 implements HashFunction {
 
 	private Logger logger = Logger.getLogger(this.getClass().getName());
-
-	public int hash(Object key)  {
+	
+	public String hash(Object key)  {
 		MD5 d = new MD5();
-		String hex = d.getStringDigest((String)key).substring(0, 4);
-		return Integer.parseInt(hex, 16);
+		return d.getStringDigest((String)key);
 	}
 
 	public String getStringDigest(String data) {	// 文字列からダイジェストを生成する

@@ -1,15 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>jp.sourceforge.reflex</groupId>
   <artifactId>reflexcore</artifactId>
   <packaging>jar</packaging>
-  <version>1.6.3</version>
+  <version>1.6.4</version>
+
   <description>Reflex core module is a serializer/deserializer tool of XML/JSON. Based on the concept of a Reflex architecture
   </description>
   <name>Reflex Core Module</name>
   <url>http://reflex.sourceforge.jp/</url>
+
   <ciManagement>
     <system>continuum</system>
     <url>http://reflexworks.jp/continuum/</url>
@@ -52,7 +54,7 @@
       <distribution>available under a BSD license.</distribution>
       <comments>
 
-  Copyright (c) 2003-2009, Virtual Technology All Rights Reserved
+  Copyright (c) 2003-2013, Virtual Technology All Rights Reserved
   Licensed Materials - Property of Virtual Technology
 
   Redistribution and use in source and binary forms, with or without
@@ -91,245 +93,9 @@
     <url>http://www.virtual-tech.net/</url>
   </organization>
 
-    <build>
-    <defaultGoal>validate</defaultGoal>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-            <encoding>UTF-8</encoding>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <configuration>
-            <updateReleaseInfo>true</updateReleaseInfo>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <outputDirectory>src/site/resources</outputDirectory>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>source-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>javadoc-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <source>1.5</source>
-          <encoding>UTF-8</encoding>
-          <docencoding>UTF-8</docencoding>
-          <charset>UTF-8</charset>
-          <links>
-            <link>http://java.sun.com/j2se/1.5.0/ja/docs/ja/api/</link>
-            <link>http://java.sun.com/j2ee/1.5/docs/api/</link>
-            <link>http://aopalliance.sourceforge.net/doc/</link>
-          </links>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <check branchrate="80" haltonerror="true" linerate="70" totallinerate="70" totalbranchrate="80"></check>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <outputEncoding>utf-8</outputEncoding>
-          <inputEncoding>utf-8</inputEncoding>
-          <locales>ja</locales>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  <repositories>
-    <repository>
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <url>http://repo1.maven.org/maven2</url>
-    </repository>
-    <!--  
-    <repository>
-      <id>maven.org</id>
-      <name>The ibiblio Maven2 Repository</name>
-      <url>http://www.ibiblio.org/maven2</url>
-    </repository>
-    <repository>
-      <id>apache</id>
-      <name>apache Repository</name>
-      <url>http://people.apache.org/repository/</url>
-    </repository>
-    <repository>
-      <id>codehaus</id>
-      <name>codehaus Repository</name>
-      <url>http://repository.codehaus.org/</url>
-    </repository>
-    <repository>
-      <id>appengine</id>
-      <name>mvnsearch Repository</name>
-      <url>http://www.mvnsearch.org/maven2/</url>
-    </repository>
-    -->
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots />
-      <id>codehaus-snapshot-plugins</id>
-      <name>codehaus-shapshot-plugins</name>
-      <url>http://snapshots.repository.codehaus.org/</url>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>dependencies</report>
-              <report>project-team</report>
-              <report>mailing-list</report>
-              <report>cim</report>
-              <report>issue-tracking</report>
-              <report>license</report>
-              <report>scm</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-<!--      <plugin>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-      </plugin> -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>changes-maven-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-<!--      <plugin>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>checkstyle.xml</configLocation>
-          <headerLocation>copyright.txt</headerLocation>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-pmd-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <configuration>
-          <threshold>High|Normal|Low|Exp|Ignore</threshold>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>javancss-maven-plugin</artifactId>
-        <version>2.0-beta-1</version>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>taglist-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-jxr-plugin</artifactId>
-      </plugin>-->
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <links>
-            <link>http://java.sun.com/j2ee/1.5/docs/api</link>
-            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-            <link>http://jakarta.apache.org/commons/collections/apidocs-COLLECTIONS_3_0/</link>
-            <link>http://jakarta.apache.org/commons/dbcp/apidocs/</link>
-            <link>http://jakarta.apache.org/commons/fileupload/apidocs/</link>
-            <link>http://jakarta.apache.org/commons/httpclient/apidocs/</link>
-            <link>http://jakarta.apache.org/commons/logging/apidocs/</link>
-            <link>http://jakarta.apache.org/commons/pool/apidocs/</link>
-            <link>http://www.junit.org/junit/javadoc/</link>
-            <link>http://logging.apache.org/log4j/docs/api/</link>
-            <link>http://jakarta.apache.org/regexp/apidocs/</link>
-            <link>http://jakarta.apache.org/velocity/api/</link>
-          </links>
-		  <locale>ja</locale>
-		  <encoding>UTF-8</encoding>
-		  <charset>UTF-8</charset>
-		  <docencoding>UTF-8</docencoding>
-		  </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <buildcommands>
-            <java.lang.String>org.eclipse.jdt.core.javabuilder</java.lang.String>
-            <java.lang.String>org.maven.ide.eclipse.maven2Builder</java.lang.String>
-          </buildcommands>
-          <projectnatures>
-            <java.lang.String>org.eclipse.jdt.core.javanature</java.lang.String>
-            <java.lang.String>org.maven.ide.eclipse.maven2Nature</java.lang.String>
-          </projectnatures>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -368,19 +134,14 @@
       <artifactId>msgpack</artifactId>
       <version>0.6.5</version>
     </dependency>
-    
   </dependencies>
-    <distributionManagement>
+
+  <distributionManagement>
     <repository>
       <id>scp-repository</id>
       <name>SourceForge</name>
       <url>scp://shell.sourceforge.jp/misc/groups/r/re/reflex/htdocs/maven2/</url>
     </repository>
-<!--    <repository>
-      <id>scp-repository</id>
-      <name>Yellow</name>
-      <url>scp://reflexworks.jp/home/Takezaki/maven2</url>
-    </repository>  -->
     <site>
       <id>scp-repository</id>
       <name>Sourceforge Site</name>
