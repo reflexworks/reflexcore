@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Locale;
 
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
@@ -164,14 +164,14 @@ public class RXMapper extends MapperWrapper {
 		if (type.getName().indexOf(".") < -1) {
 			String clsname = type.getName();
 			if (!rx.isCamel)
-				clsname = clsname.substring(0, 1).toLowerCase() + clsname.substring(1); // to
+				clsname = clsname.substring(0, 1).toLowerCase(Locale.ENGLISH) + clsname.substring(1); // to
 			// LowerCase
 			return prefix + clsname;
 		} else {
 			String clsname = type.getName().substring(
 					type.getName().lastIndexOf(".") + 1);
 			if (!rx.isCamel)
-				clsname = clsname.substring(0, 1).toLowerCase() + clsname.substring(1); // to
+				clsname = clsname.substring(0, 1).toLowerCase(Locale.ENGLISH) + clsname.substring(1); // to
 			// LowerCase
 			return rxutil.fld2node(prefix + clsname);
 		}
@@ -246,7 +246,7 @@ public class RXMapper extends MapperWrapper {
 			elemName = elemName.substring(idx + 1);
 		}
 		if (!rx.isCamel)
-			clsname = elemName.substring(0, 1).toUpperCase()
+			clsname = elemName.substring(0, 1).toUpperCase(Locale.ENGLISH)
 					+ elemName.substring(1); // to UpperCase
 
 		clsname = clsname.replace(':', '$').replace( "-", "__");

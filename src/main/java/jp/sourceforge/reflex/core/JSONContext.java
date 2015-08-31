@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EmptyStackException;
 import java.util.Stack;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -269,7 +270,7 @@ public class JSONContext {
 
 		if (hasKey()) {
 			nodename = nodename.substring(nodename.lastIndexOf(".") + 1);
-			nodename = nodename.substring(0, 1).toLowerCase()
+			nodename = nodename.substring(0, 1).toLowerCase(Locale.ENGLISH)
 					+ nodename.substring(1);
 
 			this.outprint(this.Q + nodename + this.Q + " : ");

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import jp.sourceforge.reflex.exception.JSONException;
@@ -136,7 +137,7 @@ public class DataParser {
 //				if (jsonObject2.length() <= 3) {	// namespaceを合わせて3つ以下
 					Iterator it2 = jsonObject2.keys();
 					String key2 = (String)it2.next();
-					if (key1.indexOf(key2) >= 0||key1.toLowerCase().equals("feed")) {	// xxxList もしくは、feed で複数ページ(2012/7/31)
+					if (key1.indexOf(key2) >= 0||key1.toLowerCase(Locale.ENGLISH).equals("feed")) {	// xxxList もしくは、feed で複数ページ(2012/7/31)
 						Object obj3 = jsonObject2.get(key2);
 						if (obj3 instanceof JSONArray) {
 							// ページあり
