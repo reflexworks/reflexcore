@@ -1,5 +1,7 @@
 package jp.reflexworks.servlet;
 
+import java.util.Locale;
+
 /**
  * ReflexServletで使用する定数
  */
@@ -26,44 +28,48 @@ public interface ReflexServletConst extends HttpStatus {
 	/** charset : UTF-8 */
 	public static final String CHARSET = ";charset=" + ENCODING;
 	/** Content-Type : HTML */
-	public static final String CONTENT_TYPE_HTML = "text/html";
+	public static final String CONTENT_TYPE_HTML = CONTENT_TYPE_TEXT + "html";
 	/** Content-Type : HTML; charset */
 	public static final String CONTENT_TYPE_HTML_CHARSET = CONTENT_TYPE_HTML + CHARSET;
 	/** Content-Type : Plain Text */
-	public static final String CONTENT_TYPE_PLAIN = "text/plain";
+	public static final String CONTENT_TYPE_PLAIN = CONTENT_TYPE_TEXT + "plain";
 	/** Content-Type : Plain Text; charset */
 	public static final String CONTENT_TYPE_PLAIN_CHARSET = CONTENT_TYPE_PLAIN + CHARSET;
+	/** Content Type : image */
+	public static final String CONTENT_TYPE_IMAGE = "image/";
 	/** Content Type : png */
-	public static final String CONTENT_TYPE_PNG = "image/png";
+	public static final String CONTENT_TYPE_PNG = CONTENT_TYPE_IMAGE + "png";
 	/** Content Type : jpeg */
-	public static final String CONTENT_TYPE_JPEG = "image/jpeg";
+	public static final String CONTENT_TYPE_JPEG = CONTENT_TYPE_IMAGE + "jpeg";
 	/** Content Type : gif */
-	public static final String CONTENT_TYPE_GIF = "image/gif";
+	public static final String CONTENT_TYPE_GIF = CONTENT_TYPE_IMAGE + "gif";
+	/** Content Type : application */
+	public static final String CONTENT_TYPE_APPLICATION = "application/";
 	/** Content Type : pdf */
-	public static final String CONTENT_TYPE_PDF = "application/pdf";
+	public static final String CONTENT_TYPE_PDF = CONTENT_TYPE_APPLICATION + "pdf";
 	/** Content Type : application/xml */
-	public static final String CONTENT_TYPE_APPLICATION_XML = "application/xml";
+	public static final String CONTENT_TYPE_APPLICATION_XML = CONTENT_TYPE_APPLICATION + "xml";
 
 	/** Header : Content Type */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	/** Header : Content Type (lower case) */
 	public static final String HEADER_CONTENT_TYPE_LOWERCASE = 
-			HEADER_CONTENT_TYPE.toLowerCase();
+			HEADER_CONTENT_TYPE.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Length */
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	/** Header : Content Length (lower case) */
 	public static final String HEADER_CONTENT_LENGTH_LOWERCASE = 
-			HEADER_CONTENT_LENGTH.toLowerCase();
+			HEADER_CONTENT_LENGTH.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Encoding */
 	public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
 	/** Header : Content Encoding (lower case) */
 	public static final String HEADER_CONTENT_ENCODING_LOWERCASE = 
-			HEADER_CONTENT_ENCODING.toLowerCase();
+			HEADER_CONTENT_ENCODING.toLowerCase(Locale.ENGLISH);
 	/** Header : Accept Encoding */
 	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 	/** Header : Accept Encoding (lower case) */
 	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = 
-			HEADER_ACCEPT_ENCODING.toLowerCase();
+			HEADER_ACCEPT_ENCODING.toLowerCase(Locale.ENGLISH);
 	/** Header value : deflate */
 	public static final String HEADER_VALUE_DEFLATE = "deflate";
 	/** Header value : gzip */
@@ -71,6 +77,12 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Header value : gzip, deflate */
 	public static final String HEADER_VALUE_GZIP_DEFLATE = HEADER_VALUE_GZIP + ", " + 
 			HEADER_VALUE_DEFLATE;
+	/** Header : Content Disposition */
+	public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+	/** Header : Content Disposition split */
+	public static final String HEADER_DISPOSITION_SPLIT = ";";
+	/** Header value : filename */
+	public static final String HEADER_VALUE_FILENAME = "filename";
 	/** Response Header : X-Content-Type-Options: nosniff */
 	public static final String HEADER_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
 	/** Response Header value : X-Content-Type-Options: nosniff */

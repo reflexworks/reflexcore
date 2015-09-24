@@ -799,7 +799,7 @@ public class FieldMapper {
 	private static String getMethodName(String name, String prefix) {
 		StringBuffer buf = new StringBuffer();
 		buf.append(prefix);
-		buf.append(name.substring(0,1).toUpperCase());
+		buf.append(name.substring(0,1).toUpperCase(Locale.ENGLISH));
 		if (name.length() > 1) {
 			buf.append(name.substring(1));
 		}

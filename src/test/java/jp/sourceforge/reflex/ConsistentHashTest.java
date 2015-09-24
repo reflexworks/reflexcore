@@ -65,7 +65,6 @@ public class ConsistentHashTest extends TestCase {
 
 		assertTrue(true);
 		
-		/*
 		System.out.println("---- node D を削除 ----");
 		consistentHash.remove("D");
 
@@ -79,7 +78,6 @@ public class ConsistentHashTest extends TestCase {
 			}
 			System.out.println("");
 		}
-		
 		System.out.println("---- node G を追加 ----");
 		consistentHash.add("G");
 		nodes.add("G");
@@ -104,7 +102,7 @@ public class ConsistentHashTest extends TestCase {
 		group = "sample";
 		node = consistentHash.get(group);
 		System.out.println(group + " node = " + node);
-		*/
+/*		*/
 
 	}
 }

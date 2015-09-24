@@ -10,13 +10,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Locale;
 
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.exception.JSONException;
@@ -142,6 +140,13 @@ public class JSONSerializer implements IResourceMapper {
   public void marshal(Object source, Writer out,boolean dispchildnum) {
 
     try {
+    if(dispchildnum) {
+        JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
+        context.push(context.HASH);
+        marshal(context,"", source);
+        out.flush();
+    	
+    }else {
       // out.append('{');
       out.write(new char[] { '{' });
       JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
@@ -150,6 +155,7 @@ public class JSONSerializer implements IResourceMapper {
       // out.append('}');
       out.write(new char[] { '}' });
       out.flush();
+    }
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -242,7 +248,7 @@ public class JSONSerializer implements IResourceMapper {
     	int i=0;
     	if (fieldname.startsWith("_")) i++;
       // 先頭に_が付く前提
-      String classname = fieldname.substring(i, i+1).toUpperCase() + fieldname.substring(i+1);
+      String classname = fieldname.substring(i, i+1).toUpperCase(Locale.ENGLISH) + fieldname.substring(i+1);
       if (field.getType().getName().indexOf(classname)>0) return true;
     }
     return false;
@@ -292,13 +298,13 @@ public class JSONSerializer implements IResourceMapper {
   public void marshal(JSONContext context, String nodename,Object source, boolean flgArray,Map<String,Integer> nummap) throws IOException,
       IllegalArgumentException, IllegalAccessException {
 
-//    RXUtil rxUtil = new RXUtil();
-
     int mode;
 
     Field[] fields = source.getClass().getFields();
-    if (nodename.startsWith("_")) nodename = nodename.substring(1);
-    context.printNodeName(nodename);
+    if (nodename!=null&&!nodename.equals("")) {
+    	if (nodename.startsWith("_")) nodename = nodename.substring(1);
+    	context.printNodeName(nodename);
+    }
     context.pushout();
 
     for (int fn = 0; fn < fields.length; fn++) {
@@ -463,11 +469,10 @@ public class JSONSerializer implements IResourceMapper {
       
     }
 	  if (nummap!=null&&context.dispChildNum) {
-		  int i=1;
 		  for(Map.Entry<String, Integer> e : nummap.entrySet()) {
   			  context.outcomma();
-  			  context.out("____num"+(nummap.size()-i+1),e.getValue());
-  			  i++;
+  			  context.out("____num",e.getValue());
+  			  break;
 			}
 	  }
 

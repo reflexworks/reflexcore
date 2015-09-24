@@ -8,8 +8,7 @@ public class ConsistentHash<T> {
 
 	private final HashFunction hashFunction;
 	private final int numberOfReplicas;
-	//private final SortedMap<Integer, T> circle = new TreeMap<Integer, T>();
-	private final SortedMap<Integer, T> circle = new ConcurrentSkipListMap<Integer, T>();
+	private final SortedMap<String, T> circle = new ConcurrentSkipListMap<String, T>();
 
 	public ConsistentHash(HashFunction hashFunction, int numberOfReplicas,
 			Collection<T> nodes) {
@@ -40,9 +39,9 @@ public class ConsistentHash<T> {
 		if (circle.isEmpty()) {
 			return null;
 		}
-		int hash = hashFunction.hash(key);
+		String hash = hashFunction.hash(key);
 		if (!circle.containsKey(hash)) {
-			SortedMap<Integer, T> tailMap = circle.tailMap(hash);
+			SortedMap<String, T> tailMap = circle.tailMap(hash);
 			hash = tailMap.isEmpty() ? circle.firstKey() : tailMap.firstKey();
 		}
 		return circle.get(hash);
