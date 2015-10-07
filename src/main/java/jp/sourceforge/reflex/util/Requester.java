@@ -1,7 +1,9 @@
 package jp.sourceforge.reflex.util;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.BufferedInputStream;
@@ -405,4 +407,52 @@ public class Requester implements ReflexServletConst {
 		}
 	}
 
+	public String getResponseString(HttpURLConnection http) 
+	throws IOException {
+		BufferedReader br = getResponseReader(http);
+		if (br == null) {
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		try {
+			String str = br.readLine();
+			while (str != null) {
+				sb.append(str);
+				str = br.readLine();
+				if (str != null) {
+					sb.append(NEWLINE);
+				}
+			}
+		} finally {
+			br.close();
+		}
+		return sb.toString();
+	}
+	
+	public BufferedReader getResponseReader(HttpURLConnection http) 
+	throws IOException {
+		InputStream in = getResponseStream(http);
+		if (in == null) {
+			return null;
+		}
+		return new BufferedReader(new InputStreamReader(in, ENCODING));
+	}
+
+	public InputStream getResponseStream(HttpURLConnection http) 
+	throws IOException {
+		if (http == null) {
+			return null;
+		}
+		int rc = http.getResponseCode();
+		InputStream is;
+		if (rc >= ERROR_STATUS) {
+			is = http.getErrorStream();
+		} else {
+			is = http.getInputStream();
+		}
+		return is;
+	}
+
+	
+	
 }
