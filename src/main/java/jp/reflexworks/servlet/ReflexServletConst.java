@@ -104,15 +104,15 @@ public interface ReflexServletConst extends HttpStatus {
 	/** RXIDヘッダのキー */
 	public static final String HEADER_AUTHORIZATION = "Authorization";
 	/** RXIDヘッダのキー */
-	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
+	public static final String HEADER_AUTHORIZATION_RXID = "RXID ";
 	/** JSESSIONID */
 	public static final String COOKIE_JSESSIONID = "JSESSIONID";
 	/** Platform */
 	public static final String HEADER_PLATFORM = "X-PLATFORM";
 	/** Platform Token */
 	public static final String HEADER_PLATFORM_TOKEN = "X-PLATFORM-TOKEN";
-	/** アクセスキーヘッダの値の先頭に使用 */
-	public static final String HEADER_AUTHORIZATION_ACCESSKEY = "AccessKey ";
+	/** アクセストークンヘッダの値の先頭に使用 */
+	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
 	/** Response header : ユーザ番号(UID) */
 	public static final String HEADER_X_UID = "X-UID";
 	/** Response header : RXID */
@@ -141,8 +141,8 @@ public interface ReflexServletConst extends HttpStatus {
 
 	/** ヘッダの値の区切り文字 */
 	public static final String HEADER_VALUE_DELIMITER = ",";
-	/** アクセスキーのUID区切り文字 */
-	public static final String ACCESSKEY_UID_DELIMITER = "-";
+	/** アクセストークンのUID区切り文字 */
+	public static final String ACCESSTOKEN_UID_DELIMITER = ",";
 
 	/** XMLヘッダ */
 	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + 
