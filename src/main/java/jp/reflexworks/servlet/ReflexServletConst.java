@@ -145,6 +145,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_VALUE_DELIMITER = ",";
 	/** アクセストークンのUID区切り文字 */
 	public static final String ACCESSTOKEN_UID_DELIMITER = ",";
+	/** アクセストークンのキー区切り文字 */
+	public static final String ACCESSTOKEN_KEY_DELIMITER = ",";
 
 	/** XMLヘッダ */
 	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + 
