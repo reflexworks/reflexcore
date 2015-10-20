@@ -97,6 +97,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_LOCATION = "Location";
 	/** Reqest Header : Origin */
 	public static final String HEADER_ORIGIN = "Origin";
+	/** Header : Referer */
+	public static final String HEADER_REFERER = "Referer";
 	/** Response header : Set-Cookie */
 	public static final String HEADER_SET_COOKIE = "Set-Cookie";
 	/** Request header : Cookie */
