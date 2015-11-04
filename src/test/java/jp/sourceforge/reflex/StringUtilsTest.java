@@ -45,6 +45,23 @@ public class StringUtilsTest extends TestCase {
 			long lnum = 8988888888888888889L;
 			System.out.println("String.valueOf : " + String.valueOf(lnum));
 			
+			String alphanumericStr = "ABC123";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = "ABC.123";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = "あいう";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = "";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = null;
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = "z";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = "ABC-123";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			alphanumericStr = ".";
+			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,6 +1,11 @@
 package jp.sourceforge.reflex.util;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 public class StringUtils {
+	
+	public static final Pattern PATTERN_ALPHANUMERIC = Pattern.compile("^[0-9a-zA-Z]*$");
 
 	/**
 	 * nullの場合空文字を返却します.
@@ -397,6 +402,23 @@ public class StringUtils {
 			return str.replaceAll(regex, tmpReplacement);
 		}
 		return str;
+	}
+	
+	/**
+	 * 文字列が英数字かどうか判定します.
+	 * <p>
+	 * 文字列に英数字以外の文字が含まれている場合falseを返します。<br>
+	 * 文字列がnullまたは空文字("")の場合はtrueを返します。
+	 * </p>
+	 * @param str 文字列
+	 * @return 文字列が英数字の場合true
+	 */
+	public static boolean isAlphanumeric(String str) {
+		if (isBlank(str)) {
+			return true;
+		}
+		Matcher matcher = PATTERN_ALPHANUMERIC.matcher(str);
+		return matcher.matches();
 	}
 
 }
