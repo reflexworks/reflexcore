@@ -38,7 +38,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	/** Created */
 	public static final String CREATED = "Created";
 	/** RXIDヘッダのキー */
-	protected static final int HEADER_AUTHORIZATION_TOKEN_LEN = HEADER_AUTHORIZATION_TOKEN.length();
+	protected static final int HEADER_AUTHORIZATION_RXID_LEN = HEADER_AUTHORIZATION_RXID.length();
 	/** ハッシュ関数 */
 	//public static final String HASH_ALGORITHM = "SHA-1";
 	//public static final String HASH_ALGORITHM = "SHA-256";
@@ -68,25 +68,25 @@ public class AuthTokenUtil implements ReflexServletConst {
 	}
 	
 	/**
-	 * RXIDの先頭に"Token "を付けて返却します.
+	 * RXIDの先頭に"RXID "を付けて返却します.
 	 * @param rxid RXID
-	 * @return "Token {RXID}"
+	 * @return "RXID {RXID}"
 	 */
 	public static String editRXIDHeader(String rxid) {
 		if (!StringUtils.isBlank(rxid)) {
-			return HEADER_AUTHORIZATION_TOKEN + rxid;
+			return HEADER_AUTHORIZATION_RXID + rxid;
 		}
 		return null;
 	}
 	
 	/**
-	 * アクセスキーの先頭に"AccessKey "を付けて返却します.
-	 * @param accesskey アクセスキー
-	 * @return "AccessKey {アクセスキー}"
+	 * アクセストークンの先頭に"Token "を付けて返却します.
+	 * @param accesstoken アクセストークン
+	 * @return "Token {アクセストークン}"
 	 */
-	public static String editAccessKeyHeader(String accesskey) {
-		if (!StringUtils.isBlank(accesskey)) {
-			return HEADER_AUTHORIZATION_ACCESSKEY + accesskey;
+	public static String editAccessTokenHeader(String accesstoken) {
+		if (!StringUtils.isBlank(accesstoken)) {
+			return HEADER_AUTHORIZATION_TOKEN + accesstoken;
 		}
 		return null;
 	}
@@ -243,21 +243,21 @@ public class AuthTokenUtil implements ReflexServletConst {
 	}
 	
 	/**
-	 * "AccessKey {アクセスキー}"文字列からアクセスキーを取り出します.
-	 * @param authorizationStr "AccessKey {アクセスキー}"文字列
-	 * @return アクセスキー
+	 * "RXID {RXID}"文字列からRXIDを取り出します.
+	 * @param authorizationStr "RXID {RXID}"文字列
+	 * @return RXID
 	 */
 	public static String extractRXID(String authorizationStr) {
-		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_TOKEN);
+		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_RXID);
 	}
 	
 	/**
-	 * "Token {RXID}"文字列からRXIDを取り出します.
-	 * @param authorizationStr "Token {RXID}"文字列
-	 * @return RXID
+	 * "Token {アクセストークン}"文字列からアクセストークンを取り出します.
+	 * @param authorizationStr "Token {アクセストークン}"文字列
+	 * @return アクセストークン
 	 */
-	public static String extractAccessKey(String authorizationStr) {
-		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_ACCESSKEY);
+	public static String extractAccessToken(String authorizationStr) {
+		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_TOKEN);
 	}
 	
 	/**
