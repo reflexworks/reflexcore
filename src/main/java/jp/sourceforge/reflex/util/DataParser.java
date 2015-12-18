@@ -111,7 +111,7 @@ public class DataParser {
 
 	private String getBody(BufferedReader reader) throws IOException {
 		try {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			String str = null;
 			while ((str = reader.readLine()) != null) {
 				sb.append(str);

@@ -111,27 +111,27 @@ public class AuthTokenUtil implements ReflexServletConst {
 			return "";
 		}
 		
-		StringBuffer buf = new StringBuffer();
-		buf.append(TOKEN);
-		buf.append(" ");
-		buf.append(USER);
-		buf.append("=\"");
-		buf.append(auth.username);
-		buf.append("\", ");
-		buf.append(PASSWORDDIGEST);
-		buf.append("=\"");
-		buf.append(auth.passwordDigest);
-		buf.append("\", ");
-		buf.append(NONCE);
-		buf.append("=\"");
-		buf.append(auth.nonce);
-		buf.append("\", ");
-		buf.append(CREATED);
-		buf.append("=\"");
-		buf.append(auth.created);
-		buf.append('"');
+		StringBuilder sb = new StringBuilder();
+		sb.append(TOKEN);
+		sb.append(" ");
+		sb.append(USER);
+		sb.append("=\"");
+		sb.append(auth.username);
+		sb.append("\", ");
+		sb.append(PASSWORDDIGEST);
+		sb.append("=\"");
+		sb.append(auth.passwordDigest);
+		sb.append("\", ");
+		sb.append(NONCE);
+		sb.append("=\"");
+		sb.append(auth.nonce);
+		sb.append("\", ");
+		sb.append(CREATED);
+		sb.append("=\"");
+		sb.append(auth.created);
+		sb.append('"');
 		
-		return buf.toString();
+		return sb.toString();
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 			return null;
 		}
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			if (c == '@') c = '!';
