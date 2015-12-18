@@ -108,7 +108,7 @@ public class DateUtil {
 	 * @return dateの文字列
 	 */
 	public static String getDateTime(Date date, String id, String dateTimeFormat) {
-		StringBuffer dateString = new StringBuffer();
+		StringBuilder dateString = new StringBuilder();
 		TimeZone timeZone = null;
 		if (id != null) {
 			timeZone = TimeZone.getTimeZone(id);

@@ -21,18 +21,18 @@ public class MD5 implements HashFunction {
 			md = MessageDigest.getInstance("MD5");
 			byte[] digest = md.digest(data.getBytes("UTF-8"));
 
-			StringBuffer buf = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			for(int i= 0; i< digest.length; i++){
 				int d = digest[i];
 				if (d < 0) {
 					d += 256;
 				}
 				if (d < 16) {
-					buf.append("0");
+					sb.append("0");
 				}
-				buf.append(Integer.toString(d, 16));
+				sb.append(Integer.toString(d, 16));
 			}
-			String result = buf.toString();
+			String result = sb.toString();
 			return result;
 
 		} catch (NoSuchAlgorithmException e) {

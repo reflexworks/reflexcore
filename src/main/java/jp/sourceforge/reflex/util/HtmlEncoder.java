@@ -10,7 +10,7 @@ public class HtmlEncoder {
 		if (str == null) {
 			return null;
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < str.length(); i++) {
 			if (str.charAt(i) == '<') {
 				sb.append("&lt;");
