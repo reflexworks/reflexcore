@@ -4,6 +4,6 @@ package jp.sourceforge.reflex;
 
 public interface IReflexContext {
 
-	public byte[] getContent(String requestUri) throws Exception;
+	public byte[] getHtmlContent(String requestUri) throws Exception;
 
 }
