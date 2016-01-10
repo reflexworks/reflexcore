@@ -137,7 +137,10 @@ public class StringUtils {
 		if (str != null) {
 			try {
 				return Integer.parseInt(str);
-			} catch (NumberFormatException e) {}	// Do nothing.
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Integer.MIN_VALUE;
+				else return Integer.MAX_VALUE;				
+			}
 		}
 		return def;
 	}
@@ -167,7 +170,10 @@ public class StringUtils {
 		if (str != null) {
 			try {
 				return Long.parseLong(str);
-			} catch (NumberFormatException e) {}	// Do nothing.
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Long.MIN_VALUE;
+				else return Long.MAX_VALUE;								
+			}	
 		}
 		return def;
 	}
@@ -197,7 +203,10 @@ public class StringUtils {
 		if (str != null) {
 			try {
 				return Float.parseFloat(str);
-			} catch (NumberFormatException e) {}	// Do nothing.
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Float.MIN_VALUE;
+				else return Float.MAX_VALUE;												
+			}	
 		}
 		return def;
 	}
@@ -227,7 +236,10 @@ public class StringUtils {
 		if (str != null) {
 			try {
 				return Double.parseDouble(str);
-			} catch (NumberFormatException e) {}
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Double.MIN_VALUE;
+				else return Double.MAX_VALUE;												
+			}
 		}
 		return def;
 	}
