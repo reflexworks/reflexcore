@@ -211,10 +211,10 @@ public class DateUtil {
 	 *   <li>上記の"-"を"/"にしたもの</li>
 	 *   <li>上記の" "を"T"にしたもの</li>
 	 *   <li>yyyyMMdd</li>
-	 *   <li>yyyyMMddHH<li>
-	 *   <li>yyyyMMddHHmm<li>
-	 *   <li>yyyyMMddHHmmss<li>
-	 *   <li>yyyyMMddHHmmssSSS<li>
+	 *   <li>yyyyMMddHH</li>
+	 *   <li>yyyyMMddHHmm</li>
+	 *   <li>yyyyMMddHHmmss</li>
+	 *   <li>yyyyMMddHHmmssSSS</li>
 	 *   <li>上記の各フォーマットについて、末尾にタイムゾーン([ISO 8601] +99:99、+9999、+99)を加えたもの</li>
 	 * </ol>
 	 * </p>
