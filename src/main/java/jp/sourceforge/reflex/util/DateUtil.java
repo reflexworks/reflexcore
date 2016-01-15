@@ -197,25 +197,156 @@ public class DateUtil {
 		}
 		return format.format(date);
 	}
-
+	
 	/**
-	 * "yyyy-MM-dd'T'HH:mm:ss+99:99"形式の日付文字列をDateに変換します
-	 * @param dateStr 日付文字列(yyyy-MM-dd'T'HH:mm:ss+99:99で、Tや+99:99は省略可能）
-	 * @return date
+	 * いろんな形式の日時文字列をDateオブジェクトに変換します.
+	 * <p>
+	 * 対応するフォーマット
+	 * <ol>
+	 *   <li>yyyy-MM-dd</li>
+	 *   <li>yyyy-MM-dd HH</li>
+	 *   <li>yyyy-MM-dd HH:mm</li>
+	 *   <li>yyyy-MM-dd HH:mm:ss</li>
+	 *   <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+	 *   <li>上記の"-"を"/"にしたもの</li>
+	 *   <li>上記の" "を"T"にしたもの</li>
+	 *   <li>yyyyMMdd</li>
+	 *   <li>yyyyMMddHH<li>
+	 *   <li>yyyyMMddHHmm<li>
+	 *   <li>yyyyMMddHHmmss<li>
+	 *   <li>yyyyMMddHHmmssSSS<li>
+	 *   <li>上記の各フォーマットについて、末尾にタイムゾーン([ISO 8601] +99:99、+9999、+99)を加えたもの</li>
+	 * </ol>
+	 * </p>
+	 * @param dateStr 日付文字列
+	 * @return Dateオブジェクト
+	 * @throws ParseException
 	 */
-	public static Date getDate(String dateStr) throws ParseException {
-
-			dateStr = dateStr.replace(" ","T");
-			int zc = dateStr.charAt(dateStr.length()-6);
-			if (zc=='+'||zc=='-') {
-				if (dateStr.charAt(dateStr.length()-3)==':') {
-					// zoneの時間に:があるとパースできないため取り除く
-					dateStr = dateStr.substring(0,dateStr.length()-3)+dateStr.substring(dateStr.length()-2);
-				}
-				return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ssZ");
-			}else {
-				return getDate(dateStr,"yyyy-MM-dd'T'HH:mm:ss");
+	public static Date getDate(String dateStr)
+	throws ParseException {
+		if (StringUtils.isBlank(dateStr)) {
+			return null;
+		}
+		dateStr = dateStr.trim();
+		int len = dateStr.length();
+		if (len < 8) {
+			throw new ParseException("Length is not enough. " + dateStr, 0);
+		}
+		boolean hasPartition = false;
+		StringBuilder format = new StringBuilder();
+		// 年月日
+		format.append("yyyy");
+		String delimiter = dateStr.substring(4, 5);
+		if ("-".equals(delimiter)) {
+			format.append("-MM-dd");
+			hasPartition = true;
+		} else {
+			if ("/".equals(delimiter)) {
+				format.append("/MM/dd");
+				hasPartition = true;
+			} else {
+				format.append("MMdd");
 			}
+		}
+		
+		boolean isFinish = false;
+		int formatLen = format.length();
+		if (len <= formatLen) {
+			isFinish = true;
+		} else {
+			// タイムゾーンチェック
+			if (checkAndAppendTimeZone(dateStr, formatLen, format)) {
+				isFinish = true;
+			}
+		}
+		
+		int formatLenMinus = 0;
+		if (!isFinish) {
+			// 区切り文字付きの場合、スペースかTか判定する。
+			if (hasPartition) {
+				delimiter = dateStr.substring(formatLen, formatLen + 1);
+				if (" ".equals(delimiter)) {
+					format.append(" ");
+				} else {
+					format.append("'T'");
+					formatLenMinus = 2;
+				}
+			}
+			
+			// 時
+			format.append("HH");
+			formatLen = format.length() - formatLenMinus;
+			if (len <= formatLen) {
+				isFinish = true;
+			} else {
+				if (checkAndAppendTimeZone(dateStr, formatLen, format)) {
+					isFinish = true;
+				}
+			}
+		}
+		
+		if (!isFinish) {
+			if (hasPartition) {
+				format.append(":");
+			}
+			// 分
+			format.append("mm");
+			formatLen = format.length() - formatLenMinus;
+			if (len <= formatLen) {
+				isFinish = true;
+			} else {
+				if (checkAndAppendTimeZone(dateStr, formatLen, format)) {
+					isFinish = true;
+				}
+			}
+		}
+		
+		if (!isFinish) {
+			if (hasPartition) {
+				format.append(":");
+			}
+			// 秒
+			format.append("ss");
+			formatLen = format.length() - formatLenMinus;
+			if (len <= formatLen) {
+				isFinish = true;
+			} else {
+				if (checkAndAppendTimeZone(dateStr, formatLen, format)) {
+					isFinish = true;
+				}
+			}
+		}
+		
+		if (!isFinish) {
+			if (hasPartition) {
+				format.append(".");
+			}
+			// ミリ秒
+			format.append("SSS");
+			formatLen = format.length() - formatLenMinus;
+			if (len > formatLen) {
+				checkAndAppendTimeZone(dateStr, formatLen, format);
+			}
+		}
+		
+		return getDate(dateStr, format.toString());
+	}
+	
+	/**
+	 * 指定されたIndexにタイムゾーンが設定されている場合、StringBuilderにタイムゾーンを追加し
+	 * trueを返却します。
+	 */
+	private static boolean checkAndAppendTimeZone(String dateStr, int idx,
+			StringBuilder format) {
+		if (dateStr == null || dateStr.length() <= idx) {
+			return false;
+		}
+		String sign = dateStr.substring(idx, idx + 1);
+		if ("+".equals(sign) || "-".equals(sign)) {
+			format.append("X");	// ISO 8601タイムゾーン
+			return true;
+		}
+		return false;
 	}
 	
 	/**
