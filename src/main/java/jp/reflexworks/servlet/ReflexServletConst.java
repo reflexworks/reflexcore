@@ -87,15 +87,15 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
 	/** Response Header value : X-Content-Type-Options: nosniff */
 	public static final String HEADER_CONTENT_TYPE_OPTIONS_NOSNIFF = "nosniff";
-	/** Reqest Header : X-Requested-With */
+	/** Request Header : X-Requested-With */
 	public static final String X_REQUESTED_WITH = "X-Requested-With";
-	/** Reqest Header value : XMLHttpRequest */
+	/** Request Header value : XMLHttpRequest */
 	public static final String X_REQUESTED_WITH_WHR = "XMLHttpRequest";
-	/** Reqest Header : Host */
+	/** Request Header : Host */
 	public static final String HEADER_HOST = "Host";
 	/** Response header : Location */
 	public static final String HEADER_LOCATION = "Location";
-	/** Reqest Header : Origin */
+	/** Request Header : Origin */
 	public static final String HEADER_ORIGIN = "Origin";
 	/** Header : Referer */
 	public static final String HEADER_REFERER = "Referer";
@@ -140,6 +140,16 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Response header : Access-Control-Allow-Credentials */
 	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = 
 			"Access-Control-Allow-Credentials";
+	
+	/** Schema : http */
+	public static final String SCHEMA_HTTP = "http";
+	/** Schema : https */
+	public static final String SCHEMA_HTTPS = "https";
+	
+	/** Port : http default */
+	public static final int PORT_DEFAULT_HTTP = 80;
+	/** Port : https default */
+	public static final int PORT_DEFAULT_HTTPS = 443;
 
 	/** ヘッダの値の区切り文字 */
 	public static final String HEADER_VALUE_DELIMITER = ",";
