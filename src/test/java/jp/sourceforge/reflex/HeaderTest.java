@@ -10,9 +10,9 @@ import org.junit.Test;
 public class HeaderTest {
 	
 	private static final String[] TEST_STRS = {
-		"RXNODE=.0;Path=/;Expires=Wed, 05-Nov-2015 05:04:42 GMT",
+		"RXNODE=.0;Path=/;Expires=Wed, 05-Nov-2035 05:04:42 GMT",
 		"OVERRIDE=;Path=/;Expires=Thu, 01 Jan 1970 00:00:00 GMT",
-		"TEST=ab:cd-ef,gh/ij;Path=/;Expires=Wed, 05-Nov-15 05:04:42 GMT"
+		"TEST=ab:cd-ef,gh/ij;Path=/;Expires=Wed, 05-Nov-35 05:04:42 GMT"
 	};
 	
 	private static final int EXPIRE_CNT = 2;

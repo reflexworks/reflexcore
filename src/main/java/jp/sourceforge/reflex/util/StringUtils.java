@@ -134,10 +134,13 @@ public class StringUtils {
 	 * @return 数値
 	 */
 	public static int intValue(String str, int def) {
-		if (str != null) {
+		if (!isBlank(trim(str))) {
 			try {
 				return Integer.parseInt(str);
-			} catch (NumberFormatException e) {}	// Do nothing.
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Integer.MIN_VALUE;
+				else return Integer.MAX_VALUE;				
+			}
 		}
 		return def;
 	}
@@ -164,10 +167,13 @@ public class StringUtils {
 	 * @return 数値
 	 */
 	public static long longValue(String str, long def) {
-		if (str != null) {
+		if (!isBlank(trim(str))) {
 			try {
 				return Long.parseLong(str);
-			} catch (NumberFormatException e) {}	// Do nothing.
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Long.MIN_VALUE;
+				else return Long.MAX_VALUE;								
+			}	
 		}
 		return def;
 	}
@@ -194,10 +200,13 @@ public class StringUtils {
 	 * @return 数値
 	 */
 	public static float floatValue(String str, float def) {
-		if (str != null) {
+		if (!isBlank(trim(str))) {
 			try {
 				return Float.parseFloat(str);
-			} catch (NumberFormatException e) {}	// Do nothing.
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Float.MIN_VALUE;
+				else return Float.MAX_VALUE;												
+			}	
 		}
 		return def;
 	}
@@ -224,10 +233,13 @@ public class StringUtils {
 	 * @return 数値
 	 */
 	public static double doubleValue(String str, double def) {
-		if (str != null) {
+		if (!isBlank(trim(str))) {
 			try {
 				return Double.parseDouble(str);
-			} catch (NumberFormatException e) {}
+			} catch (NumberFormatException e) {
+				if (str.indexOf("-")>=0) return Double.MIN_VALUE;
+				else return Double.MAX_VALUE;												
+			}
 		}
 		return def;
 	}

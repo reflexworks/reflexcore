@@ -147,7 +147,7 @@ public class ResourceMapper extends XStream implements IResourceMapper {
 	protected String getBody(Reader reader) throws IOException {
 		try {
 			BufferedReader b = new BufferedReader(reader);
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			String str;
 			while ((str = b.readLine()) != null) {
 				sb.append(str);

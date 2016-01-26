@@ -436,7 +436,8 @@ public class FieldMapper {
 				obj instanceof Float || obj instanceof Double || obj instanceof Date ||
 				obj instanceof Short || obj instanceof Character || obj instanceof Byte ||
 				obj instanceof Boolean || obj instanceof Number || obj instanceof BigInteger ||
-				obj instanceof BigDecimal || obj instanceof StringBuffer || obj instanceof URL ||
+				obj instanceof BigDecimal || obj instanceof StringBuffer || 
+				obj instanceof StringBuilder || obj instanceof URL ||
 				obj instanceof Timestamp || obj instanceof Time || obj instanceof java.sql.Date ||
 				obj instanceof File || obj instanceof Locale || obj instanceof Calendar) {
 			return false;
@@ -465,7 +466,8 @@ public class FieldMapper {
 				Byte.class.isAssignableFrom(cls) || Boolean.class.isAssignableFrom(cls) || 
 				Number.class.isAssignableFrom(cls) || BigInteger.class.isAssignableFrom(cls) ||
 				BigDecimal.class.isAssignableFrom(cls) || 
-				StringBuffer.class.isAssignableFrom(cls) || URL.class.isAssignableFrom(cls) ||
+				StringBuffer.class.isAssignableFrom(cls) || 
+				StringBuilder.class.isAssignableFrom(cls) || URL.class.isAssignableFrom(cls) ||
 				Timestamp.class.isAssignableFrom(cls) || Time.class.isAssignableFrom(cls) || 
 				java.sql.Date.class.isAssignableFrom(cls) ||
 				File.class.isAssignableFrom(cls) || Locale.class.isAssignableFrom(cls) || 
@@ -797,13 +799,13 @@ public class FieldMapper {
 	 * Fieldからgetterを返します
 	 */
 	private static String getMethodName(String name, String prefix) {
-		StringBuffer buf = new StringBuffer();
-		buf.append(prefix);
-		buf.append(name.substring(0,1).toUpperCase(Locale.ENGLISH));
+		StringBuilder sb = new StringBuilder();
+		sb.append(prefix);
+		sb.append(name.substring(0,1).toUpperCase(Locale.ENGLISH));
 		if (name.length() > 1) {
-			buf.append(name.substring(1));
+			sb.append(name.substring(1));
 		}
-		return buf.toString();
+		return sb.toString();
 	}
 
 	/**
@@ -906,6 +908,6 @@ public class FieldMapper {
 	 * @return 複製した文字列
 	 */
 	public String cloneString(String obj) {
-		return new StringBuffer(obj).toString();
+		return new StringBuilder(obj).toString();
 	}
 }

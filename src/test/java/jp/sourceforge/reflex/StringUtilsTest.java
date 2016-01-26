@@ -62,6 +62,111 @@ public class StringUtilsTest extends TestCase {
 			alphanumericStr = ".";
 			System.out.println("[isAlphernumeric test] " + alphanumericStr + " : " + StringUtils.isAlphanumeric(alphanumericStr));
 			
+			String numStr = "12345";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "-12345";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = null;
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "ABC";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "-ABC";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "あいう";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "-あいう";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "9999999999";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+			numStr = "-9999999999";
+			System.out.println("[intValue test] " + numStr + " : " + StringUtils.intValue(numStr));
+
+			System.out.println("[intValue test] Integer.MAX_VALUE : " + Integer.MAX_VALUE);
+			System.out.println("[intValue test] Integer.MIN_VALUE : " + Integer.MIN_VALUE);
+
+			numStr = "12345";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "-12345";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = null;
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "ABC";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "-ABC";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "あいう";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "-あいう";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "99999999999999999999";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+			numStr = "-99999999999999999999";
+			System.out.println("[longValue test] " + numStr + " : " + StringUtils.longValue(numStr));
+
+			System.out.println("[longValue test] Long.MAX_VALUE : " + Long.MAX_VALUE);
+			System.out.println("[longValue test] Long.MIN_VALUE : " + Long.MIN_VALUE);
+
+			numStr = "12345";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "-12345";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "3333.555";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "-3333.555";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = null;
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "ABC.DDD";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "-ABC.DDD";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "あいう";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "-あいう";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "99999999999999999999999.99999999999999999999999999";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+			numStr = "-99999999999999999999999.99999999999999999999999999";
+			System.out.println("[floatValue test] " + numStr + " : " + StringUtils.floatValue(numStr));
+
+			System.out.println("[floatValue test] Float.MAX_VALUE : " + Float.MAX_VALUE);
+			System.out.println("[floatValue test] Float.MIN_VALUE : " + Float.MIN_VALUE);
+
+			numStr = "12345";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "-12345";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "3333.555";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "-3333.555";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = null;
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "ABC.DDD";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "-ABC.DDD";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "あいう";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "-あいう";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "99999999999999999999999.99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+			numStr = "-99999999999999999999999.99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
+
+			System.out.println("[doubleValue test] Double.MAX_VALUE : " + Double.MAX_VALUE);
+			System.out.println("[doubleValue test] Double.MIN_VALUE : " + Double.MIN_VALUE);
+
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
