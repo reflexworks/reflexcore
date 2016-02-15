@@ -58,6 +58,12 @@ public class DateUtilTest {
 		String format2GMTEn = DateUtil.getDateTimeFormat(someday, FORMAT_2, "GMT", Locale.ENGLISH);
 		System.out.println("format(2)English : " + format2GMTEn);
 		
+		final String FORMAT_3 = "dd";
+		String format3JST = DateUtil.getDateTimeFormat(someday, FORMAT_3);
+		System.out.println("format(3) : " + format3JST);
+		String format3Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_3);
+		System.out.println("format(3)Now : " + format3Now);
+		
 		Date date2Def = DateUtil.getDate(format2Def, FORMAT_2);
 		System.out.println("date(2, Def) : " + date2Def);
 		
