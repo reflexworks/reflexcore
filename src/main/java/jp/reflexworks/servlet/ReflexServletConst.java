@@ -109,6 +109,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_AUTHORIZATION_RXID = "RXID ";
 	/** JSESSIONID */
 	public static final String COOKIE_JSESSIONID = "JSESSIONID";
+	/** SID */
+	public static final String COOKIE_SID = "SID";
 	/** Platform */
 	public static final String HEADER_PLATFORM = "X-PLATFORM";
 	/** Platform Token */

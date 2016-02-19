@@ -64,6 +64,12 @@ public class DateUtilTest {
 		String format3Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_3);
 		System.out.println("format(3)Now : " + format3Now);
 		
+		final String FORMAT_4 = "SSS";
+		String format4JST = DateUtil.getDateTimeFormat(someday, FORMAT_4);
+		System.out.println("format(4) : " + format4JST);
+		String format4Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_4);
+		System.out.println("format(4)Now : " + format4Now);
+
 		Date date2Def = DateUtil.getDate(format2Def, FORMAT_2);
 		System.out.println("date(2, Def) : " + date2Def);
 		
