@@ -69,6 +69,13 @@ public class DateUtilTest {
 		System.out.println("format(4) : " + format4JST);
 		String format4Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_4);
 		System.out.println("format(4)Now : " + format4Now);
+		
+		// fromXML RXISO8601DateConverter
+		final String FORMAT_5 = "yyyy-MM-dd'T'HH:mm:ssZZ";
+		String format5JST = DateUtil.getDateTimeFormat(someday, FORMAT_5);
+		System.out.println("format(5) : " + format5JST);
+		String format5Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_5);
+		System.out.println("format(5)Now : " + format5Now);
 
 		Date date2Def = DateUtil.getDate(format2Def, FORMAT_2);
 		System.out.println("date(2, Def) : " + date2Def);
