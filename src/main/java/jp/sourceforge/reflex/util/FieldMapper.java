@@ -736,8 +736,11 @@ public class FieldMapper {
 	 * @return getterメソッドの文字列表記
 	 */
 	public static String getGetter(String name, Class type) {
+		if (name == null || name.length() == 0) {
+			return null;
+		}
 		String prefix = null;
-		if (type.equals(boolean.class)) {
+		if (type != null && type.equals(boolean.class)) {
 			prefix = "is";
 			if (name.startsWith("is") && name.length() > 2) {
 				name = name.substring(2);
@@ -786,8 +789,11 @@ public class FieldMapper {
 	 * @return setterメソッドの文字列表記
 	 */
 	public static String getSetter(String name, Class type) {
+		if (name == null || name.length() == 0) {
+			return null;
+		}
 		String prefix = "set";
-		if (type.equals(boolean.class)) {
+		if (type != null && type.equals(boolean.class)) {
 			if (name.startsWith("is") && name.length() > 2) {
 				name = name.substring(2);
 			}
