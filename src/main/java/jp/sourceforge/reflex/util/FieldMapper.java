@@ -739,6 +739,10 @@ public class FieldMapper {
 		if (name == null || name.length() == 0) {
 			return null;
 		}
+		// "_$"から始まる項目は、先頭の"_"を除去する。
+		if (name.startsWith("_$")) {
+			name = name.substring(1);
+		}
 		String prefix = null;
 		if (type != null && type.equals(boolean.class)) {
 			prefix = "is";
@@ -791,6 +795,10 @@ public class FieldMapper {
 	public static String getSetter(String name, Class type) {
 		if (name == null || name.length() == 0) {
 			return null;
+		}
+		// "_$"から始まる項目は、先頭の"_"を除去する。
+		if (name.startsWith("_$")) {
+			name = name.substring(1);
 		}
 		String prefix = "set";
 		if (type != null && type.equals(boolean.class)) {
