@@ -26,7 +26,11 @@ public class ResourceUtil {
 	 * @return リソースのURL
 	 */
 	public static URL getResourceURL(String name) {
-		return ResourceUtil.class.getResource(PREFIX + name);
+		URL url = ResourceUtil.class.getResource(PREFIX + name);
+		if (url == null) {
+			url = ResourceUtil.class.getResource(name);	// prefixなし
+		}
+		return url;
 	}
 	
 	/**
