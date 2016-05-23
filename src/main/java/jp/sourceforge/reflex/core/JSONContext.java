@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.sourceforge.reflex.util.DateUtil;
+
 /**
  * @author Takezaki
  *
@@ -138,8 +140,10 @@ public class JSONContext {
 
 	// Date/Time ISO8601 TIME ZONE FORMAT 2006-02-10T10:00Z.
 	// for use: String string = XX.isoformat.format(date);
+	//private SimpleDateFormat isoformat = new SimpleDateFormat(
+	//		"yyyy-MM-dd'T'HH:mm:ssZZ");
 	private SimpleDateFormat isoformat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ssZZ");
+			DateUtil.FORMAT_PATTERN);
 
 	/**
 	 * @return int

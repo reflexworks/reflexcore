@@ -43,8 +43,10 @@ public class RXISO8601DateConverter extends AbstractBasicConverter {
 
 	protected String toString(Object obj) {
 		// TODO 戻り値のフォーマットを指定したい
+		//SimpleDateFormat isoformat = new SimpleDateFormat(
+		//		"yyyy-MM-dd'T'HH:mm:ssZZ");
 		SimpleDateFormat isoformat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ssZZ");
+				DateUtil.FORMAT_PATTERN);
 		return isoformat.format(obj);
 	}
 
