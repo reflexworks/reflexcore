@@ -506,8 +506,9 @@ public class DateUtil {
 		}
 		try {
 			return Integer.parseInt(str);
-		} catch (NumberFormatException e) {}	// Do nothing.
-		return 0;
+		} catch (NumberFormatException e) {
+			return 0;
+		}	
 	}
 	
 }

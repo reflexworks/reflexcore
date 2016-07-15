@@ -198,7 +198,6 @@ public class RXConverter implements Converter {
 					}
 				}
 			} catch (Exception e) {
-				//e.printStackTrace();
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
@@ -301,10 +300,8 @@ public class RXConverter implements Converter {
 				}
 
 			} catch (SecurityException e) {
-				//e.printStackTrace();
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			} catch (NoSuchFieldException e) {
-				//e.printStackTrace();
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 

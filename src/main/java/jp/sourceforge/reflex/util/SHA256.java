@@ -19,7 +19,7 @@ public class SHA256 {
 			try {
 				return new String(Base64.encodeBase64(digest), ENCODING);
 			} catch (UnsupportedEncodingException e) {
-				// Do nothing.
+				throw new RuntimeException(e);
 			}
 		}
 		return null;
@@ -31,7 +31,7 @@ public class SHA256 {
 			try {
 				return new String(Base64.encodeBase64(digest), ENCODING);
 			} catch (UnsupportedEncodingException e) {
-				// Do nothing.
+				throw new RuntimeException(e);
 			}
 		}
 		return null;
@@ -46,9 +46,8 @@ public class SHA256 {
 			return hash(v);
 
 		} catch (UnsupportedEncodingException e) {
-			// Do nothing.
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 	
 	public static byte[] hash(byte[] v) {
@@ -58,9 +57,8 @@ public class SHA256 {
 			return md.digest();
 
 		} catch (NoSuchAlgorithmException e) {
-			// Do nothing.
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 }

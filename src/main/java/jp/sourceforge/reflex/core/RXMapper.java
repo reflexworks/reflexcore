@@ -268,15 +268,9 @@ public class RXMapper extends MapperWrapper {
 			String packagename = (String) iter.next();
 			String validname = packagename + "." + clsname;
 
-			try {
-				Object obj = wrapped.lookupType(validname);
-				if (obj != null)
-					return packagename;
-
-			} catch (Exception e) {
-				// continue;
-			}
-
+			Object obj = wrapped.lookupType(validname);
+			if (obj != null) return packagename;
+			
 		}
 		return null;
 

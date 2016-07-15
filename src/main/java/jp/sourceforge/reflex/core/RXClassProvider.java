@@ -17,18 +17,24 @@ package jp.sourceforge.reflex.core;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //import com.google.appengine.api.datastore.Text;
 import com.thoughtworks.xstream.converters.reflection.ObjectAccessException;
 
 public class RXClassProvider extends RXUtil {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName());
+	
 	public Object newInstance(Class type) {
-		try {
-			return type.newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			try {
+				return type.newInstance();
+			} catch (InstantiationException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);				
+			} catch (IllegalAccessException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			}
 		return null;
 	}
 

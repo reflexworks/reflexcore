@@ -56,7 +56,7 @@ public class XML {
 	/** The Character '>'. */
 	public static final Character GT = new Character('>');
 
-/** The Character '<'. */
+	/** The Character '<'. */
 	public static final Character LT = new Character('<');
 
 	/** The Character '?'. */

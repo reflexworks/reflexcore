@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.thoughtworks.xstream.MarshallingStrategy;
 import com.thoughtworks.xstream.alias.ClassMapper;
@@ -195,6 +197,8 @@ import com.thoughtworks.xstream.mapper.XmlFriendlyMapper;
  * @author Mauro Talevi
  */
 public class XStream {
+
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private ClassAliasingMapper classAliasingMapper;
 	private FieldAliasingMapper fieldAliasingMapper;
@@ -431,7 +435,9 @@ public class XStream {
 		try {
 			registerConverter(new PropertiesConverter(), PRIORITY_NORMAL);
 		} catch (NoClassDefFoundError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (ExceptionInInitializerError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 
 		registerConverter(new EncodedByteArrayConverter(), PRIORITY_NORMAL);
@@ -471,7 +477,9 @@ public class XStream {
 						PRIORITY_NORMAL, new Class[] { Converter.class },
 						new Object[] { reflectionConverter });
 			} catch (NoClassDefFoundError e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			} catch (ExceptionInInitializerError e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 
 		}
@@ -492,14 +500,18 @@ public class XStream {
 				// PRIORITY_NORMAL,
 				// new Class[] {Mapper.class}, new Object[] {classMapper});
 			} catch (NoClassDefFoundError e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			} catch (ExceptionInInitializerError e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
 
 		try {
 			registerConverter(new TextConverter(), PRIORITY_NORMAL);
 		} catch (NoClassDefFoundError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (ExceptionInInitializerError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 
 	}
@@ -720,7 +732,9 @@ public class XStream {
 		try {
 			registerConverter(defaultConverter, PRIORITY_VERY_LOW);
 		} catch (NoClassDefFoundError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (ExceptionInInitializerError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 	}
 
@@ -728,7 +742,9 @@ public class XStream {
 		try {
 			registerConverter(converter, PRIORITY_NORMAL);
 		} catch (NoClassDefFoundError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (ExceptionInInitializerError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 
 	}
@@ -738,7 +754,9 @@ public class XStream {
 		try {
 			converterLookup.registerConverter(converter, priority);
 		} catch (NoClassDefFoundError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (ExceptionInInitializerError e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 	}
 

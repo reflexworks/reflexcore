@@ -3,6 +3,8 @@ package jp.sourceforge.reflex.util;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jp.reflexworks.servlet.ReflexServletConst;
 import jp.reflexworks.servlet.util.AuthTokenUtil;
@@ -14,6 +16,7 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class NumberingUtil {
 	
+
 	/**
 	 * 番号を取得します.
 	 * <p>
@@ -61,9 +64,9 @@ public class NumberingUtil {
 			pass = pass.substring(0, len);
 
 		} catch (NoSuchAlgorithmException e) {
-			// Do nothing.
+			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {
-			// Do nothing.
+			throw new RuntimeException(e);
 		}
 		
 		return pass;

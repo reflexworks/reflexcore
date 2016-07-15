@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Locale;
 
 import jp.sourceforge.reflex.IResourceMapper;
@@ -26,6 +28,8 @@ import jp.sourceforge.reflex.exception.JSONException;
  *
  */
 public class JSONSerializer implements IResourceMapper {
+
+  private Logger logger = Logger.getLogger(this.getClass().getName());
 
   public String Q = "\""; // Quote （シングルクォートにしたい場合はここを変更）
   public boolean F = false;	// trueで互換モード
@@ -495,10 +499,10 @@ public class JSONSerializer implements IResourceMapper {
     	try {
     		method = source.getClass().getMethod("getValue", null);
     	} catch (SecurityException e2) {
-    		e2.printStackTrace();
+			logger.log(Level.WARNING, e2.getClass().getName(), e2);
     		return "";
     	} catch (NoSuchMethodException e2) {
-    		e2.printStackTrace();
+			logger.log(Level.WARNING, e2.getClass().getName(), e2);
     		return "";
     	}
     	
@@ -506,11 +510,11 @@ public class JSONSerializer implements IResourceMapper {
     	try {
     		return (String) method.invoke(source, null);
     	} catch (IllegalArgumentException e3) {
-    		e3.printStackTrace();
+			logger.log(Level.WARNING, e3.getClass().getName(), e3);
     	} catch (IllegalAccessException e3) {
-    		e3.printStackTrace();
+			logger.log(Level.WARNING, e3.getClass().getName(), e3);
     	} catch (InvocationTargetException e3) {
-    		e3.getCause().printStackTrace();
+			logger.log(Level.WARNING, e3.getClass().getName(), e3);
     	}
     	
 		return "";

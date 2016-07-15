@@ -355,8 +355,9 @@ public class StringUtils {
 		try {
 			Integer.parseInt(str);
 			return true;
-		} catch (Exception e) {}	// Do nothing.
-		return false;
+		} catch (Exception e) {
+			return false;			
+		}	
 	}
 
 	/**
@@ -368,8 +369,9 @@ public class StringUtils {
 		try {
 			Long.parseLong(str);
 			return true;
-		} catch (Exception e) {}	// Do nothing.
-		return false;
+		} catch (Exception e) {
+			return false;			
+		}	
 	}
 
 	/**
