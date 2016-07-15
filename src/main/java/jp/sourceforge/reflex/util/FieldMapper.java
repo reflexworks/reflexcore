@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,6 +26,7 @@ import java.net.URL;
  */
 public class FieldMapper {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	public static final String PERSISTENT = "@javax.jdo.annotations.Persistent";
 	public static final String PRIMARY_KEY = "@javax.jdo.annotations.PrimaryKey";
 	
@@ -201,7 +204,7 @@ public class FieldMapper {
 					}
 
 				} catch (IllegalArgumentException e) {
-					// Do nothing
+					logger.log(Level.WARNING, e.getClass().getName(), e);
 				}
 			}
 		}
@@ -296,16 +299,16 @@ public class FieldMapper {
 			method = source.getClass().getMethod(setter, type);
 			method.invoke(source, value);
 
-		} catch (SecurityException e2) {
-			// Do Nothing
-		} catch (NoSuchMethodException e2) {
-			// Do Nothing
+		} catch (SecurityException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		} catch (NoSuchMethodException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (IllegalArgumentException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (IllegalAccessException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (InvocationTargetException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 	}
 
@@ -324,16 +327,16 @@ public class FieldMapper {
 			method = source.getClass().getMethod(getter);
 			ret = method.invoke(source);
 
-		} catch (SecurityException e2) {
-			// Do Nothing
-		} catch (IllegalArgumentException e) {
-			// Do Nothing
-		} catch (IllegalAccessException e) {
-			// Do Nothing
-		} catch (InvocationTargetException e) {
-			// Do Nothing
+		} catch (SecurityException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (NoSuchMethodException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		} catch (IllegalArgumentException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		} catch (IllegalAccessException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		} catch (InvocationTargetException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 
 		return ret;
@@ -352,16 +355,16 @@ public class FieldMapper {
 			method = source.getClass().getMethod("clone");
 			ret = method.invoke(source);
 
-		} catch (SecurityException e2) {
-			// Do Nothing
-		} catch (NoSuchMethodException e2) {
-			// Do Nothing
+		} catch (SecurityException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		} catch (NoSuchMethodException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (IllegalArgumentException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (IllegalAccessException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (InvocationTargetException e) {
-			// Do Nothing
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 
 		return ret;
@@ -377,9 +380,9 @@ public class FieldMapper {
 			return cls.newInstance();
 			
 		} catch (IllegalAccessException e) {
-			// Do nothing.
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		} catch (InstantiationException e) {
-			// Do nothing.
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 		return null;
 	}
@@ -736,8 +739,15 @@ public class FieldMapper {
 	 * @return getterメソッドの文字列表記
 	 */
 	public static String getGetter(String name, Class type) {
+		if (name == null || name.length() == 0) {
+			return null;
+		}
+		// "_$"から始まる項目は、先頭の"_"を除去する。
+		if (name.startsWith("_$")) {
+			name = name.substring(1);
+		}
 		String prefix = null;
-		if (type.equals(boolean.class)) {
+		if (type != null && type.equals(boolean.class)) {
 			prefix = "is";
 			if (name.startsWith("is") && name.length() > 2) {
 				name = name.substring(2);
@@ -786,8 +796,15 @@ public class FieldMapper {
 	 * @return setterメソッドの文字列表記
 	 */
 	public static String getSetter(String name, Class type) {
+		if (name == null || name.length() == 0) {
+			return null;
+		}
+		// "_$"から始まる項目は、先頭の"_"を除去する。
+		if (name.startsWith("_$")) {
+			name = name.substring(1);
+		}
 		String prefix = "set";
-		if (type.equals(boolean.class)) {
+		if (type != null && type.equals(boolean.class)) {
 			if (name.startsWith("is") && name.length() > 2) {
 				name = name.substring(2);
 			}

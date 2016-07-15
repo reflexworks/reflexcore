@@ -93,6 +93,16 @@ public class DeflateUtil {
 	}
 	
 	/**
+	 * コンプレッサを閉じ、圧縮解除された入力をすべて破棄します.
+	 * <p>
+	 * endメソッドを呼び出します。
+	 * </p>
+	 */
+	public void close() {
+		end();
+	}
+	
+	/**
 	 * コンプレッサを閉じ、圧縮解除された入力をすべて破棄します。
 	 */
 	public void end() {

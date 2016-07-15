@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.sourceforge.reflex.exception.JSONException;
@@ -57,19 +58,25 @@ public class DataParser {
 					if (br != null) {
 						br.close();
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 	
 				try {
 					if (ins != null) {
 						ins.close();
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);					
+				}
 	
 				try {
 					if (is != null) {
 						is.close();
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);					
+				}
 			}
 		}
 		ret = createJSONObject(body);

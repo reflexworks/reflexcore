@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import jp.sourceforge.reflex.util.DateUtil;
+
 import com.thoughtworks.xstream.converters.ConversionException;
 import com.thoughtworks.xstream.converters.basic.AbstractBasicConverter;
 
@@ -26,9 +28,11 @@ public class RXISO8601DateConverter extends AbstractBasicConverter {
 			// for use: String string = RXUtil.isoformat.format(date);
 			// slow but,thread safe
 
-			SimpleDateFormat isoformat = new SimpleDateFormat(
-					"yyyy-MM-dd'T'HH:mm:ssZZ");
-			return isoformat.parse(str);
+			//SimpleDateFormat isoformat = new SimpleDateFormat(
+			//		"yyyy-MM-dd'T'HH:mm:ssZZ");
+			//return isoformat.parse(str);
+
+			return DateUtil.getDate(str);
 
 		} catch (ParseException e) {
 			// try with next formatter
@@ -38,8 +42,11 @@ public class RXISO8601DateConverter extends AbstractBasicConverter {
 	}
 
 	protected String toString(Object obj) {
+		// TODO 戻り値のフォーマットを指定したい
+		//SimpleDateFormat isoformat = new SimpleDateFormat(
+		//		"yyyy-MM-dd'T'HH:mm:ssZZ");
 		SimpleDateFormat isoformat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ssZZ");
+				DateUtil.FORMAT_PATTERN);
 		return isoformat.format(obj);
 	}
 

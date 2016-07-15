@@ -5,7 +5,7 @@
   <groupId>jp.sourceforge.reflex</groupId>
   <artifactId>reflexcore</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.2</version>
+  <version>4.0.1</version>
 
   <description>Reflex core module is a serializer/deserializer tool of XML/JSON. Based on the concept of a Reflex architecture
   </description>
@@ -122,11 +122,14 @@
     -->
       <version>20140107</version>
     </dependency>
+    <!-- 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
     </dependency>
+     -->
+
     <dependency>
       <groupId>org.msgpack</groupId>
       <artifactId>msgpack</artifactId>

@@ -56,9 +56,7 @@ public class Requester implements ReflexServletConst {
 			}
 			write(in, out);
 		} finally {
-			try {
 				http.disconnect();
-			} catch (Exception e) {}	// Do nothing.
 		}
 	}
 	
@@ -90,9 +88,7 @@ public class Requester implements ReflexServletConst {
 			write(in, out);
 
 		} finally {
-			try {
 				http.disconnect();
-			} catch (Exception e) {}	// Do nothing.
 		}
 	}
 
@@ -366,12 +362,8 @@ public class Requester implements ReflexServletConst {
 			}
 		
 		} finally {
-			try {
 				out.close();
-			} catch (Exception e) {}	// Do nothing.
-			try {
 				in.close();
-			} catch (Exception e) {}	// Do nothing.
 		}
 	}
 
@@ -397,13 +389,9 @@ public class Requester implements ReflexServletConst {
 		
 		} finally {
 			for (OutputStream out : outList) {
-				try {
 					out.close();
-				} catch (Exception e) {}	// Do nothing.
 			}
-			try {
 				in.close();
-			} catch (Exception e) {}	// Do nothing.
 		}
 	}
 

@@ -1,10 +1,22 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jp.reflexworks.servlet.ReflexServletConst;
+import jp.reflexworks.servlet.util.AuthTokenUtil;
+
+import org.apache.commons.codec.binary.Base64;
+
 /**
  * 採番クラス
  */
 public class NumberingUtil {
 	
+
 	/**
 	 * 番号を取得します.
 	 * <p>
@@ -38,4 +50,25 @@ public class NumberingUtil {
 		return (int)i;
 	}
 
+	/**
+	 * ランダムな文字列を生成します
+	 * @param len バイト数
+	 * @return 生成された文字列
+	 */
+	public static String randomString(int len) {
+		byte[] passB = new byte[len];
+		String pass = null;
+		try {
+			SecureRandom.getInstance(AuthTokenUtil.RANDOM_ALGORITHM).nextBytes(passB);
+			pass = new String(Base64.encodeBase64(passB), ReflexServletConst.ENCODING);
+			pass = pass.substring(0, len);
+
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return pass;
+	}
 }

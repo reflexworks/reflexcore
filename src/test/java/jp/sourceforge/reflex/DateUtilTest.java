@@ -58,6 +58,25 @@ public class DateUtilTest {
 		String format2GMTEn = DateUtil.getDateTimeFormat(someday, FORMAT_2, "GMT", Locale.ENGLISH);
 		System.out.println("format(2)English : " + format2GMTEn);
 		
+		final String FORMAT_3 = "dd";
+		String format3JST = DateUtil.getDateTimeFormat(someday, FORMAT_3);
+		System.out.println("format(3) : " + format3JST);
+		String format3Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_3);
+		System.out.println("format(3)Now : " + format3Now);
+		
+		final String FORMAT_4 = "SSS";
+		String format4JST = DateUtil.getDateTimeFormat(someday, FORMAT_4);
+		System.out.println("format(4) : " + format4JST);
+		String format4Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_4);
+		System.out.println("format(4)Now : " + format4Now);
+		
+		// fromXML RXISO8601DateConverter
+		final String FORMAT_5 = "yyyy-MM-dd'T'HH:mm:ssZZ";
+		String format5JST = DateUtil.getDateTimeFormat(someday, FORMAT_5);
+		System.out.println("format(5) : " + format5JST);
+		String format5Now = DateUtil.getDateTimeFormat(new Date(), FORMAT_5);
+		System.out.println("format(5)Now : " + format5Now);
+
 		Date date2Def = DateUtil.getDate(format2Def, FORMAT_2);
 		System.out.println("date(2, Def) : " + date2Def);
 		

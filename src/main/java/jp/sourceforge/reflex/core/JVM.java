@@ -1,12 +1,15 @@
 package jp.sourceforge.reflex.core;
 
 import java.security.AccessControlException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
 public class JVM {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private ReflectionProvider reflectionProvider;
 
 	private static final float majorJavaVersion;
@@ -55,6 +58,7 @@ public class JVM {
 		try {
 			return Class.forName(name, false, getClass().getClassLoader());
 		} catch (ClassNotFoundException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);			
 			return null;
 		}
 	}

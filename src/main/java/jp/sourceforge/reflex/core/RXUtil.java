@@ -18,11 +18,14 @@ package jp.sourceforge.reflex.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 
 public class RXUtil {
 
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	private static final String TEXT = "com.google.appengine.api.datastore.Text";
 
 	public String fld2node(String fld) {
@@ -32,13 +35,7 @@ public class RXUtil {
 		return replace(fld.replace('$', ':'), "__", "-");
 
 	}
-/*
-	public String node2fld(String node,boolean underscore) {
-
-		// for reserved word
-		return replace((underscore ? "_":""+node).replace(':', '$'), "-", "__");
-	}
-*/
+	
 	public String node2fld(String node) {
 
 		// for reserved word
@@ -74,10 +71,10 @@ public class RXUtil {
     	try {
     		method = source.getClass().getMethod("getValue", null);
     	} catch (SecurityException e2) {
-    		e2.printStackTrace();
+			logger.log(Level.WARNING, e2.getClass().getName(), e2);
     		return "";
     	} catch (NoSuchMethodException e2) {
-    		e2.printStackTrace();
+			logger.log(Level.WARNING, e2.getClass().getName(), e2);
     		return "";
     	}
     	
@@ -85,11 +82,11 @@ public class RXUtil {
     	try {
     		return (String) method.invoke(source, null);
     	} catch (IllegalArgumentException e3) {
-    		e3.printStackTrace();
+			logger.log(Level.WARNING, e3.getClass().getName(), e3);
     	} catch (IllegalAccessException e3) {
-    		e3.printStackTrace();
+			logger.log(Level.WARNING, e3.getClass().getName(), e3);
     	} catch (InvocationTargetException e3) {
-    		e3.getCause().printStackTrace();
+			logger.log(Level.WARNING, e3.getClass().getName(), e3);
     	}
     	
 		return "";
@@ -98,14 +95,28 @@ public class RXUtil {
 	public Object newTextInstance(String paramValue) {
 
 		Object obj;
-		try {
-			Class type = Class.forName(TEXT);
-			Constructor ct = type.getConstructor(String.class);
-			return ct.newInstance(paramValue); 
-		} catch (Exception e) {
-			e.printStackTrace();
+			Class type;
+			try {
+				type = Class.forName(TEXT);
+				Constructor ct = type.getConstructor(String.class);
+				return ct.newInstance(paramValue); 
+			} catch (ClassNotFoundException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			} catch (NoSuchMethodException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			} catch (SecurityException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			} catch (InstantiationException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			} catch (IllegalAccessException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			} catch (IllegalArgumentException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			} catch (InvocationTargetException e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			}
+			
 			return null;
-		}
 	}
 	
 	

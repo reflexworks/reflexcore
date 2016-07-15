@@ -71,10 +71,7 @@ public class ZipUtil {
 				zos.write(data);
 
 			} finally {
-				try {
 					zos.close();
-				} catch (Exception e) {
-				}
 			}
 		}
 	}
