@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Locale;
 
+import com.thoughtworks.xstream.alias.CannotResolveClassException;
 import com.thoughtworks.xstream.alias.ClassMapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 
@@ -268,9 +269,15 @@ public class RXMapper extends MapperWrapper {
 			String packagename = (String) iter.next();
 			String validname = packagename + "." + clsname;
 
-			Object obj = wrapped.lookupType(validname);
-			if (obj != null) return packagename;
-			
+			try {
+				Object obj = wrapped.lookupType(validname);
+				if (obj != null)
+					return packagename;
+
+			} catch (CannotResolveClassException e) {
+				// continue;
+			}
+
 		}
 		return null;
 
