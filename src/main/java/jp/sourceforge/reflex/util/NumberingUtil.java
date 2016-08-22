@@ -3,8 +3,6 @@ package jp.sourceforge.reflex.util;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jp.reflexworks.servlet.ReflexServletConst;
 import jp.reflexworks.servlet.util.AuthTokenUtil;

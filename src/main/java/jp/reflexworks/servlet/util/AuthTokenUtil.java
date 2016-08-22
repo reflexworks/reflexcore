@@ -47,6 +47,8 @@ public class AuthTokenUtil implements ReflexServletConst {
 	
 	/** RXID */
 	public static final String RXID = "_RXID";	// URLパラメータのみ
+	/** RXIDの旧URLパラメータ名 */
+	public static final String RXID_LEGACY = "RXID";	// URLパラメータのみ
 
 	/** RXIDのユーザ名とサービス名のセパレータ */
 	public static final String RXIDNAME_SEPARATOR = ":";
@@ -188,12 +190,6 @@ public class AuthTokenUtil implements ReflexServletConst {
 			System.arraycopy(passwordB, 0, v, apiKeyLen + nonceB.length + createdB.length, 
 					passwordB.length);
 
-			//MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
-			//md.update(v);
-			//byte[] digest = md.digest();
-			//
-			//String passwordDigestStr = new String(Base64.encodeBase64(digest), ENCODING);
-			
 			String passwordDigestStr = SHA256.hashString(v);
 			String nonceStr = new String(Base64.encodeBase64(nonceB), ENCODING);
 
