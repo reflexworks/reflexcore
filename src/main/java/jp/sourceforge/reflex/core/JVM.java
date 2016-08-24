@@ -58,7 +58,7 @@ public class JVM {
 		try {
 			return Class.forName(name, false, getClass().getClassLoader());
 		} catch (ClassNotFoundException e) {
-			logger.log(Level.WARNING, e.getClass().getName(), e);			
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 			return null;
 		}
 	}

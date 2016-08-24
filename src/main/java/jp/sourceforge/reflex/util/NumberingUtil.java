@@ -3,6 +3,7 @@ package jp.sourceforge.reflex.util;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Date;
 
 import jp.reflexworks.servlet.ReflexServletConst;
 import jp.reflexworks.servlet.util.AuthTokenUtil;
@@ -14,6 +15,7 @@ import org.apache.commons.codec.binary.Base64;
  */
 public class NumberingUtil {
 	
+	public static final String REGEX_BASE64_SYMBOL = "\\/|\\+|=";
 
 	/**
 	 * 番号を取得します.
@@ -60,6 +62,11 @@ public class NumberingUtil {
 			SecureRandom.getInstance(AuthTokenUtil.RANDOM_ALGORITHM).nextBytes(passB);
 			pass = new String(Base64.encodeBase64(passB), ReflexServletConst.ENCODING);
 			pass = pass.substring(0, len);
+
+			// 記号を変換
+			String time = String.valueOf(new Date().getTime());
+			String replacement = time.substring(time.length() - 1);
+			pass = pass.replaceAll(REGEX_BASE64_SYMBOL, replacement);
 
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);

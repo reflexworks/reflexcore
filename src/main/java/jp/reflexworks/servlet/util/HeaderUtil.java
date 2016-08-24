@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.sourceforge.reflex.util.StringUtils;
@@ -367,7 +368,9 @@ public class HeaderUtil {
 							try {
 								cookieDate = format2.parse(tmpVal);
 							} catch (ParseException ee) {
-								logger.info("ParseException expires = " + tmpVal);
+								if (logger.isLoggable(Level.INFO)) {
+									logger.info("ParseException expires = " + tmpVal);
+								}
 								val = "";
 							}
 						}
