@@ -28,6 +28,10 @@ public class AuthTokenUtil implements ReflexServletConst {
 	// リクエストヘッダの項目名
 	/** WSSEヘッダのキー */
 	public static final String WSSE = "X-WSSE";
+	/** WSSEヘッダのキー */
+	public static final String WSSE_UPPER_LOWER = "X-Wsse";
+	/** WSSEヘッダのキー */
+	public static final String WSSE_LOWER = "x-wsse";
 	/** トークン */
 	public static final String TOKEN = "UsernameToken";
 	/** Username */
