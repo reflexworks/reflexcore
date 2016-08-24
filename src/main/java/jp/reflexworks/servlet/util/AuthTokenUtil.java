@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.sourceforge.reflex.util.DateUtil;
+import jp.sourceforge.reflex.util.SHA1;
 import jp.sourceforge.reflex.util.SHA256;
 import jp.sourceforge.reflex.util.StringUtils;
 
@@ -65,7 +66,20 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 */
 	public static String createRXIDString(String username, String password, 
 			String serviceName, String apiKey) {
-		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey);
+		return createRXIDString(username, password, serviceName, apiKey, false);
+	}
+
+	/**
+	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
+	 * @param username ユーザ名
+	 * @param password パスワード
+	 * @param apiKey APIKey
+	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 * @return RXID文字列
+	 */
+	public static String createRXIDString(String username, String password, 
+			String serviceName, String apiKey, boolean isSha1) {
+		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey, isSha1);
 		return getRXIDString(auth);
 	}
 	
@@ -100,7 +114,19 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @return RequestHeaderに設定するWSSE情報
 	 */
 	public static String createWsseHeaderValue(String username, String password) {
-		return getWsseHeaderValue(createWsseAuth(username, password));
+		return createWsseHeaderValue(username, password, false);
+	}
+
+	/**
+	 * WSSE文字列を作成します(RequestHeader用)
+	 * @param username ユーザ名
+	 * @param password パスワード
+	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 * @return RequestHeaderに設定するWSSE情報
+	 */
+	public static String createWsseHeaderValue(String username, String password,
+			boolean isSha1) {
+		return getWsseHeaderValue(createWsseAuth(username, password, isSha1));
 	}
 
 	/**
@@ -142,7 +168,18 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @param password パスワード
 	 */
 	public static WsseAuth createWsseAuth(String username, String password) {
-		return createRxidAuth(username, password, null, null);
+		return createWsseAuth(username, password, false);
+	}
+
+	/**
+	 * WSSE認証情報を作成します
+	 * @param username ユーザ名
+	 * @param password パスワード
+	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 */
+	public static WsseAuth createWsseAuth(String username, String password,
+			boolean isSha1) {
+		return createRxidAuth(username, password, null, null, isSha1);
 	}
 
 	/**
@@ -150,9 +187,23 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @param username ユーザ名
 	 * @param password パスワード
 	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
+	 * @return WSSE認証情報
 	 */
 	public static WsseAuth createRxidAuth(String username, String password, 
 			String serviceName, String apiKey) {
+		return createRxidAuth(username, password, serviceName, apiKey, false);
+	}
+
+	/**
+	 * WSSE認証情報を作成します
+	 * @param username ユーザ名
+	 * @param password パスワード
+	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
+	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 * @return WSSE認証情報
+	 */
+	public static WsseAuth createRxidAuth(String username, String password, 
+			String serviceName, String apiKey, boolean isSha1) {
 		if (StringUtils.isBlank(username) || password ==  null) {
 			return null;
 		}
@@ -190,7 +241,12 @@ public class AuthTokenUtil implements ReflexServletConst {
 			System.arraycopy(passwordB, 0, v, apiKeyLen + nonceB.length + createdB.length, 
 					passwordB.length);
 
-			String passwordDigestStr = SHA256.hashString(v);
+			String passwordDigestStr = null;
+			if (isSha1) {
+				passwordDigestStr = SHA1.hashString(v);
+			} else {
+				passwordDigestStr = SHA256.hashString(v);
+			}
 			String nonceStr = new String(Base64.encodeBase64(nonceB), ENCODING);
 
 			if (!StringUtils.isBlank(serviceName)) {

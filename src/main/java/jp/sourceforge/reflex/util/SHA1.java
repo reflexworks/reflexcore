@@ -1,11 +1,11 @@
 package jp.sourceforge.reflex.util;
 
-public class SHA256 {
+public class SHA1 {
 	
 	/** エンコード */
 	public static final String ENCODING = "UTF-8";
 	/** ハッシュ関数 */
-	public static final String HASH_ALGORITHM = "SHA-256";
+	public static final String HASH_ALGORITHM = "SHA-1";
 
 	public static String hashString(String str) {
 		/*
