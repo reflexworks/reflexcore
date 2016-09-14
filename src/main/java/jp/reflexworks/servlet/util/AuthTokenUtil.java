@@ -409,7 +409,9 @@ public class AuthTokenUtil implements ReflexServletConst {
 				buf.append(rot13(auth.username));
 				return buf.toString();
 				
-			} catch (ParseException e) {}	// Do nothing.
+			} catch (ParseException e) {
+				logger.log(Level.INFO, e.getClass().getName(), e);
+			}
 		}
 
 		return null;
@@ -503,7 +505,9 @@ public class AuthTokenUtil implements ReflexServletConst {
 						auth = new WsseAuth(username, passwordDigestStr, 
 								nonceStr, createdStr);
 					}
-				} catch (ParseException e) {}	// Do nothing.
+				} catch (ParseException e) {
+					logger.log(Level.INFO, e.getClass().getName(), e);
+				}
 			}
 		}
 		

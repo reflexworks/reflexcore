@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.reflexworks.servlet.ReflexServletConst;
@@ -109,7 +110,7 @@ public class Requester implements ReflexServletConst {
 				inputData = inputDataStr.getBytes(ENCODING);
 			}
 		} catch (UnsupportedEncodingException e) {
-			logger.warning(e.getMessage());
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 		return request(urlStr, method, inputData, property);
 	}

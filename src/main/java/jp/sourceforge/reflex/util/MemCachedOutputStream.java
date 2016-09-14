@@ -12,53 +12,53 @@ import java.io.OutputStream;
 public class MemCachedOutputStream extends OutputStream {
 
 	private ByteArrayOutputStream memOutputStream;
-    
-    public MemCachedOutputStream() {
-    	memOutputStream = new ByteArrayOutputStream();
-    }
 
-    public MemCachedOutputStream(String key) {
-    	memOutputStream = new ByteArrayOutputStream();
-    }
+	public MemCachedOutputStream() {
+		memOutputStream = new ByteArrayOutputStream();
+	}
 
-    public ByteArrayOutputStream getOutputStream() {
-    	return memOutputStream;
-    }
-    
+	public MemCachedOutputStream(String key) {
+		memOutputStream = new ByteArrayOutputStream();
+	}
+
+	public ByteArrayOutputStream getOutputStream() {
+		return memOutputStream;
+	}
+
 	public InputStream getInputStream() throws IOException {
 		return new ByteArrayInputStream(this.getData());
 	}
 
-    public byte[] getData() {
-    	if (memOutputStream != null) {
-            return memOutputStream.toByteArray();
-        }
-        return null;
-    }
+	public byte[] getData() {
+		if (memOutputStream != null) {
+			return memOutputStream.toByteArray();
+		}
+		return null;
+	}
 
-    public void write(int b) throws IOException {
-    	memOutputStream.write(b);
-    }
+	public void write(int b) throws IOException {
+		memOutputStream.write(b);
+	}
 
-    public void write(byte b[]) throws IOException {
-    	memOutputStream.write(b);
-    }
+	public void write(byte b[]) throws IOException {
+		memOutputStream.write(b);
+	}
 
-    public void write(byte b[], int off, int len) throws IOException {
-    	memOutputStream.write(b, off, len);
-    }
+	public void write(byte b[], int off, int len) throws IOException {
+		memOutputStream.write(b, off, len);
+	}
 
-    public void flush() throws IOException {
-    	memOutputStream.flush();
-    }
+	public void flush() throws IOException {
+		memOutputStream.flush();
+	}
 
-    public void close() throws IOException {
-        try {
-            flush();
-        } catch (IOException ignored) {
-            // ignore
-        }
-        memOutputStream.close();
-    }
+	public void close() throws IOException {
+		try {
+			flush();
+		} catch (IOException ignored) {
+			// ignore
+		}
+		memOutputStream.close();
+	}
 
 }

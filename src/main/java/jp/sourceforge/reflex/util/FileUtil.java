@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
@@ -442,7 +443,7 @@ public class FileUtil {
 			try {
 				in = new FileInputStream(propertyFile);
 			} catch (IOException e) {
-				logger.warning(e.getMessage());
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
 		
@@ -453,7 +454,7 @@ public class FileUtil {
 				try {
 					in = propertyURL.openStream();
 				} catch (IOException e) {
-					logger.warning(e.getMessage());
+					logger.log(Level.WARNING, e.getClass().getName(), e);
 				}
 			}
 		}
@@ -474,7 +475,7 @@ public class FileUtil {
 		try {
 			out = new FileOutputStream(propertyFile);
 		} catch (IOException e) {
-			logger.warning(e.getMessage());
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 		return out;
 	}
@@ -511,7 +512,7 @@ public class FileUtil {
 			try {
 				reader = new BufferedReader(new InputStreamReader(in, encoding));
 			} catch (UnsupportedEncodingException e) {
-				logger.warning("UnsupportedEncodingException: " + e.getMessage());
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
 		return reader;
@@ -549,7 +550,7 @@ public class FileUtil {
 			try {
 				writer = new BufferedWriter(new OutputStreamWriter(out, encoding));
 			} catch (UnsupportedEncodingException e) {
-				logger.warning("UnsupportedEncodingException: " + e.getMessage());
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
 		return writer;
@@ -588,7 +589,9 @@ public class FileUtil {
 		String separator = "\n";
 		try {
 			separator = System.getProperty(LINE_SEPARATOR);
-		} catch(SecurityException e) {}	// Do nothing.
+		} catch (SecurityException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		}
 		return separator;
 	}
 	
@@ -637,9 +640,10 @@ public class FileUtil {
 	 */
 	public static synchronized void sleep(long msec) {
 		try {
-			//wait(msec);
 			Thread.sleep(msec);
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {
+			logger.log(Level.WARNING, e.getClass().getName(), e);
+		}
 	}
 	
 }

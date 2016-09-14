@@ -8,24 +8,23 @@ import java.util.HashMap;
 /**
  * <p>データをメモリ上に保持する出力ストリームです。
  */
-public class MemCachedMap
-{
+public class MemCachedMap {
 	
 	private static final ThreadLocal<HashMap<String,MemCachedOutputStream>> cachedmap = new ThreadLocal<HashMap<String,MemCachedOutputStream>>();
 	
-    public static MemCachedOutputStream getOutputStream(String key) {
-    	
-    	MemCachedOutputStream memCachedOutputStream = new MemCachedOutputStream(key);
-    	HashMap<String,MemCachedOutputStream> hashmap = cachedmap.get();
-    	if (hashmap==null) {
-    		hashmap = new HashMap<String,MemCachedOutputStream>();
-    	}
-    	hashmap.put(key, memCachedOutputStream);
-    	cachedmap.set(hashmap);
-    	
-    	return memCachedOutputStream;
-    }
-    
+	public static MemCachedOutputStream getOutputStream(String key) {
+		
+		MemCachedOutputStream memCachedOutputStream = new MemCachedOutputStream(key);
+		HashMap<String,MemCachedOutputStream> hashmap = cachedmap.get();
+		if (hashmap==null) {
+			hashmap = new HashMap<String,MemCachedOutputStream>();
+		}
+		hashmap.put(key, memCachedOutputStream);
+		cachedmap.set(hashmap);
+		
+		return memCachedOutputStream;
+	}
+	
 	public static InputStream getInputStream(String key) throws IOException {
 		return new ByteArrayInputStream(((MemCachedOutputStream)cachedmap.get().get(key)).getData());
 	}
@@ -40,6 +39,5 @@ public class MemCachedMap
 			cachedmap.get().remove(key);
 		}
 	}
-
 
 }
