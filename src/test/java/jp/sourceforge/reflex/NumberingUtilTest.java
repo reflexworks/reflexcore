@@ -147,7 +147,6 @@ public class NumberingUtilTest extends TestCase {
 			ranStr = NumberingUtil.randomString(len);
 			System.out.println("random string (len = " + len + ", String len = " + ranStr.length() + ") : " + ranStr);
 
-			
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

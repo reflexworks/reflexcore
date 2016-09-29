@@ -50,9 +50,9 @@ public class DataParser {
 				is = new FileUtil().getUrlStream(entity, 5);
 				ins = new InputStreamReader(is, ENCODING);
 				br = new BufferedReader(ins);
-	
+				
 				body = getBody(br);
-	
+				
 			} finally {
 				try {
 					if (br != null) {
@@ -61,21 +61,21 @@ public class DataParser {
 				} catch (Exception e) {
 					logger.log(Level.WARNING, e.getClass().getName(), e);
 				}
-	
+				
 				try {
 					if (ins != null) {
 						ins.close();
 					}
 				} catch (Exception e) {
-					logger.log(Level.WARNING, e.getClass().getName(), e);					
+					logger.log(Level.WARNING, e.getClass().getName(), e);
 				}
-	
+				
 				try {
 					if (is != null) {
 						is.close();
 					}
 				} catch (Exception e) {
-					logger.log(Level.WARNING, e.getClass().getName(), e);					
+					logger.log(Level.WARNING, e.getClass().getName(), e);
 				}
 			}
 		}

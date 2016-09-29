@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 
 public class JVM {
 
-	private Logger logger = Logger.getLogger(this.getClass().getName());
+	private static Logger logger = Logger.getLogger(JVM.class.getName());
 	private ReflectionProvider reflectionProvider;
 
 	private static final float majorJavaVersion;
@@ -20,7 +20,9 @@ public class JVM {
 		if (javaVersionStr != null && javaVersionStr.length() >= 3) {
 			try {
 				javaVersion = Float.parseFloat(javaVersionStr.substring(0, 3));
-			} catch (Exception e) {}	// Do nothing.
+			} catch (Exception e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			}
 		}
 		
 		if (javaVersion < 0.1f) {
@@ -58,7 +60,7 @@ public class JVM {
 		try {
 			return Class.forName(name, false, getClass().getClassLoader());
 		} catch (ClassNotFoundException e) {
-			logger.log(Level.WARNING, e.getClass().getName(), e);			
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 			return null;
 		}
 	}

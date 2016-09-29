@@ -2,9 +2,12 @@ package jp.sourceforge.reflex.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -39,6 +42,8 @@ public class DeflateUtil {
 	private Inflater inf;
 	private boolean isReused;
 	
+	private static Logger logger = Logger.getLogger(DeflateUtil.class.getName());
+
 	/**
 	 * コンストラクタ.
 	 * <p>
@@ -109,12 +114,16 @@ public class DeflateUtil {
 		if (def != null) {
 			try {
 				def.end();
-			} catch (Exception e) {}	// Do nothing.
+			} catch (Exception e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			}
 		}
 		if (inf != null) {
 			try {
 				inf.end();
-			} catch (Exception e) {}	// Do nothing.
+			} catch (Exception e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			}
 		}
 	}
 	
@@ -285,18 +294,26 @@ public class DeflateUtil {
 			if (dout != null) {
 				try {
 					dout.flush();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 				try {
 					dout.finish();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 				try {
 					dout.close();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 			}
 			if (bout != null) {
 				try {
 					bout.close();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 			}
 			if (def != null) {
 				try {
@@ -304,7 +321,9 @@ public class DeflateUtil {
 						def.finish();
 					}
 					def.reset();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 
 				if (!isReused) {
 					def.end();
@@ -388,23 +407,33 @@ public class DeflateUtil {
 			if (inStream != null) {
 				try {
 					inStream.close();
-				} catch (Exception e) {}	// Do nothing.
-				try {
-					inStream.reset();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
+				//try {
+				//	inStream.reset();
+				//} catch (Exception e) {
+				//	logger.log(Level.WARNING, e.getClass().getName(), e);
+				//}
 			}
 			if (bin != null) {
 				try {
 					bin.close();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 			}
 			try {
 				out.close();
-			} catch (Exception e) {}	// Do nothing.
+			} catch (Exception e) {
+				logger.log(Level.WARNING, e.getClass().getName(), e);
+			}
 			if (inf != null) {
 				try {
 					inf.reset();
-				} catch (Exception e) {}	// Do nothing.
+				} catch (Exception e) {
+					logger.log(Level.WARNING, e.getClass().getName(), e);
+				}
 				if (!isReused) {
 					inf.end();
 					inf = null;

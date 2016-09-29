@@ -31,7 +31,7 @@ public class RXClassProvider extends RXUtil {
 			try {
 				return type.newInstance();
 			} catch (InstantiationException e) {
-				logger.log(Level.WARNING, e.getClass().getName(), e);				
+				logger.log(Level.WARNING, e.getClass().getName(), e);
 			} catch (IllegalAccessException e) {
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}

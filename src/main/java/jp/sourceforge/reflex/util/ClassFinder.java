@@ -38,7 +38,7 @@ public class ClassFinder {
 	public Class<?> loadClass(String clsName) {
 		try {
 			return classLoader.loadClass(clsName);
-		} catch (ClassNotFoundException e) {}	// Do nothing.
+		} catch (ClassNotFoundException e) {}	// クラスが見つからなかった場合、nullを返却.
 		return null;
 	}
 
