@@ -86,7 +86,23 @@ public class AuthTokenUtil implements ReflexServletConst {
 		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey, isSha1);
 		return getRXIDString(auth);
 	}
-	
+
+	/**
+	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
+	 * @param username ユーザ名
+	 * @param password パスワード
+	 * @param apiKey APIKey
+	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 * @param nonceB nonce
+	 * @return RXID文字列
+	 */
+	public static String createRXIDString(String username, String password, 
+			String serviceName, String apiKey, boolean isSha1, byte[] nonceB) {
+		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey, isSha1,
+				nonceB);
+		return getRXIDString(auth);
+	}
+
 	/**
 	 * RXIDの先頭に"RXID "を付けて返却します.
 	 * @param rxid RXID
@@ -211,12 +227,33 @@ public class AuthTokenUtil implements ReflexServletConst {
 		if (StringUtils.isBlank(username) || password ==  null) {
 			return null;
 		}
+		return createRxidAuth(username, password, serviceName, apiKey,
+				isSha1, null);
+	}
+
+	/**
+	 * WSSE認証情報を作成します
+	 * @param username ユーザ名
+	 * @param password パスワード
+	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
+	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 * @param pNonceB nonce
+	 * @return WSSE認証情報
+	 */
+	public static WsseAuth createRxidAuth(String username, String password, 
+			String serviceName, String apiKey, boolean isSha1, byte[] pNonceB) {
+		if (StringUtils.isBlank(username) || password ==  null) {
+			return null;
+		}
 		
 		WsseAuth auth = null;
 		
-		byte[] nonceB = new byte[8];
+		byte[] nonceB = pNonceB;
 		try {
-			SecureRandom.getInstance(RANDOM_ALGORITHM).nextBytes(nonceB);
+			if (nonceB == null || nonceB.length == 0) {
+				nonceB = new byte[8];
+				SecureRandom.getInstance(RANDOM_ALGORITHM).nextBytes(nonceB);
+			}
 
 			Date now = new Date();
 			String created = DateUtil.getDateTime(now);
