@@ -131,17 +131,20 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Response header : Access-Control-Allow-Headers */
 	public static final String ACCESS_CONTROL_ALLOW_HEADERS = 
 			"Access-Control-Allow-Headers";
-	/** Request header : Access-Control-Request-Headers */
-	public static final String ACCESS_CONTROL_REQUEST_HEADERS = 
-			"Access-Control-Request-Headers";
 	/** Response header : Access-Control-Allow-Methods */
 	public static final String ACCESS_CONTROL_ALLOW_METHODS = 
 			"Access-Control-Allow-Methods";
-	/** Response header : Access-Control-Max-Age */
-	public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 	/** Response header : Access-Control-Allow-Credentials */
 	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = 
 			"Access-Control-Allow-Credentials";
+	/** Request header : Access-Control-Request-Headers */
+	public static final String ACCESS_CONTROL_REQUEST_HEADERS = 
+			"Access-Control-Request-Headers";
+	/** Request header : Access-Control-Request-Method */
+	public static final String ACCESS_CONTROL_REQUEST_METHOD = 
+			"Access-Control-Request-Method";
+	/** Response header : Access-Control-Max-Age */
+	public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 	/** Response header : Pragma */
 	public static final String PRAGMA = "Pragma";
 	/** Response header : Cache-Control */
