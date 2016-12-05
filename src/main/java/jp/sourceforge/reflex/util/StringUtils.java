@@ -139,7 +139,7 @@ public class StringUtils {
 				return Integer.parseInt(str);
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Integer.MIN_VALUE;
-				else return Integer.MAX_VALUE;				
+				else return Integer.MAX_VALUE;
 			}
 		}
 		return def;
@@ -172,7 +172,7 @@ public class StringUtils {
 				return Long.parseLong(str);
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Long.MIN_VALUE;
-				else return Long.MAX_VALUE;								
+				else return Long.MAX_VALUE;
 			}	
 		}
 		return def;
@@ -205,7 +205,7 @@ public class StringUtils {
 				return Float.parseFloat(str);
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Float.MIN_VALUE;
-				else return Float.MAX_VALUE;												
+				else return Float.MAX_VALUE;
 			}	
 		}
 		return def;
@@ -238,7 +238,7 @@ public class StringUtils {
 				return Double.parseDouble(str);
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Double.MIN_VALUE;
-				else return Double.MAX_VALUE;												
+				else return Double.MAX_VALUE;
 			}
 		}
 		return def;
@@ -356,7 +356,7 @@ public class StringUtils {
 			Integer.parseInt(str);
 			return true;
 		} catch (Exception e) {
-			return false;			
+			return false;
 		}	
 	}
 
@@ -370,7 +370,7 @@ public class StringUtils {
 			Long.parseLong(str);
 			return true;
 		} catch (Exception e) {
-			return false;			
+			return false;
 		}	
 	}
 
