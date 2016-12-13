@@ -20,6 +20,8 @@ public class WsseAuth implements Serializable {
 	public boolean isRxid;
 	/** URLパラメータへの指定かどうか */
 	public boolean isQueryString;
+	/** Cookieへの指定かどうか */
+	public boolean isCookie;
 	
 	public WsseAuth(String username, String passwordDigest, String nonce, 
 			String created) {
