@@ -161,11 +161,11 @@ public class JSONSerializer implements IResourceMapper {
       out.flush();
     }
     } catch (IllegalArgumentException e) {
-      e.printStackTrace();
+        logger.log(Level.WARNING, e.getClass().getName(), e);
     } catch (IOException e) {
-      e.printStackTrace();
+        logger.log(Level.WARNING, e.getClass().getName(), e);
     } catch (IllegalAccessException e) {
-      e.printStackTrace();
+        logger.log(Level.WARNING, e.getClass().getName(), e);
     }
   }
 
@@ -495,28 +495,28 @@ public class JSONSerializer implements IResourceMapper {
 
 	public String getTextValue(Object source) {
 		
-    	Method method;
-    	try {
-    		method = source.getClass().getMethod("getValue", null);
-    	} catch (SecurityException e2) {
+		Method method;
+		try {
+			method = source.getClass().getMethod("getValue", null);
+		} catch (SecurityException e2) {
 			logger.log(Level.WARNING, e2.getClass().getName(), e2);
-    		return "";
-    	} catch (NoSuchMethodException e2) {
+			return "";
+		} catch (NoSuchMethodException e2) {
 			logger.log(Level.WARNING, e2.getClass().getName(), e2);
-    		return "";
-    	}
-    	
-    	Object ret;
-    	try {
-    		return (String) method.invoke(source, null);
-    	} catch (IllegalArgumentException e3) {
+			return "";
+		}
+		
+		Object ret;
+		try {
+			return (String) method.invoke(source, null);
+		} catch (IllegalArgumentException e3) {
 			logger.log(Level.WARNING, e3.getClass().getName(), e3);
-    	} catch (IllegalAccessException e3) {
+		} catch (IllegalAccessException e3) {
 			logger.log(Level.WARNING, e3.getClass().getName(), e3);
-    	} catch (InvocationTargetException e3) {
+		} catch (InvocationTargetException e3) {
 			logger.log(Level.WARNING, e3.getClass().getName(), e3);
-    	}
-    	
+		}
+		
 		return "";
 	}
 

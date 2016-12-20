@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Locale;
 
 import com.thoughtworks.xstream.alias.CannotResolveClassException;
@@ -40,6 +42,8 @@ public class RXMapper extends MapperWrapper {
 
 	private final ThreadLocal<Integer> printns = 
 			new ThreadLocal<Integer>();		// 1(true), 0(false), -1(N/A)
+
+	private static Logger logger = Logger.getLogger(RXMapper.class.getName());
 
 	/**
 	 * RXMapperのコンストラクタ
@@ -160,7 +164,7 @@ public class RXMapper extends MapperWrapper {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 		if (type.getName().indexOf(".") < -1) {
 			String clsname = type.getName();
