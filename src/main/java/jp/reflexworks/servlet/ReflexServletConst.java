@@ -70,6 +70,8 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Header : Accept Encoding (lower case) */
 	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = 
 			HEADER_ACCEPT_ENCODING.toLowerCase(Locale.ENGLISH);
+	/** Header : Content Language */
+	public static final String HEADER_CONTENT_LANGUAGE = "Content-Language";
 	/** Header value : deflate */
 	public static final String HEADER_VALUE_DEFLATE = "deflate";
 	/** Header value : gzip */
@@ -125,6 +127,10 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
 	/** Header value : None */
 	public static final String HEADER_VALUE_NONE = "None";
+	/** Header : ETag */
+	public static final String HEADER_ETAG = "ETag";
+	/** Header : If-None-Match */
+	public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
 	/** Response header : Access-Control-Allow-Origin */
 	public static final String ACCESS_CONTROL_ALLOW_ORIGIN = 
 			"Access-Control-Allow-Origin";
