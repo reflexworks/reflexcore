@@ -131,6 +131,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_ETAG = "ETag";
 	/** Header : If-None-Match */
 	public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
+	/** Header :  Last-Modified */
+	public static final String HEADER_LAST_MODIFIED = "Last-Modified";
 	/** Response header : Access-Control-Allow-Origin */
 	public static final String ACCESS_CONTROL_ALLOW_ORIGIN = 
 			"Access-Control-Allow-Origin";
@@ -165,7 +167,11 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String MUST_REVALIDATE = "must-revalidate";
 	/** Response header value : past date */
 	public static final String PAST_DATE = "Fri, 1 Jan 2010 00:00:00";
-	
+	/** Request header : Method Override (PUT、DELETEをPOSTで代行する場合に付加) */
+	public static final String HEADER_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+	/** Request header : Method Override Cookie */
+	public static final String COOKIE_METHOD_OVERRIDE_KEY_PATH = "OVERRIDE";
+
 	/** Schema : http */
 	public static final String SCHEMA_HTTP = "http";
 	/** Schema : https */
