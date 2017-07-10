@@ -434,5 +434,22 @@ public class StringUtils {
 		Matcher matcher = PATTERN_ALPHANUMERIC.matcher(str);
 		return matcher.matches();
 	}
+	
+	/**
+	 * ゼロパディング
+	 * @param i 数値。0以上を指定する。
+	 * @param len 桁数。1以上を指定する。
+	 * @return 数値をゼロパディングした文字列
+	 */
+	public static String zeroPadding(int i, int len) {
+		if (len > 0 && i >= 0) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("%0");
+			sb.append(len);
+			sb.append("d");
+			return String.format(sb.toString(), i);
+		}
+		return String.valueOf(i);
+	}
 
 }

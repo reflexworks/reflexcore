@@ -162,10 +162,25 @@ public class StringUtilsTest extends TestCase {
 			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
 			numStr = "-99999999999999999999999.99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
 			System.out.println("[doubleValue test] " + numStr + " : " + StringUtils.doubleValue(numStr));
-
+			
 			System.out.println("[doubleValue test] Double.MAX_VALUE : " + Double.MAX_VALUE);
 			System.out.println("[doubleValue test] Double.MIN_VALUE : " + Double.MIN_VALUE);
-
+			
+			int i = 1;
+			int len = 5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
+			i = 11111;
+			len = 5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
+			i = 111111;
+			len = 5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
+			i = -1;
+			len = 5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
+			i = 1;
+			len = -5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
