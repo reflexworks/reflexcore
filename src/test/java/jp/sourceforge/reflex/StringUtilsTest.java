@@ -181,6 +181,12 @@ public class StringUtilsTest extends TestCase {
 			i = 1;
 			len = -5;
 			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
+			i = 0;
+			len = 5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
+			i = 0;
+			len = -5;
+			System.out.println("[zeroPadding test] i=" + i + ", len=" + len + ", result=" + StringUtils.zeroPadding(i, len));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
