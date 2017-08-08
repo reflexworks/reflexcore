@@ -1,5 +1,6 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -340,6 +341,46 @@ public class FileUtil {
 	}
 
 	/**
+	 * ファイルを読み込み、byte配列に変換します。
+	 * ファイルは絶対パスを指定してください。
+	 * @param filepath ファイルの絶対パス
+	 * @return byte array
+	 * @throws IOException
+	 */
+	public static byte[] readFile(String filepath)
+	throws IOException {
+		return readFile(filepath, BUFFER_SIZE);
+	}
+
+	/**
+	 * ファイルを読み込み、byte配列に変換します。
+	 * ファイルは絶対パスを指定してください。
+	 * @param filepath ファイルの絶対パス
+	 * @param bufferSize buffer size
+	 * @return byte array
+	 * @throws IOException
+	 */
+	public static byte[] readFile(String filepath, int bufferSize)
+	throws IOException {
+		if (StringUtils.isBlank(filepath)) {
+			return null;
+		}
+		if (bufferSize <= 0) {
+			bufferSize = BUFFER_SIZE;
+		}
+		InputStream in = null;
+		try {
+			in = getInputStreamFromFile(filepath);
+			return readInputStream(in, bufferSize);
+			
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+	}
+
+	/**
 	 * InputStreamから文字列を読み、Stringにして返却します
 	 * <p>
 	 * ストリームは本メソッド内でクローズします。
@@ -629,6 +670,28 @@ public class FileUtil {
 			if (files != null) {
 				for (File file : files) {
 					delete(file);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * バイト配列データを指定されたファイルに出力します.
+	 * @param data データ
+	 * @param outFile 出力ファイル
+	 * @throws IOException IOエラー
+	 */
+	public static void writeToFile(byte[] data, File outFile) 
+	throws IOException {
+		if (data != null && outFile != null) {
+			OutputStream out = null;
+			try {
+				out = new BufferedOutputStream(new FileOutputStream(outFile));
+				out.write(data);
+				
+			} finally {
+				if (out != null) {
+					out.close();
 				}
 			}
 		}
