@@ -127,7 +127,7 @@ public class HeaderUtil {
 	public static Set<String> getHeaderValuesList(Map<String, List<String>> headers,
 			String key, Option option) {
 		List<String> val = getHeaderValueList(headers, key);
-		if (val != null && val.size() > 0) {
+		if (val != null && !val.isEmpty()) {
 			if (option == null) {
 				option = Option.LAST;	// default
 			}
@@ -178,7 +178,7 @@ public class HeaderUtil {
 	 * @return カンマ区切り文字列
 	 */
 	public static String editHeaderValues(Set<String> values) {
-		if (values == null || values.size() == 0) {
+		if (values == null || values.isEmpty()) {
 			return null;
 		}
 		boolean isFirst = true;

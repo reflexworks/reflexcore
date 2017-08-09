@@ -375,7 +375,7 @@ public class Requester implements ReflexServletConst {
 	 * @throws IOException
 	 */
 	public void write(InputStream in, List<OutputStream> outList) throws IOException {
-		if (in == null || outList == null || outList.size() == 0) {
+		if (in == null || outList == null || outList.isEmpty()) {
 			return;
 		}
 		try {

@@ -12,7 +12,7 @@ public class LTSVUtil {
 	 * @return LTSV形式文字列. mapがnullまたは件数が0件の場合はnull.
 	 */
 	public static String serialize(Map<String, String> map) {
-		if (map == null || map.size() == 0) {
+		if (map == null || map.isEmpty()) {
 			return null;
 		}
 		
