@@ -451,5 +451,61 @@ public class StringUtils {
 		}
 		return String.valueOf(i);
 	}
+	
+	/**
+	 * 文字列をInteger型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
+	 * @param str 文字列
+	 * @return Integer
+	 */
+	public static Integer parseInteger(String str) {
+		return parseInteger(str, null);
+	}
+	
+	/**
+	 * 文字列をInteger型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return Integer
+	 */
+	public static Integer parseInteger(String str, Integer def) {
+		if (str == null) {
+			return def;
+		}
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			return def;
+		}
+	}
+	
+	/**
+	 * 文字列をLong型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
+	 * @param str 文字列
+	 * @return Long
+	 */
+	public static Long parseLong(String str) {
+		return parseLong(str, null);
+	}
+	
+	/**
+	 * 文字列をInteger型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return Integer
+	 */
+	public static Long parseLong(String str, Long def) {
+		if (str == null) {
+			return def;
+		}
+		try {
+			return Long.parseLong(str);
+		} catch (NumberFormatException e) {
+			return def;
+		}
+	}
 
 }
