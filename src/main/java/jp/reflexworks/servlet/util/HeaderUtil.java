@@ -499,5 +499,62 @@ public class HeaderUtil {
 		}
 		return "?";
 	}
+	
+	/**
+	 * 値の前後にダブルコーテーションを付加
+	 * @param val 値
+	 * @return 値の前後にダブルコーテーションを付加した文字列
+	 */
+	public static String addDoubleQuotation(String val) {
+		if (val == null) {
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("\"");
+		sb.append(val);
+		sb.append("\"");
+		return sb.toString();
+	}
+	
+	/**
+	 * 値の前後のダブルコーテーションを除去
+	 * @param val 値
+	 * @return 値の前後のダブルコーテーションを除去した文字列
+	 */
+	public static String removeDoubleQuotation(String val) {
+		if (StringUtils.isBlank(val)) {
+			return val;
+		}
+		int startIdx = 0;
+		if (val.startsWith("\"")) {
+			startIdx++;
+		}
+		int len = val.length();
+		int endIdx = len;
+		if (val.endsWith("\"")) {
+			endIdx--;
+		}
+		return val.substring(startIdx, endIdx);
+	}
+	
+	/**
+	 * URLからホスト名を抽出します.
+	 * @param url URL
+	 * @return ホスト名までのURL
+	 */
+	public static String getHost(String url) {
+		if (url != null && url.startsWith("http")) {
+			int idx1 = url.indexOf(":") + 3;
+			int idx2 = url.indexOf("/", idx1);
+			if (idx2 == -1) {
+				idx2 = url.indexOf("?", idx1);
+			}
+			if (idx2 == -1) {
+				idx2 = url.length();
+			}
+			return url.substring(0, idx2);
+		}
+		return null;
+	}
 
 }
