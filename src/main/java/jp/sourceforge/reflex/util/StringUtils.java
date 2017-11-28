@@ -3,8 +3,12 @@ package jp.sourceforge.reflex.util;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+/**
+ * 文字操作ユーティリティ.
+ */
 public class StringUtils {
 	
+	/** 英数字の正規表現 */
 	public static final Pattern PATTERN_ALPHANUMERIC = Pattern.compile("^[0-9a-zA-Z]*$");
 
 	/**
@@ -506,6 +510,45 @@ public class StringUtils {
 		} catch (NumberFormatException e) {
 			return def;
 		}
+	}
+	
+	/**
+	 * Booleanの値を文字列に変換
+	 * @param val Boolean型の値
+	 * @param def 引数がnullの場合のデフォルト値
+	 * @return Booleanの値の文字列表現
+	 */
+	public static String toString(Boolean val, boolean def) {
+		if (val == null) {
+			return String.valueOf(def);
+		}
+		return val.toString();
+	}
+	
+	/**
+	 * Integerの値を文字列に変換
+	 * @param val Integer型
+	 * @param def 引数がnullの場合のデフォルト値
+	 * @return Integerの値の文字列表現
+	 */
+	public static String toString(Integer val, int def) {
+		if (val == null) {
+			return String.valueOf(def);
+		}
+		return val.toString();
+	}
+	
+	/**
+	 * Longの値を文字列に変換
+	 * @param val Long型
+	 * @param def 引数がnullの場合のデフォルト値
+	 * @return Longの値の文字列表現
+	 */
+	public static String toString(Long val, long def) {
+		if (val == null) {
+			return String.valueOf(def);
+		}
+		return val.toString();
 	}
 
 }
