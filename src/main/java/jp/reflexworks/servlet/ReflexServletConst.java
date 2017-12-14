@@ -153,6 +153,13 @@ public interface ReflexServletConst extends HttpStatus {
 			"Access-Control-Request-Method";
 	/** Response header : Access-Control-Max-Age */
 	public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
+	/** Response header value : Access-Control-Allow-Methods */
+	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = 
+			"POST, PUT, GET, DELETE, OPTIONS";
+	/** Response header value : Access-Control-Max-Age */
+	public static final String ACCESS_CONTROL_MAX_AGE_VALUE = "-1";
+	/** Response header value : Access-Control-Allow-Credentials */
+	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE = "true";
 	/** Response header : Pragma */
 	public static final String PRAGMA = "Pragma";
 	/** Response header : Cache-Control */
@@ -216,6 +223,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String PUT = "PUT";
 	/** Method : DELETE */
 	public static final String DELETE = "DELETE";
+	/** Method : OPTIONS */
+	public static final String OPTIONS = "OPTIONS";
 
 	/** Format : Text */
 	public static final int FORMAT_TEXT = 0;
