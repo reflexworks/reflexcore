@@ -178,6 +178,16 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_METHOD_OVERRIDE = "X-HTTP-Method-Override";
 	/** Request header : Method Override Cookie */
 	public static final String COOKIE_METHOD_OVERRIDE_KEY_PATH = "OVERRIDE";
+	/** Request header : X-Forwarded-For */
+	public static final String HEADER_FORWARDED_FOR = "X-Forwarded-For";
+	/** Request header : X-Frame-Options */
+	public static final String HEADER_FRAME_OPTIONS = "X-Frame-Options";
+	/** Request header value : SAMEORIGIN */
+	public static final String SAMEORIGIN = "SAMEORIGIN";
+	/** Request header : X-XSS-Protection */
+	public static final String HEADER_XSS_PROTECTION = "X-XSS-Protection";
+	/** Request header value : X-XSS-Protection */
+	public static final String HEADER_XSS_PROTECTION_MODEBLOCK = "1; mode=block";
 
 	/** Schema : http */
 	public static final String SCHEMA_HTTP = "http";

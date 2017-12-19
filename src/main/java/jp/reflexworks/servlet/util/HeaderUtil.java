@@ -542,7 +542,7 @@ public class HeaderUtil {
 	 * @param url URL
 	 * @return ホスト名までのURL
 	 */
-	public static String getHost(String url) {
+	public static String getURLHost(String url) {
 		if (url != null && url.startsWith("http")) {
 			int idx1 = url.indexOf(":") + 3;
 			int idx2 = url.indexOf("/", idx1);
