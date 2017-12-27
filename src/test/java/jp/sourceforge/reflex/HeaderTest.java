@@ -327,4 +327,31 @@ public class HeaderTest {
 		System.out.println("--- test removeQueryParam end ---");
 	}
 
+	@Test
+	public void testContentType() {
+		String uri = null;
+		String contentType = null;
+		
+		uri = "picture.jpg";
+		contentType = HeaderUtil.getContentTypeByFilename(uri);
+		System.out.println("[testContentType] uri = " + uri + " , contentType = " + contentType);
+		assertEquals(contentType, "image/jpeg");
+		
+		uri = "/_html/img/timer.gif";
+		contentType = HeaderUtil.getContentTypeByFilename(uri);
+		System.out.println("[testContentType] uri = " + uri + " , contentType = " + contentType);
+		assertEquals(contentType, "image/gif");
+		
+		uri = "fruit.png";
+		contentType = HeaderUtil.getContentTypeByFilename(uri);
+		System.out.println("[testContentType] uri = " + uri + " , contentType = " + contentType);
+		assertEquals(contentType, "image/png");
+		
+		uri = null;
+		contentType = HeaderUtil.getContentTypeByFilename(uri);
+		System.out.println("[testContentType] uri = " + uri + " , contentType = " + contentType);
+		assertEquals(contentType, null);
+
+	}
+
 }

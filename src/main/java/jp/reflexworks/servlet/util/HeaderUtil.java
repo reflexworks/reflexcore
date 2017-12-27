@@ -556,5 +556,40 @@ public class HeaderUtil {
 		}
 		return null;
 	}
+	
+	/**
+	 * 拡張子からContent-Typeを取得.
+	 * @param uri URI
+	 * @return Content-Type
+	 */
+	public static String getContentTypeByFilename(String uri) {
+		if (StringUtils.isBlank(uri)) {
+			return null;
+		}
+		int idx = uri.lastIndexOf(".");
+		if (idx > 0) {
+			String suffix = uri.substring(idx + 1);
+			suffix = suffix.toLowerCase(Locale.ENGLISH);
+			if (ReflexServletConst.JPG.equals(suffix) ||
+					ReflexServletConst.JPEG.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_JPEG;
+			} else if (ReflexServletConst.PNG.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_PNG;
+			} else if (ReflexServletConst.GIF.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_GIF;
+			} else if (ReflexServletConst.TXT.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_PLAIN;
+			} else if (ReflexServletConst.HTML.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_HTML;
+			} else if (ReflexServletConst.JSON.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_JSON;
+			} else if (ReflexServletConst.XML.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_XML;
+			} else if (ReflexServletConst.PDF.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_PDF;
+			}
+		}
+		return null;
+	}
 
 }

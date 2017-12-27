@@ -213,6 +213,20 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String JSON = "json";
 	/** xml */
 	public static final String XML = "xml";
+	/** jpg */
+	public static final String JPG = "jpg";
+	/** jpeg */
+	public static final String JPEG = "jpeg";
+	/** gif */
+	public static final String GIF = "gif";
+	/** png */
+	public static final String PNG = "png";
+	/** txt */
+	public static final String TXT = "txt";
+	/** html */
+	public static final String HTML = "html";
+	/** pdf */
+	public static final String PDF = "pdf";
 
 	/** 改行コード */
 	public static final String NEWLINE = "\n";
