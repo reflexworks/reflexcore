@@ -1,6 +1,5 @@
 package jp.sourceforge.reflex.util;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -757,34 +756,14 @@ public class FileUtil {
 	 */
 	public static void writeToOutputStream(InputStream in, OutputStream out) 
 	throws IOException {
-		if (in != null && out != null) {
-			try {
-				BufferedOutputStream bout = null;
-				if (out instanceof BufferedOutputStream) {
-					bout = (BufferedOutputStream)out;
-				} else {
-					bout = new BufferedOutputStream(out);
-				}
-				BufferedInputStream bis = null;
-				if (in instanceof BufferedInputStream) {
-					bis = (BufferedInputStream)in;
-				} else {
-					bis = new BufferedInputStream(in);
-				}
-				
-				// default buffer size = 8192
-				int size;
-				while ((size = bis.read()) != -1) {
-					bout.write(size);
-				}
-				
-			} finally {
-				if (in != null) {
-					in.close();
-				}
-				if (out != null) {
-					out.close();
-				}
+		try {
+			fromInputToOutput(in, out);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+				out.close();
 			}
 		}
 	}
