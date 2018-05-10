@@ -193,6 +193,16 @@ public class DateUtil {
 	 * @return date
 	 */
 	public static Date getDate(String dateStr) throws ParseException {
+		return getDate(dateStr, (TimeZone)null);
+	}
+
+	/**
+	 * "yyyy-MM-dd'T'HH:mm:ss+99:99"形式の日付文字列をDateに変換します
+	 * @param dateStr 日付文字列
+	 * @param timeZone タイムゾーン
+	 * @return date
+	 */
+	public static Date getDate(String dateStr, TimeZone timeZone) throws ParseException {
 		String targetStr = null;
 		int idx = dateStr.lastIndexOf(":");
 		if (idx == -1 || idx + 1 >= dateStr.length()) {
@@ -202,6 +212,9 @@ public class DateUtil {
 		}
 
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
 		return format.parse(targetStr);
 	}
 	
@@ -212,7 +225,21 @@ public class DateUtil {
 	 * @return date
 	 */
 	public static Date getDate(String dateStr, String pattern) throws ParseException {
+		return getDate(dateStr, pattern, (TimeZone)null);
+	}
+
+	/**
+	 * 指定されたパターンの日付文字列をDateに変換します
+	 * @param dateStr 日付文字列
+	 * @param pattern 文字列のパターン
+	 * @param timeZone タイムゾーン
+	 * @return date
+	 */
+	public static Date getDate(String dateStr, String pattern, TimeZone timeZone) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
 		return format.parse(dateStr);
 	}
 	
