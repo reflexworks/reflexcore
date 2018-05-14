@@ -224,6 +224,36 @@ public class DateUtil {
 	 */
 	public static Date getDate(String dateStr)
 	throws ParseException {
+		return getDate(dateStr, (TimeZone)null);
+	}
+
+	/**
+	 * いろんな形式の日時文字列をDateオブジェクトに変換します.
+	 * <p>
+	 * 対応するフォーマット
+	 * <ol>
+	 *   <li>yyyy-MM-dd</li>
+	 *   <li>yyyy-MM-dd HH</li>
+	 *   <li>yyyy-MM-dd HH:mm</li>
+	 *   <li>yyyy-MM-dd HH:mm:ss</li>
+	 *   <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+	 *   <li>上記の"-"を"/"にしたもの</li>
+	 *   <li>上記の" "を"T"にしたもの</li>
+	 *   <li>yyyyMMdd</li>
+	 *   <li>yyyyMMddHH</li>
+	 *   <li>yyyyMMddHHmm</li>
+	 *   <li>yyyyMMddHHmmss</li>
+	 *   <li>yyyyMMddHHmmssSSS</li>
+	 *   <li>上記の各フォーマットについて、末尾にタイムゾーン([ISO 8601] +99:99、+9999、+99)を加えたもの</li>
+	 * </ol>
+	 * </p>
+	 * @param dateStr 日付文字列
+	 * @param timeZone タイムゾーン
+	 * @return Dateオブジェクト
+	 * @throws ParseException
+	 */
+	public static Date getDate(String dateStr, TimeZone timeZone)
+	throws ParseException {
 		if (StringUtils.isBlank(dateStr)) {
 			return null;
 		}
@@ -329,7 +359,32 @@ public class DateUtil {
 			}
 		}
 		
-		return getDate(dateStr, format.toString());
+		return getDate(dateStr, format.toString(), timeZone);
+	}
+	
+	/**
+	 * 指定されたパターンの日付文字列をDateに変換します
+	 * @param dateStr 日付文字列
+	 * @param pattern 文字列のパターン
+	 * @return date
+	 */
+	public static Date getDate(String dateStr, String pattern) throws ParseException {
+		return getDate(dateStr, pattern, null);
+	}
+
+	/**
+	 * 指定されたパターンの日付文字列をDateに変換します
+	 * @param dateStr 日付文字列
+	 * @param pattern 文字列のパターン
+	 * @param timeZone タイムゾーン
+	 * @return date
+	 */
+	public static Date getDate(String dateStr, String pattern, TimeZone timeZone) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
+		return format.parse(dateStr);
 	}
 	
 	/**
@@ -347,17 +402,6 @@ public class DateUtil {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * 指定されたパターンの日付文字列をDateに変換します
-	 * @param dateStr 日付文字列
-	 * @param pattern 文字列のパターン
-	 * @return date
-	 */
-	public static Date getDate(String dateStr, String pattern) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
-		return format.parse(dateStr);
 	}
 	
 	/**

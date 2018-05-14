@@ -445,7 +445,7 @@ public class StringUtils {
 	 * @param len 桁数。1以上を指定する。
 	 * @return 数値をゼロパディングした文字列
 	 */
-	public static String zeroPadding(int i, int len) {
+	public static String zeroPadding(long i, int len) {
 		if (len > 0 && i >= 0) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("%0");
