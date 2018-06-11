@@ -736,6 +736,21 @@ public class FieldMapper {
 	 * Fieldからgetterを返します
 	 * @param name フィールド名
 	 * @param type フィールドのクラス
+	 * @param isReflexField 先頭に"_"がついたフィールドかどうか
+	 * @return getterメソッドの文字列表記
+	 */
+	public static String getGetter(String name, Class type, boolean isReflexField) {
+		String fldName = name;
+		if (isReflexField && fldName.startsWith("_")) {
+			fldName = fldName.substring(1);
+		}
+		return getGetter(fldName, type);
+	}
+
+	/**
+	 * Fieldからgetterを返します
+	 * @param name フィールド名
+	 * @param type フィールドのクラス
 	 * @return getterメソッドの文字列表記
 	 */
 	public static String getGetter(String name, Class type) {
@@ -787,6 +802,21 @@ public class FieldMapper {
 			return getSetter(fldName, fld.getType());
 		}
 		return null;
+	}
+
+	/**
+	 * Fieldからsetterを返します
+	 * @param name フィールド名
+	 * @param type フィールドのクラス
+	 * @param isReflexField 先頭に"_"がついたフィールドかどうか
+	 * @return setterメソッドの文字列表記
+	 */
+	public static String getSetter(String name, Class type, boolean isReflexField) {
+		String fldName = name;
+		if (isReflexField && fldName.startsWith("_")) {
+			fldName = fldName.substring(1);
+		}
+		return getSetter(fldName, type);
 	}
 
 	/**
