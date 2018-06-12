@@ -1,9 +1,11 @@
 package jp.sourceforge.reflex;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
 import jp.sourceforge.reflex.util.SHA256;
 
-import org.junit.Test;
 
 public class HashTest {
 	

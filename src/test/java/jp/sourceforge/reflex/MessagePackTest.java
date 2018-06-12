@@ -2,41 +2,27 @@ package jp.sourceforge.reflex;
 
 import model3.Userinfo;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
 import org.msgpack.MessagePack;
 
+import jp.sourceforge.reflex.util.BCDUtil;
+
 import jp.sourceforge.reflex.core.ResourceMapper;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class MessagePackTest extends TestCase {
+public class MessagePackTest  {
 	
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public MessagePackTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(MessagePackTest.class);
-	}
-
-	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	@Test
+	public void testmsgpack() {
 		IResourceMapper rxmapper = new ResourceMapper("model3");
 
 		String json = convertUserinfo(getJsonInfo());
@@ -76,6 +62,7 @@ public class MessagePackTest extends TestCase {
         cls = Userinfo.class;
         msgpack.register(cls);
         */
+		
         Class<?> cls = Class.forName("model3.Errors");
         msgpack.register(cls);
         cls = Class.forName("model3.Error");
@@ -94,10 +81,14 @@ public class MessagePackTest extends TestCase {
 		
 		System.out.println("=== MessagePack Error ===");
 		System.out.println(muserinfo);
+		
+		assertTrue(true);
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 	public static String getJsonInfo() {
 		StringBuilder buf = new StringBuilder();
 		buf.append("{");
@@ -160,5 +151,6 @@ public class MessagePackTest extends TestCase {
 		buf.append("}");
 		return buf.toString();
 	}
+	
 
 }

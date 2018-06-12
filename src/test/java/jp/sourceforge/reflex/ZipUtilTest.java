@@ -8,35 +8,16 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 
 import jp.sourceforge.reflex.util.ZipUtil;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class ZipUtilTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public ZipUtilTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(ZipUtilTest.class);
-	}
+public class ZipUtilTest  {
 
 	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void testziputil() {
 
 		try {
 			String homeDir = System.getProperty("user.dir") + "/src/test/resources/zip/";

@@ -5,15 +5,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.junit.jupiter.api.Test;
+
 import jp.sourceforge.reflex.util.DateUtil;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class DateUtilTest {
 
 	@Test
-	public void test() 
+	public void testdateutil() 
 	throws ParseException {
 
 		int year = 2011;

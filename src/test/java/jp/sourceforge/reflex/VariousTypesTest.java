@@ -7,35 +7,16 @@ import java.util.Map;
 import model.Type;
 
 import jp.sourceforge.reflex.core.ResourceMapper;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class VariousTypesTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public VariousTypesTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(VariousTypesTest.class);
-	}
+public class VariousTypesTest {
 
 	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void testvarioustypes() {
 
 		// モデルビーンのパッケージ名を指定してmapperをnewする
 		Map nsmap = new HashMap();

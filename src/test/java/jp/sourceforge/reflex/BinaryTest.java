@@ -1,13 +1,15 @@
 package jp.sourceforge.reflex;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.UnsupportedEncodingException;
 
 import javax.xml.bind.DatatypeConverter;
 
-import jp.sourceforge.reflex.util.BinaryUtil;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import jp.sourceforge.reflex.util.BinaryUtil;
 
 public class BinaryTest {
 	

@@ -7,35 +7,16 @@ import model.Nsbean;
 import model2.Nsbean2;
 
 import jp.sourceforge.reflex.core.ResourceMapper;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class SerializeDeserializeTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public SerializeDeserializeTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(SerializeDeserializeTest.class);
-	}
+public class SerializeDeserializeTest {
 
 	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void testserializedeserialize() {
 
 		// 名前空間が付く場合はMapを指定する
 		// 例） put("xml namespace","java packagename");

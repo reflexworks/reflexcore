@@ -7,32 +7,13 @@ import java.util.Map;
 
 import jp.sourceforge.reflex.core.ResourceMapper;
 import jp.sourceforge.reflex.exception.JSONException;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 import model.Array;
 import model.Element;
 
 /**
  * Unit test for simple App.
  */
-public class JSONArrayTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public JSONArrayTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(JSONArrayTest.class);
-	}
+public class JSONArrayTest {
 
 	/**
 	 * Rigourous Test :-)

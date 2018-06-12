@@ -9,35 +9,16 @@ import model.Element2;
 import model.Type2;
 
 import jp.sourceforge.reflex.util.FieldMapper;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class FieldMapperCloneTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public FieldMapperCloneTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(FieldMapperCloneTest.class);
-	}
+public class FieldMapperCloneTest {
 
 	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void testfieldmapperclone() {
 
 		Type2 source = new Type2();
 

@@ -3,44 +3,23 @@ package jp.sourceforge.reflex;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.sourceforge.reflex.core.MessagePackMapper;
 import model3.Userinfo;
 import model3.sub.Favorite;
 import model3.sub.Hobby;
 import model3.sub.SubInfo;
 
-import jp.sourceforge.reflex.core.MessagePackMapper;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
  * Unit test for simple App.
  */
-public class MessagePackMapperTest extends TestCase {
+public class MessagePackMapperTest {
 	
 	public static String NEWLINE = System.getProperty("line.separator");
 
 	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public MessagePackMapperTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(MessagePackMapperTest.class);
-	}
-
-	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void testmsgpackmapper() {
 		try {
 			IResourceMapper rxmapper = new MessagePackMapper("model3");
 

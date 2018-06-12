@@ -1,35 +1,16 @@
 package jp.sourceforge.reflex;
 
 import jp.sourceforge.reflex.util.StringUtils;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class StringUtilsTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public StringUtilsTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(StringUtilsTest.class);
-	}
+public class StringUtilsTest {
 
 	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void teststringutils() {
 
 		String str = "   あいう  えお   ";
 		String str2 = "　　　あいう　　えお　　　";

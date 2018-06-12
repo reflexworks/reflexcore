@@ -1,11 +1,14 @@
 package jp.sourceforge.reflex;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.UnsupportedEncodingException;
 
-import jp.reflexworks.servlet.util.HeaderUtil;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import jp.reflexworks.servlet.util.HeaderUtil;
+
 
 public class HeaderTest {
 	

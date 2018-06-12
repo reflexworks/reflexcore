@@ -1,40 +1,23 @@
 package jp.sourceforge.reflex;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import jp.sourceforge.reflex.util.ConsistentHash;
 import jp.sourceforge.reflex.util.HashFunction;
 import jp.sourceforge.reflex.util.MD5;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
  * Unit test for simple App.
  */
-public class ConsistentHashTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public ConsistentHashTest(String testName) {
-		super(testName);
-	}
-
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(ConsistentHashTest.class);
-	}
+public class ConsistentHashTest {
 
 	/**
 	 * Rigourous Test :-)
 	 */
-	public void test() {
+	public void testconsistenthash() {
 
 		HashFunction hashFunction = new MD5();
 		int numberOfReplicas = 500;	// レプリカを100個作成
