@@ -8,7 +8,6 @@ import java.util.TimeZone;
 import jp.sourceforge.reflex.util.DateUtil;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class DateUtilTest {
 
@@ -347,6 +346,11 @@ public class DateUtilTest {
 		System.out.println(DateUtil.getDateTimeFormat(date, printFormat) + " | " + dateStr);
 		dateStr = "20160112092133455+08"; date = DateUtil.getDate(dateStr);
 		System.out.println(DateUtil.getDateTimeFormat(date, printFormat) + " | " + dateStr);
-
+		
+		// マイクロ秒テスト
+		System.out.println("[microsecond] " + DateUtil.getMicrosecondStr());
+		System.out.println("[microsecond] " + DateUtil.getMicrosecondStr());
+		System.out.println("[microsecond] " + DateUtil.getMicrosecondStr());
+		
 	}
 }
