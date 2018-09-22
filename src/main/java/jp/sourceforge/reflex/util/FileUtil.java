@@ -1,5 +1,6 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -340,6 +341,61 @@ public class FileUtil {
 	}
 
 	/**
+	 * ファイルを読み込み、byte配列に変換します。
+	 * ファイルは絶対パスを指定してください。
+	 * @param filepath ファイルの絶対パス
+	 * @return byte array
+	 * @throws IOException
+	 */
+	public static byte[] readFile(String filepath)
+	throws IOException {
+		return readFile(filepath, BUFFER_SIZE);
+	}
+
+	/**
+	 * ファイルを読み込み、byte配列に変換します。
+	 * ファイルは絶対パスを指定してください。
+	 * @param filepath ファイルの絶対パス
+	 * @return byte array
+	 * @throws IOException
+	 */
+	public static byte[] readFile(File file)
+	throws IOException {
+		if (file == null || !file.exists() || !file.isFile()) {
+			return null;
+		}
+		return readInputStream(new FileInputStream(file), BUFFER_SIZE);
+	}
+
+	/**
+	 * ファイルを読み込み、byte配列に変換します。
+	 * ファイルは絶対パスを指定してください。
+	 * @param filepath ファイルの絶対パス
+	 * @param bufferSize buffer size
+	 * @return byte array
+	 * @throws IOException
+	 */
+	public static byte[] readFile(String filepath, int bufferSize)
+	throws IOException {
+		if (StringUtils.isBlank(filepath)) {
+			return null;
+		}
+		if (bufferSize <= 0) {
+			bufferSize = BUFFER_SIZE;
+		}
+		InputStream in = null;
+		try {
+			in = getInputStreamFromFile(filepath);
+			return readInputStream(in, bufferSize);
+			
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
+	}
+
+	/**
 	 * InputStreamから文字列を読み、Stringにして返却します
 	 * <p>
 	 * ストリームは本メソッド内でクローズします。
@@ -438,10 +494,10 @@ public class FileUtil {
 			return null;
 		}
 		InputStream in = null;
-		File propertyFile = new File(filename);
-		if (propertyFile.exists()) {
+		File file = new File(filename);
+		if (file.exists()) {
 			try {
-				in = new FileInputStream(propertyFile);
+				in = new FileInputStream(file);
 			} catch (IOException e) {
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
@@ -449,10 +505,10 @@ public class FileUtil {
 		
 		if (in == null) {
 			ClassLoader loader = FileUtil.class.getClassLoader();
-			URL propertyURL = loader.getResource(filename);
-			if (propertyURL != null) {
+			URL url = loader.getResource(filename);
+			if (url != null) {
 				try {
-					in = propertyURL.openStream();
+					in = url.openStream();
 				} catch (IOException e) {
 					logger.log(Level.WARNING, e.getClass().getName(), e);
 				}
@@ -630,6 +686,84 @@ public class FileUtil {
 				for (File file : files) {
 					delete(file);
 				}
+			}
+		}
+	}
+	
+	/**
+	 * バイト配列データを指定されたファイルに出力します.
+	 * @param data データ
+	 * @param outFile 出力ファイル
+	 * @throws IOException IOエラー
+	 */
+	public static void writeToFile(byte[] data, File outFile) 
+	throws IOException {
+		if (data != null && outFile != null) {
+			OutputStream out = null;
+			try {
+				out = new BufferedOutputStream(new FileOutputStream(outFile));
+				out.write(data);
+				
+			} finally {
+				if (out != null) {
+					out.close();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * ストリームのデータを指定されたファイルに出力します.
+	 * @param in データ
+	 * @param outFile 出力ファイル
+	 * @throws IOException IOエラー
+	 */
+	public static void writeToFile(InputStream in, File outFile) 
+	throws IOException {
+		if (in != null && outFile != null) {
+			OutputStream out = new FileOutputStream(outFile);
+			writeToOutputStream(in, out);
+			
+			/*
+			OutputStream out = null;
+			try {
+				out = new BufferedOutputStream(new FileOutputStream(outFile));
+				
+				// default buffer size = 8192
+				BufferedInputStream bis = new BufferedInputStream(in);
+				int size;
+				while ((size = bis.read()) != -1) {
+					out.write(size);
+				}
+				
+			} finally {
+				if (in != null) {
+					in.close();
+				}
+				if (out != null) {
+					out.close();
+				}
+			}
+			*/
+		}
+	}
+	
+	/**
+	 * 入力ストリームのデータを出力ストリームに出力します.
+	 * @param in データ
+	 * @param outFile 出力ファイル
+	 * @throws IOException IOエラー
+	 */
+	public static void writeToOutputStream(InputStream in, OutputStream out) 
+	throws IOException {
+		try {
+			fromInputToOutput(in, out);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+				out.close();
 			}
 		}
 	}

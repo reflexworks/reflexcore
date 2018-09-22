@@ -3,8 +3,12 @@ package jp.sourceforge.reflex.util;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+/**
+ * 文字操作ユーティリティ.
+ */
 public class StringUtils {
 	
+	/** 英数字の正規表現 */
 	public static final Pattern PATTERN_ALPHANUMERIC = Pattern.compile("^[0-9a-zA-Z]*$");
 
 	/**
@@ -433,6 +437,118 @@ public class StringUtils {
 		}
 		Matcher matcher = PATTERN_ALPHANUMERIC.matcher(str);
 		return matcher.matches();
+	}
+	
+	/**
+	 * ゼロパディング
+	 * @param i 数値。0以上を指定する。
+	 * @param len 桁数。1以上を指定する。
+	 * @return 数値をゼロパディングした文字列
+	 */
+	public static String zeroPadding(long i, int len) {
+		if (len > 0 && i >= 0) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("%0");
+			sb.append(len);
+			sb.append("d");
+			return String.format(sb.toString(), i);
+		}
+		return String.valueOf(i);
+	}
+	
+	/**
+	 * 文字列をInteger型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
+	 * @param str 文字列
+	 * @return Integer
+	 */
+	public static Integer parseInteger(String str) {
+		return parseInteger(str, null);
+	}
+	
+	/**
+	 * 文字列をInteger型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return Integer
+	 */
+	public static Integer parseInteger(String str, Integer def) {
+		if (str == null) {
+			return def;
+		}
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			return def;
+		}
+	}
+	
+	/**
+	 * 文字列をLong型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
+	 * @param str 文字列
+	 * @return Long
+	 */
+	public static Long parseLong(String str) {
+		return parseLong(str, null);
+	}
+	
+	/**
+	 * 文字列をInteger型に変更します.
+	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
+	 * @param str 文字列
+	 * @param def デフォルト値
+	 * @return Integer
+	 */
+	public static Long parseLong(String str, Long def) {
+		if (str == null) {
+			return def;
+		}
+		try {
+			return Long.parseLong(str);
+		} catch (NumberFormatException e) {
+			return def;
+		}
+	}
+	
+	/**
+	 * Booleanの値を文字列に変換
+	 * @param val Boolean型の値
+	 * @param def 引数がnullの場合のデフォルト値
+	 * @return Booleanの値の文字列表現
+	 */
+	public static String toString(Boolean val, boolean def) {
+		if (val == null) {
+			return String.valueOf(def);
+		}
+		return val.toString();
+	}
+	
+	/**
+	 * Integerの値を文字列に変換
+	 * @param val Integer型
+	 * @param def 引数がnullの場合のデフォルト値
+	 * @return Integerの値の文字列表現
+	 */
+	public static String toString(Integer val, int def) {
+		if (val == null) {
+			return String.valueOf(def);
+		}
+		return val.toString();
+	}
+	
+	/**
+	 * Longの値を文字列に変換
+	 * @param val Long型
+	 * @param def 引数がnullの場合のデフォルト値
+	 * @return Longの値の文字列表現
+	 */
+	public static String toString(Long val, long def) {
+		if (val == null) {
+			return String.valueOf(def);
+		}
+		return val.toString();
 	}
 
 }

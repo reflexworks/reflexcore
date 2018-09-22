@@ -127,7 +127,7 @@ public class HeaderUtil {
 	public static Set<String> getHeaderValuesList(Map<String, List<String>> headers,
 			String key, Option option) {
 		List<String> val = getHeaderValueList(headers, key);
-		if (val != null && val.size() > 0) {
+		if (val != null && !val.isEmpty()) {
 			if (option == null) {
 				option = Option.LAST;	// default
 			}
@@ -178,7 +178,7 @@ public class HeaderUtil {
 	 * @return カンマ区切り文字列
 	 */
 	public static String editHeaderValues(Set<String> values) {
-		if (values == null || values.size() == 0) {
+		if (values == null || values.isEmpty()) {
 			return null;
 		}
 		boolean isFirst = true;
@@ -498,6 +498,98 @@ public class HeaderUtil {
 			return "&";
 		}
 		return "?";
+	}
+	
+	/**
+	 * 値の前後にダブルコーテーションを付加
+	 * @param val 値
+	 * @return 値の前後にダブルコーテーションを付加した文字列
+	 */
+	public static String addDoubleQuotation(String val) {
+		if (val == null) {
+			return null;
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("\"");
+		sb.append(val);
+		sb.append("\"");
+		return sb.toString();
+	}
+	
+	/**
+	 * 値の前後のダブルコーテーションを除去
+	 * @param val 値
+	 * @return 値の前後のダブルコーテーションを除去した文字列
+	 */
+	public static String removeDoubleQuotation(String val) {
+		if (StringUtils.isBlank(val)) {
+			return val;
+		}
+		int startIdx = 0;
+		if (val.startsWith("\"")) {
+			startIdx++;
+		}
+		int len = val.length();
+		int endIdx = len;
+		if (val.endsWith("\"")) {
+			endIdx--;
+		}
+		return val.substring(startIdx, endIdx);
+	}
+	
+	/**
+	 * URLからホスト名を抽出します.
+	 * @param url URL
+	 * @return ホスト名までのURL
+	 */
+	public static String getURLHost(String url) {
+		if (url != null && url.startsWith("http")) {
+			int idx1 = url.indexOf(":") + 3;
+			int idx2 = url.indexOf("/", idx1);
+			if (idx2 == -1) {
+				idx2 = url.indexOf("?", idx1);
+			}
+			if (idx2 == -1) {
+				idx2 = url.length();
+			}
+			return url.substring(0, idx2);
+		}
+		return null;
+	}
+	
+	/**
+	 * 拡張子からContent-Typeを取得.
+	 * @param uri URI
+	 * @return Content-Type
+	 */
+	public static String getContentTypeByFilename(String uri) {
+		if (StringUtils.isBlank(uri)) {
+			return null;
+		}
+		int idx = uri.lastIndexOf(".");
+		if (idx > 0) {
+			String suffix = uri.substring(idx + 1);
+			suffix = suffix.toLowerCase(Locale.ENGLISH);
+			if (ReflexServletConst.JPG.equals(suffix) ||
+					ReflexServletConst.JPEG.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_JPEG;
+			} else if (ReflexServletConst.PNG.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_PNG;
+			} else if (ReflexServletConst.GIF.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_GIF;
+			} else if (ReflexServletConst.TXT.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_PLAIN;
+			} else if (ReflexServletConst.HTML.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_HTML;
+			} else if (ReflexServletConst.JSON.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_JSON;
+			} else if (ReflexServletConst.XML.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_XML;
+			} else if (ReflexServletConst.PDF.equals(suffix)) {
+				return ReflexServletConst.CONTENT_TYPE_PDF;
+			}
+		}
+		return null;
 	}
 
 }

@@ -70,6 +70,8 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Header : Accept Encoding (lower case) */
 	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = 
 			HEADER_ACCEPT_ENCODING.toLowerCase(Locale.ENGLISH);
+	/** Header : Content Language */
+	public static final String HEADER_CONTENT_LANGUAGE = "Content-Language";
 	/** Header value : deflate */
 	public static final String HEADER_VALUE_DEFLATE = "deflate";
 	/** Header value : gzip */
@@ -125,6 +127,12 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
 	/** Header value : None */
 	public static final String HEADER_VALUE_NONE = "None";
+	/** Header : ETag */
+	public static final String HEADER_ETAG = "ETag";
+	/** Header : If-None-Match */
+	public static final String HEADER_IF_NONE_MATCH = "If-None-Match";
+	/** Header :  Last-Modified */
+	public static final String HEADER_LAST_MODIFIED = "Last-Modified";
 	/** Response header : Access-Control-Allow-Origin */
 	public static final String ACCESS_CONTROL_ALLOW_ORIGIN = 
 			"Access-Control-Allow-Origin";
@@ -145,6 +153,13 @@ public interface ReflexServletConst extends HttpStatus {
 			"Access-Control-Request-Method";
 	/** Response header : Access-Control-Max-Age */
 	public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
+	/** Response header value : Access-Control-Allow-Methods */
+	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = 
+			"POST, PUT, GET, DELETE, OPTIONS";
+	/** Response header value : Access-Control-Max-Age */
+	public static final String ACCESS_CONTROL_MAX_AGE_VALUE = "-1";
+	/** Response header value : Access-Control-Allow-Credentials */
+	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE = "true";
 	/** Response header : Pragma */
 	public static final String PRAGMA = "Pragma";
 	/** Response header : Cache-Control */
@@ -159,7 +174,23 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String MUST_REVALIDATE = "must-revalidate";
 	/** Response header value : past date */
 	public static final String PAST_DATE = "Fri, 1 Jan 2010 00:00:00";
-	
+	/** Request header : Method Override (PUT、DELETEをPOSTで代行する場合に付加) */
+	public static final String HEADER_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+	/** Request header : Method Override Cookie */
+	public static final String COOKIE_METHOD_OVERRIDE_KEY_PATH = "OVERRIDE";
+	/** Request header : X-Forwarded-For */
+	public static final String HEADER_FORWARDED_FOR = "X-Forwarded-For";
+	/** Request header : X-Frame-Options */
+	public static final String HEADER_FRAME_OPTIONS = "X-Frame-Options";
+	/** Request header value : SAMEORIGIN */
+	public static final String SAMEORIGIN = "SAMEORIGIN";
+	/** Request header : X-XSS-Protection */
+	public static final String HEADER_XSS_PROTECTION = "X-XSS-Protection";
+	/** Request header value : X-XSS-Protection */
+	public static final String HEADER_XSS_PROTECTION_MODEBLOCK = "1; mode=block";
+	/** Request header value : form-data */
+	public static final String HEADER_FORM_DATA = "form-data";
+
 	/** Schema : http */
 	public static final String SCHEMA_HTTP = "http";
 	/** Schema : https */
@@ -184,6 +215,20 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String JSON = "json";
 	/** xml */
 	public static final String XML = "xml";
+	/** jpg */
+	public static final String JPG = "jpg";
+	/** jpeg */
+	public static final String JPEG = "jpeg";
+	/** gif */
+	public static final String GIF = "gif";
+	/** png */
+	public static final String PNG = "png";
+	/** txt */
+	public static final String TXT = "txt";
+	/** html */
+	public static final String HTML = "html";
+	/** pdf */
+	public static final String PDF = "pdf";
 
 	/** 改行コード */
 	public static final String NEWLINE = "\n";
@@ -204,6 +249,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String PUT = "PUT";
 	/** Method : DELETE */
 	public static final String DELETE = "DELETE";
+	/** Method : OPTIONS */
+	public static final String OPTIONS = "OPTIONS";
 
 	/** Format : Text */
 	public static final int FORMAT_TEXT = 0;

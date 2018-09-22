@@ -89,15 +89,19 @@ public interface HttpStatus {
 	/** <tt>412 Precondition Failed</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_PRECONDITION_FAILED = 412;
 	/** <tt>413 Request Entity Too Large</tt> (HTTP/1.1 - RFC 2616) */
-	//public static final int SC_REQUEST_TOO_LONG = 413;
-	/** <tt>413 Request Entity Too Large</tt> (HTTP/1.1 - RFC 2616) */
-	public static final int SC_REQUEST_ENTITY_TOO_LARGE = 413;
+	//public static final int SC_REQUEST_ENTITY_TOO_LARGE = 413;
+	/** <tt>413 Payload Too Large</tt> (HTTP/1.1 - RFC 7231) */
+	public static final int SC_PAYLOAD_TOO_LARGE = 413;
 	/** <tt>414 Request-URI Too Long</tt> (HTTP/1.1 - RFC 2616) */
-	public static final int SC_REQUEST_URI_TOO_LONG = 414;
+	//public static final int SC_REQUEST_URI_TOO_LONG = 414;
+	/** <tt>414 URI Too Long</tt> (HTTP/1.1 - RFC 7231) */
+	public static final int SC_URI_TOO_LONG = 414;
 	/** <tt>415 Unsupported Media Type</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_UNSUPPORTED_MEDIA_TYPE = 415;
 	/** <tt>416 Requested Range Not Satisfiable</tt> (HTTP/1.1 - RFC 2616) */
-	public static final int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
+	//public static final int SC_REQUESTED_RANGE_NOT_SATISFIABLE = 416;
+	/** <tt>416 Range Not Satisfiable</tt> (HTTP/1.1 - RFC 7233) */
+	public static final int SC_RANGE_NOT_SATISFIABLE = 416;
 	/** <tt>417 Expectation Failed</tt> (HTTP/1.1 - RFC 2616) */
 	public static final int SC_EXPECTATION_FAILED = 417;
 	/** <tt>418  I'm a teapot</tt> (RFC 2324) */
@@ -116,6 +120,8 @@ public interface HttpStatus {
 	 * (WebDAV - draft-ietf-webdav-protocol-05?)
 	 */
 	public static final int SC_METHOD_FAILURE = 420;
+	/** <tt>421 Misdirected Request</tt> (RFC 7540) */
+	public static final int SC_MISDIRECTED_REQUEST = 421;
 	/** <tt>422 Unprocessable Entity</tt> (WebDAV - RFC 2518) */
 	public static final int SC_UNPROCESSABLE_ENTITY = 422;
 	/** <tt>423 Locked</tt> (WebDAV - RFC 2518) */

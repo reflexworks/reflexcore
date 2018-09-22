@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -224,6 +225,36 @@ public class DateUtil {
 	 */
 	public static Date getDate(String dateStr)
 	throws ParseException {
+		return getDate(dateStr, (TimeZone)null);
+	}
+
+	/**
+	 * いろんな形式の日時文字列をDateオブジェクトに変換します.
+	 * <p>
+	 * 対応するフォーマット
+	 * <ol>
+	 *   <li>yyyy-MM-dd</li>
+	 *   <li>yyyy-MM-dd HH</li>
+	 *   <li>yyyy-MM-dd HH:mm</li>
+	 *   <li>yyyy-MM-dd HH:mm:ss</li>
+	 *   <li>yyyy-MM-dd HH:mm:ss.SSS</li>
+	 *   <li>上記の"-"を"/"にしたもの</li>
+	 *   <li>上記の" "を"T"にしたもの</li>
+	 *   <li>yyyyMMdd</li>
+	 *   <li>yyyyMMddHH</li>
+	 *   <li>yyyyMMddHHmm</li>
+	 *   <li>yyyyMMddHHmmss</li>
+	 *   <li>yyyyMMddHHmmssSSS</li>
+	 *   <li>上記の各フォーマットについて、末尾にタイムゾーン([ISO 8601] +99:99、+9999、+99)を加えたもの</li>
+	 * </ol>
+	 * </p>
+	 * @param dateStr 日付文字列
+	 * @param timeZone タイムゾーン
+	 * @return Dateオブジェクト
+	 * @throws ParseException
+	 */
+	public static Date getDate(String dateStr, TimeZone timeZone)
+	throws ParseException {
 		if (StringUtils.isBlank(dateStr)) {
 			return null;
 		}
@@ -329,7 +360,32 @@ public class DateUtil {
 			}
 		}
 		
-		return getDate(dateStr, format.toString());
+		return getDate(dateStr, format.toString(), timeZone);
+	}
+	
+	/**
+	 * 指定されたパターンの日付文字列をDateに変換します
+	 * @param dateStr 日付文字列
+	 * @param pattern 文字列のパターン
+	 * @return date
+	 */
+	public static Date getDate(String dateStr, String pattern) throws ParseException {
+		return getDate(dateStr, pattern, null);
+	}
+
+	/**
+	 * 指定されたパターンの日付文字列をDateに変換します
+	 * @param dateStr 日付文字列
+	 * @param pattern 文字列のパターン
+	 * @param timeZone タイムゾーン
+	 * @return date
+	 */
+	public static Date getDate(String dateStr, String pattern, TimeZone timeZone) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
+		}
+		return format.parse(dateStr);
 	}
 	
 	/**
@@ -347,17 +403,6 @@ public class DateUtil {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * 指定されたパターンの日付文字列をDateに変換します
-	 * @param dateStr 日付文字列
-	 * @param pattern 文字列のパターン
-	 * @return date
-	 */
-	public static Date getDate(String dateStr, String pattern) throws ParseException {
-		SimpleDateFormat format = new SimpleDateFormat(pattern);
-		return format.parse(dateStr);
 	}
 	
 	/**
@@ -508,7 +553,43 @@ public class DateUtil {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException e) {
 			return 0;
-		}	
+		}
+	}
+	
+	/**
+	 * 現在のナノ秒を取得します.
+	 * System.nanoTime() の値を返します。
+	 * 日付・日時には使用できません。
+	 * @return 現在のナノ秒
+	 */
+	public static long getNanoTime() {
+		return System.nanoTime();
+	}
+	
+	/**
+	 * 現在のマイクロ秒を取得します.
+	 * System.nanoTime() の値をマイクロ秒に変換し返します。
+	 * 日付・日時には使用できません。
+	 * @return 現在のマイクロ秒
+	 */
+	public static long getMicroTime() {
+		// nano秒の取得
+		long nanos = System.nanoTime();
+		// ナノ→マイクロへの変換
+		return TimeUnit.NANOSECONDS.toMicros(nanos);
+	}
+
+	/**
+	 * 現在のマイクロ秒3桁を0埋め文字列で取得します.
+	 * @return 現在のマイクロ秒3桁
+	 */
+	public static String getMicrosecondStr() {
+		// マイクロ秒の取得
+		long micro = getMicroTime();
+		
+		// マイクロ秒3桁のみ抽出
+		String microStr = String.valueOf(micro);
+		return microStr.substring(microStr.length() - 3);
 	}
 	
 }

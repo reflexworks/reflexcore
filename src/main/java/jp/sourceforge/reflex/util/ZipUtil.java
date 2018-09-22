@@ -123,7 +123,7 @@ public class ZipUtil {
 	 */
 	public void bringZip(OutputStream out, Map dataMap) throws IOException {
 		ZipOutputStream zos = null;
-		if (dataMap != null && dataMap.size() > 0) {
+		if (dataMap != null && !dataMap.isEmpty()) {
 			zos = new ZipOutputStream(out);
 			try {
 				Set entrySet = dataMap.entrySet();

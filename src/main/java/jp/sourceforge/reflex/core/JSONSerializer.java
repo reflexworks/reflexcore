@@ -303,7 +303,12 @@ public class JSONSerializer implements IResourceMapper {
       IllegalArgumentException, IllegalAccessException {
 
     int mode;
-
+    if (source==null) {
+      context.printNodeName(nodename);
+      context.pushout();
+    	
+    }else {
+    
     Field[] fields = source.getClass().getFields();
     if (nodename!=null&&!nodename.equals("")) {
     	if (nodename.startsWith("_")) nodename = nodename.substring(1);
@@ -479,8 +484,8 @@ public class JSONSerializer implements IResourceMapper {
   			  break;
 			}
 	  }
-
-    context.popout();
+    }
+	  context.popout();
 
   }
 

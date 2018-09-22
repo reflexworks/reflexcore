@@ -57,7 +57,7 @@ public class Requester implements ReflexServletConst {
 			}
 			write(in, out);
 		} finally {
-				http.disconnect();
+			http.disconnect();
 		}
 	}
 	
@@ -89,7 +89,7 @@ public class Requester implements ReflexServletConst {
 			write(in, out);
 
 		} finally {
-				http.disconnect();
+			http.disconnect();
 		}
 	}
 
@@ -356,15 +356,15 @@ public class Requester implements ReflexServletConst {
 		}
 		try {
 			// default buffer size = 8192
-			BufferedInputStream bis = new BufferedInputStream(in);		
+			BufferedInputStream bis = new BufferedInputStream(in);
 			int size;
 			while ((size = bis.read()) != -1) {
 				out.write(size);
 			}
 		
 		} finally {
-				out.close();
-				in.close();
+			out.close();
+			in.close();
 		}
 	}
 
@@ -375,12 +375,12 @@ public class Requester implements ReflexServletConst {
 	 * @throws IOException
 	 */
 	public void write(InputStream in, List<OutputStream> outList) throws IOException {
-		if (in == null || outList == null || outList.size() == 0) {
+		if (in == null || outList == null || outList.isEmpty()) {
 			return;
 		}
 		try {
 			// default buffer size = 8192
-			BufferedInputStream bis = new BufferedInputStream(in);		
+			BufferedInputStream bis = new BufferedInputStream(in);
 			int size;
 			while ((size = bis.read()) != -1) {
 				for (OutputStream out : outList) {
@@ -390,9 +390,9 @@ public class Requester implements ReflexServletConst {
 		
 		} finally {
 			for (OutputStream out : outList) {
-					out.close();
+				out.close();
 			}
-				in.close();
+			in.close();
 		}
 	}
 
@@ -442,6 +442,4 @@ public class Requester implements ReflexServletConst {
 		return is;
 	}
 
-	
-	
 }
