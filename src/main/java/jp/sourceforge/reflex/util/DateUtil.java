@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -552,7 +553,43 @@ public class DateUtil {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException e) {
 			return 0;
-		}	
+		}
+	}
+	
+	/**
+	 * 現在のナノ秒を取得します.
+	 * System.nanoTime() の値を返します。
+	 * 日付・日時には使用できません。
+	 * @return 現在のナノ秒
+	 */
+	public static long getNanoTime() {
+		return System.nanoTime();
+	}
+	
+	/**
+	 * 現在のマイクロ秒を取得します.
+	 * System.nanoTime() の値をマイクロ秒に変換し返します。
+	 * 日付・日時には使用できません。
+	 * @return 現在のマイクロ秒
+	 */
+	public static long getMicroTime() {
+		// nano秒の取得
+		long nanos = System.nanoTime();
+		// ナノ→マイクロへの変換
+		return TimeUnit.NANOSECONDS.toMicros(nanos);
+	}
+
+	/**
+	 * 現在のマイクロ秒3桁を0埋め文字列で取得します.
+	 * @return 現在のマイクロ秒3桁
+	 */
+	public static String getMicrosecondStr() {
+		// マイクロ秒の取得
+		long micro = getMicroTime();
+		
+		// マイクロ秒3桁のみ抽出
+		String microStr = String.valueOf(micro);
+		return microStr.substring(microStr.length() - 3);
 	}
 	
 }
