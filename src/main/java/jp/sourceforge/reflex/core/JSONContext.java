@@ -457,7 +457,12 @@ public class JSONContext {
 		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
-	
+
+	public void outarraynull(String key) throws IOException {
+        this.printNodeName(key);		
+		this.outprint("[]");
+	}
+
 	/**
 	 * xorPlural() {
 	 */
