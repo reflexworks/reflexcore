@@ -459,6 +459,7 @@ public class JSONContext {
 	}
 
 	public void outarraynull(String key) throws IOException {
+		outcomma();
         this.printNodeName(key);		
 		this.outprint("[]");
 	}

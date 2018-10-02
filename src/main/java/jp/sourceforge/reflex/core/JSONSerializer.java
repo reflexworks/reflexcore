@@ -345,7 +345,6 @@ public class JSONSerializer implements IResourceMapper {
               }
             }
           }else {
-              context.outcomma();
               context.outarraynull(fields[fn].getName());
           }
 
