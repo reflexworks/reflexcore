@@ -344,8 +344,11 @@ public class JSONSerializer implements IResourceMapper {
                 }
               }
             }
-          }else {
-              context.outarraynull(fields[fn].getName());
+          }
+          else {
+        	  if (fields[fn]!=null&&fields[fn].getName()!=null&&!fields[fn].getName().equals("")) {
+                  context.outarraynull(fields[fn].getName());        		  
+        	  }
           }
 
           for (int ln = 0; ln < list.size(); ln++) {
