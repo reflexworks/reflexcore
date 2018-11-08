@@ -303,7 +303,7 @@ public class JSONSerializer implements IResourceMapper {
       IllegalArgumentException, IllegalAccessException {
 
     int mode;
-    System.out.println("nodename="+nodename+" source="+source);
+    //System.out.println("nodename="+nodename+" source="+source);
     if (source==null) {
       context.printNodeName(nodename);
       context.pushout();
