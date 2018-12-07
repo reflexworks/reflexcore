@@ -298,7 +298,7 @@ public class JSONContext {
 	 */
 	public void outcomma() throws IOException {
 		// if (!lastout.equals("[") && !lastout.equals("{"))
-		if (!lastout.equals("[") && !lastout.equals("{")
+		if (lastout!=null&&!lastout.equals("[") && !lastout.equals("{")
 				&& !lastout.equals(","))
 			this.outprint(",");
 	}
