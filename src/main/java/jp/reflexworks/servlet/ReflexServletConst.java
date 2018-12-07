@@ -190,6 +190,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_XSS_PROTECTION_MODEBLOCK = "1; mode=block";
 	/** Request header value : form-data */
 	public static final String HEADER_FORM_DATA = "form-data";
+	/** Request header : User-Agent */
+	public static final String HEADER_USER_AGENT = "User-Agent";
 
 	/** Schema : http */
 	public static final String SCHEMA_HTTP = "http";
