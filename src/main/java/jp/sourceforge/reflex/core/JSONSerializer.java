@@ -151,11 +151,19 @@ public class JSONSerializer implements IResourceMapper {
         out.flush();
     	
     }else {
-      boolean isNotArray = !source.getClass().getTypeName().equals("java.util.ArrayList");
+      boolean isNotArray = true;
+      if (source!=null) {
+    	  isNotArray = !source.getClass().getTypeName().equals("java.util.ArrayList");
+    	  if (!isNotArray&&((java.util.ArrayList)source).size()==0) {
+    		  out.write(new char[] { '[',']' });
+    	  }
+      }
       if (isNotArray) out.write(new char[] { '{' });
       JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
       if (isNotArray) context.push(context.HASH);
-      marshal(context,source.getClass().getName(), source);
+	  if (source!=null) {
+	      marshal(context,source.getClass().getName(), source);
+	  }
       if (isNotArray) out.write(new char[] { '}' });
       out.flush();
     }
