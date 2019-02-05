@@ -155,7 +155,7 @@ public class JSONSerializer implements IResourceMapper {
       boolean isNotEntry = true;
       if (source!=null) {
     	  isNotArray = !source.getClass().getTypeName().equals("java.util.ArrayList");
-    	  isNotEntry = !source.getClass().getTypeName().equals("_default.Entry");
+    	  isNotEntry = source.getClass().getTypeName().indexOf(".Entry")<0;
     	  if (!isNotArray&&((java.util.ArrayList)source).size()==0) {
     		  out.write(new char[] { '[',']' });
     	  }
@@ -325,7 +325,7 @@ public class JSONSerializer implements IResourceMapper {
     Field[] fields = source.getClass().getFields();
     if (nodename!=null&&!nodename.equals("")) {
     	if (nodename.startsWith("_")) nodename = nodename.substring(1);
-    	if (!nodename.equals("default.Entry")){
+    	if (nodename.indexOf(".Entry")<0){
         	context.printNodeName(nodename);    		    		
     	}
     }
