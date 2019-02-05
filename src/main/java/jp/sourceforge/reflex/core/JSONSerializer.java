@@ -152,19 +152,21 @@ public class JSONSerializer implements IResourceMapper {
     	
     }else {
       boolean isNotArray = true;
+      boolean isNotEntry = true;
       if (source!=null) {
     	  isNotArray = !source.getClass().getTypeName().equals("java.util.ArrayList");
+    	  isNotEntry = !source.getClass().getTypeName().equals("_default.Entry");
     	  if (!isNotArray&&((java.util.ArrayList)source).size()==0) {
     		  out.write(new char[] { '[',']' });
     	  }
       }
-      if (isNotArray) out.write(new char[] { '{' });
+      if (isNotArray&&isNotEntry) out.write(new char[] { '{' });
       JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
       if (isNotArray) context.push(context.HASH);
 	  if (source!=null) {
 	      marshal(context,source.getClass().getName(), source);
 	  }
-      if (isNotArray) out.write(new char[] { '}' });
+      if (isNotArray&&isNotEntry) out.write(new char[] { '}' });
       out.flush();
     }
     } catch (IllegalArgumentException e) {
@@ -323,7 +325,9 @@ public class JSONSerializer implements IResourceMapper {
     Field[] fields = source.getClass().getFields();
     if (nodename!=null&&!nodename.equals("")) {
     	if (nodename.startsWith("_")) nodename = nodename.substring(1);
-    	context.printNodeName(nodename);
+    	if (!nodename.equals("default.Entry")){
+        	context.printNodeName(nodename);    		    		
+    	}
     }
     context.pushout();
 
