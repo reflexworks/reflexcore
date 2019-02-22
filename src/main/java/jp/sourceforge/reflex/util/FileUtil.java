@@ -408,6 +408,19 @@ public class FileUtil {
 	}
 
 	/**
+	 * InputStreamから文字列を読み、Stringにして返却します
+	 * <p>
+	 * ストリームは本メソッド内でクローズします。
+	 * </p>
+	 * @param in InputStream
+	 * @param encoding エンコード
+	 * @return InputStreamから読み込んだ文字列
+	 */
+	public static String readString(InputStream in, String encoding) throws IOException {
+		return readString(new InputStreamReader(in, encoding));
+	}
+
+	/**
 	 * Readerから文字列を読み、Stringにして返却します.
 	 * <p>
 	 * Readerは本メソッド内でクローズします。
