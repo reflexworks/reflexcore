@@ -161,13 +161,6 @@
       <version>0.0.4</version>
       <scope>test</scope>
     </dependency>
-    <!-- Java 9以降でJAXBを使用するには、外部JARが必要 -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.1</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <distributionManagement>
