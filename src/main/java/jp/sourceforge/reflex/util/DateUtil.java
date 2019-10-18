@@ -22,7 +22,7 @@ public class DateUtil {
 	public static final String REGEX_TIMEZONE = "[\\+|\\-]([0-1][0-9]|[2][0-3]):[0-5][0-9]";
 	// 時間(HH:mm)の正規表現
 	public static final String REGEX_HHMM = "([0-1][0-9]|[2][0-3]):[0-5][0-9]";
-	
+
 	// 時間(HH:mm)のPattern
 	public static final Pattern PATTERN_HHMM = Pattern.compile(REGEX_HHMM);
 
@@ -85,34 +85,34 @@ public class DateUtil {
 	/**
 	 * dateを"yyyy-MM-dd'T'HH:mm:ss.SSS+99:99"形式の文字列に変換します
 	 * @param date
-	 * @param id TimeZoneのID
+	 * @param timeZoneId TimeZoneのID
 	 * @return dateの文字列
 	 */
-	public static String getDateTimeMillisec(Date date, String id) {
-		return getDateTime(date, id, "yyyy-MM-dd'T'HH:mm:ss.SSS");
+	public static String getDateTimeMillisec(Date date, String timeZoneId) {
+		return getDateTime(date, timeZoneId, "yyyy-MM-dd'T'HH:mm:ss.SSS");
 	}
-	
+
 	/**
 	 * dateを"yyyy-MM-dd'T'HH:mm:ss+99:99"形式の文字列に変換します
 	 * @param date
-	 * @param id TimeZoneのID
+	 * @param timeZoneId TimeZoneのID
 	 * @return dateの文字列
 	 */
-	public static String getDateTime(Date date, String id) {
-		return getDateTime(date, id, "yyyy-MM-dd'T'HH:mm:ss");
+	public static String getDateTime(Date date, String timeZoneId) {
+		return getDateTime(date, timeZoneId, "yyyy-MM-dd'T'HH:mm:ss");
 	}
-		
+
 	/**
 	 * dateを、指定されたFormat + "+99:99"形式の文字列に変換します
 	 * @param date
-	 * @param id TimeZoneのID
+	 * @param timeZoneId TimeZoneのID
 	 * @return dateの文字列
 	 */
-	public static String getDateTime(Date date, String id, String dateTimeFormat) {
+	public static String getDateTime(Date date, String timeZoneId, String dateTimeFormat) {
 		StringBuilder dateString = new StringBuilder();
 		TimeZone timeZone = null;
-		if (id != null) {
-			timeZone = TimeZone.getTimeZone(id);
+		if (timeZoneId != null) {
+			timeZone = TimeZone.getTimeZone(timeZoneId);
 		}
 		SimpleDateFormat format = new SimpleDateFormat(dateTimeFormat);
 		if (timeZone != null) {
@@ -149,7 +149,7 @@ public class DateUtil {
 	 * @return dateの文字列
 	 */
 	public static String getDateTimeFormat(Date date, String pattern) {
-		return getDateTimeFormat(date, pattern, null, null);
+		return getDateTimeFormat(date, pattern, (TimeZone)null, null);
 	}
 
 	/**
@@ -160,29 +160,58 @@ public class DateUtil {
 	 * @return dateの文字列
 	 */
 	public static String getDateTimeFormat(Date date, String pattern, Locale locale) {
-		return getDateTimeFormat(date, pattern, null, locale);
+		return getDateTimeFormat(date, pattern, (TimeZone)null, locale);
 	}
 
 	/**
 	 * dateを文字列に変換します
 	 * @param date
 	 * @param pattern フォーマットパターン
-	 * @param id TimeZoneのID
+	 * @param timeZoneId TimeZoneのID
 	 * @return dateの文字列
 	 */
-	public static String getDateTimeFormat(Date date, String pattern, String id) {
-		return getDateTimeFormat(date, pattern, id, null);
+	public static String getDateTimeFormat(Date date, String pattern, String timeZoneId) {
+		return getDateTimeFormat(date, pattern, timeZoneId, null);
 	}
-		
+
 	/**
 	 * dateを文字列に変換します
 	 * @param date
 	 * @param pattern フォーマットパターン
-	 * @param id TimeZoneのID
+	 * @param timeZone TimeZone
+	 * @return dateの文字列
+	 */
+	public static String getDateTimeFormat(Date date, String pattern, TimeZone timeZone) {
+		return getDateTimeFormat(date, pattern, timeZone, null);
+	}
+
+	/**
+	 * dateを文字列に変換します
+	 * @param date
+	 * @param pattern フォーマットパターン
+	 * @param timeZoneId TimeZoneのID
 	 * @param locale ロケール
 	 * @return dateの文字列
 	 */
-	public static String getDateTimeFormat(Date date, String pattern, String id, Locale locale) {
+	public static String getDateTimeFormat(Date date, String pattern, String timeZoneId,
+			Locale locale) {
+		TimeZone timeZone = null;
+		if (timeZoneId != null) {
+			timeZone = TimeZone.getTimeZone(timeZoneId);
+		}
+		return getDateTimeFormat(date, pattern, timeZone, locale);
+	}
+
+	/**
+	 * dateを文字列に変換します
+	 * @param date
+	 * @param pattern フォーマットパターン
+	 * @param timeZone TimeZone
+	 * @param locale ロケール
+	 * @return dateの文字列
+	 */
+	public static String getDateTimeFormat(Date date, String pattern, TimeZone timeZone,
+			Locale locale) {
 		String patternStr = pattern;
 		if (patternStr == null) {
 			patternStr = FORMAT_PATTERN;
@@ -193,12 +222,12 @@ public class DateUtil {
 		} else {
 			format = new SimpleDateFormat(patternStr);
 		}
-		if (id != null) {
-			format.setTimeZone(TimeZone.getTimeZone(id));
+		if (timeZone != null) {
+			format.setTimeZone(timeZone);
 		}
 		return format.format(date);
 	}
-	
+
 	/**
 	 * いろんな形式の日時文字列をDateオブジェクトに変換します.
 	 * <p>
@@ -279,7 +308,7 @@ public class DateUtil {
 				format.append("MMdd");
 			}
 		}
-		
+
 		boolean isFinish = false;
 		int formatLen = format.length();
 		if (len <= formatLen) {
@@ -290,7 +319,7 @@ public class DateUtil {
 				isFinish = true;
 			}
 		}
-		
+
 		int formatLenMinus = 0;
 		if (!isFinish) {
 			// 区切り文字付きの場合、スペースかTか判定する。
@@ -303,7 +332,7 @@ public class DateUtil {
 					formatLenMinus = 2;
 				}
 			}
-			
+
 			// 時
 			format.append("HH");
 			formatLen = format.length() - formatLenMinus;
@@ -315,7 +344,7 @@ public class DateUtil {
 				}
 			}
 		}
-		
+
 		if (!isFinish) {
 			if (hasPartition) {
 				format.append(":");
@@ -331,7 +360,7 @@ public class DateUtil {
 				}
 			}
 		}
-		
+
 		if (!isFinish) {
 			if (hasPartition) {
 				format.append(":");
@@ -347,7 +376,7 @@ public class DateUtil {
 				}
 			}
 		}
-		
+
 		if (!isFinish) {
 			if (hasPartition) {
 				format.append(".");
@@ -359,10 +388,10 @@ public class DateUtil {
 				checkAndAppendTimeZone(dateStr, formatLen, format);
 			}
 		}
-		
+
 		return getDate(dateStr, format.toString(), timeZone);
 	}
-	
+
 	/**
 	 * 指定されたパターンの日付文字列をDateに変換します
 	 * @param dateStr 日付文字列
@@ -387,7 +416,7 @@ public class DateUtil {
 		}
 		return format.parse(dateStr);
 	}
-	
+
 	/**
 	 * 指定されたIndexにタイムゾーンが設定されている場合、StringBuilderにタイムゾーンを追加し
 	 * trueを返却します。
@@ -404,7 +433,7 @@ public class DateUtil {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 日付計算.
 	 * <p>
@@ -421,7 +450,7 @@ public class DateUtil {
 	 * @param millisecond 加算するミリ秒
 	 * @return 計算後の日時
 	 */
-	public static Date addTime(Date date, int year, int month, int day, 
+	public static Date addTime(Date date, int year, int month, int day,
 			int hour, int minute, int second, int millisecond) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -446,10 +475,10 @@ public class DateUtil {
 		if (millisecond != 0) {
 			calendar.add(Calendar.MILLISECOND, millisecond);
 		}
-		
+
 		return calendar.getTime();
 	}
-	
+
 	/**
 	 * 時間の範囲チェック.
 	 * <p>
@@ -480,7 +509,7 @@ public class DateUtil {
 		if (timeZone == null) {
 			timeZone = TimeZone.getDefault();
 		}
-		
+
 		Calendar cal = Calendar.getInstance(timeZone);
 		cal.setTime(date);
 
@@ -488,14 +517,14 @@ public class DateUtil {
 		if (start.compareTo(end) > 0) {
 			isAsc = false;
 		}
-		
+
 		String[] startParts = start.split(":");
 		int startHour = intValue(startParts[0]);
 		int startMinute = intValue(startParts[1]);
 		String[] endParts = end.split(":");
 		int endHour = intValue(endParts[0]);
 		int endMinute = intValue(endParts[1]);
-		
+
 		// nowと当日のstartを比較。
 		cal.set(Calendar.HOUR_OF_DAY, startHour);
 		cal.set(Calendar.MINUTE, startMinute);
@@ -555,7 +584,7 @@ public class DateUtil {
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * 現在のナノ秒を取得します.
 	 * System.nanoTime() の値を返します。
@@ -565,7 +594,7 @@ public class DateUtil {
 	public static long getNanoTime() {
 		return System.nanoTime();
 	}
-	
+
 	/**
 	 * 現在のマイクロ秒を取得します.
 	 * System.nanoTime() の値をマイクロ秒に変換し返します。
@@ -586,10 +615,10 @@ public class DateUtil {
 	public static String getMicrosecondStr() {
 		// マイクロ秒の取得
 		long micro = getMicroTime();
-		
+
 		// マイクロ秒3桁のみ抽出
 		String microStr = String.valueOf(micro);
 		return microStr.substring(microStr.length() - 3);
 	}
-	
+
 }
