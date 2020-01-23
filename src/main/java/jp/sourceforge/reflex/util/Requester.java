@@ -1,19 +1,20 @@
 package jp.sourceforge.reflex.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.IOException;
-import java.io.BufferedInputStream;
 import java.io.UnsupportedEncodingException;
-import java.io.ByteArrayInputStream;
-import java.net.URL;
 import java.net.HttpURLConnection;
-import java.util.Map;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,10 +27,10 @@ import jp.reflexworks.servlet.ReflexServletConst;
  * </p>
  */
 public class Requester implements ReflexServletConst {
-	
+
 	private static final int ERROR_STATUS = 400;
 	protected Logger logger = Logger.getLogger(this.getClass().getName());
-	
+
 	/**
 	 * HTTPリクエストを行い、レスポンスをOutputStreamに出力します。
 	 * @param urlStr URL
@@ -39,13 +40,13 @@ public class Requester implements ReflexServletConst {
 	 * @param out レスポンス出力先
 	 * @throws IOException
 	 */
-	public void request(String urlStr, String method, byte[] inputData, 
-			Map<String, String> property, OutputStream out) 
+	public void request(String urlStr, String method, byte[] inputData,
+			Map<String, String> property, OutputStream out)
 	throws IOException {
 		if (out == null) {
 			return;
 		}
-		
+
 		HttpURLConnection http = null;
 		try {
 			http = request(urlStr, method, inputData, property);
@@ -60,7 +61,7 @@ public class Requester implements ReflexServletConst {
 			http.disconnect();
 		}
 	}
-	
+
 	/**
 	 * HTTPリクエストを行い、レスポンスをOutputStreamに出力します。
 	 * @param urlStr URL
@@ -70,13 +71,13 @@ public class Requester implements ReflexServletConst {
 	 * @param out レスポンス出力先
 	 * @throws IOException
 	 */
-	public void requestString(String urlStr, String method, String inputDataStr, 
-			Map<String, String> property, OutputStream out) 
+	public void requestString(String urlStr, String method, String inputDataStr,
+			Map<String, String> property, OutputStream out)
 	throws IOException {
 		if (out == null) {
 			return;
 		}
-		
+
 		HttpURLConnection http = null;
 		try {
 			http = requestString(urlStr, method, inputDataStr, property);
@@ -102,7 +103,7 @@ public class Requester implements ReflexServletConst {
 	 * @return HttpURLConnection
 	 * @throws IOException
 	 */
-	public HttpURLConnection requestString(String urlStr, String method, 
+	public HttpURLConnection requestString(String urlStr, String method,
 			String inputDataStr, Map<String, String> property) throws IOException {
 		byte[] inputData = null;
 		try {
@@ -114,18 +115,18 @@ public class Requester implements ReflexServletConst {
 		}
 		return request(urlStr, method, inputData, property);
 	}
-	
+
 	/**
 	 * HTTPリクエスト送信
 	 * @param urlStr URL
 	 * @param method method
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method) 
+	public HttpURLConnection request(String urlStr, String method)
 	throws IOException {
 		return request(urlStr, method, (InputStream)null, null);
 	}
-	
+
 	/**
 	 * HTTPリクエスト送信
 	 * @param urlStr URL
@@ -133,11 +134,11 @@ public class Requester implements ReflexServletConst {
 	 * @param inputData POSTデータ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method, byte[] inputData) 
+	public HttpURLConnection request(String urlStr, String method, byte[] inputData)
 	throws IOException {
 		return request(urlStr, method, inputData, null);
 	}
-	
+
 	/**
 	 * HTTPリクエスト送信
 	 * @param urlStr URL
@@ -145,7 +146,7 @@ public class Requester implements ReflexServletConst {
 	 * @param inputData POSTデータ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method, InputStream inputData) 
+	public HttpURLConnection request(String urlStr, String method, InputStream inputData)
 	throws IOException {
 		return request(urlStr, method, inputData, null);
 	}
@@ -157,7 +158,7 @@ public class Requester implements ReflexServletConst {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method, 
+	public HttpURLConnection request(String urlStr, String method,
 			Map<String, String> property) throws IOException {
 		return request(urlStr, method, (InputStream)null, property);
 	}
@@ -170,15 +171,15 @@ public class Requester implements ReflexServletConst {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method, byte[] inputData, 
+	public HttpURLConnection request(String urlStr, String method, byte[] inputData,
 			Map<String, String> property) throws IOException {
 		ByteArrayInputStream bin = null;
 		if (inputData != null) {
 			bin = new ByteArrayInputStream(inputData);
 		}
 		return request(urlStr, method, bin, property);
-	}	
-	
+	}
+
 	/**
 	 * HTTPリクエスト送信
 	 * @param urlStr URL
@@ -187,11 +188,11 @@ public class Requester implements ReflexServletConst {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method, InputStream inputData, 
+	public HttpURLConnection request(String urlStr, String method, InputStream inputData,
 			Map<String, String> property) throws IOException {
 		return request(urlStr, method, inputData, property, -1);
 	}
-	
+
 	/**
 	 * HTTPリクエスト送信
 	 * @param urlStr URL
@@ -201,11 +202,11 @@ public class Requester implements ReflexServletConst {
 	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0は無制限とならず、デフォルトになります。
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection request(String urlStr, String method, InputStream inputData, 
+	public HttpURLConnection request(String urlStr, String method, InputStream inputData,
 			Map<String, String> property, int timeoutMillis) throws IOException {
 		HttpURLConnection http = prepare(urlStr, method, inputData, property, timeoutMillis);
 		http.getResponseCode();	// ここでサーバに接続
-		
+
 		return http;
 	}
 
@@ -217,8 +218,8 @@ public class Requester implements ReflexServletConst {
 	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, 
-			Map<String, String> property, int timeoutMillis) 
+	public HttpURLConnection prepare(String urlStr, String method,
+			Map<String, String> property, int timeoutMillis)
 	throws IOException {
 		return prepare(urlStr, method, (InputStream)null, property, timeoutMillis);
 	}
@@ -230,8 +231,8 @@ public class Requester implements ReflexServletConst {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, 
-			Map<String, String> property) 
+	public HttpURLConnection prepare(String urlStr, String method,
+			Map<String, String> property)
 	throws IOException {
 		return prepare(urlStr, method, (InputStream)null, property);
 	}
@@ -244,8 +245,8 @@ public class Requester implements ReflexServletConst {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, 
-			byte[] inputData, Map<String, String> property) 
+	public HttpURLConnection prepare(String urlStr, String method,
+			byte[] inputData, Map<String, String> property)
 	throws IOException {
 		ByteArrayInputStream bin = null;
 		if (inputData != null) {
@@ -253,7 +254,7 @@ public class Requester implements ReflexServletConst {
 		}
 		return prepare(urlStr, method, bin, property);
 	}
-	
+
 	/**
 	 * HTTPリクエスト送信準備
 	 * @param urlStr URL
@@ -262,8 +263,8 @@ public class Requester implements ReflexServletConst {
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, 
-			InputStream inputData, Map<String, String> property) 
+	public HttpURLConnection prepare(String urlStr, String method,
+			InputStream inputData, Map<String, String> property)
 	throws IOException {
 		return prepare(urlStr, method, inputData, property, -1);
 	}
@@ -277,8 +278,8 @@ public class Requester implements ReflexServletConst {
 	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, 
-			byte[] inputData, Map<String, String> property, int timeoutMillis) 
+	public HttpURLConnection prepare(String urlStr, String method,
+			byte[] inputData, Map<String, String> property, int timeoutMillis)
 	throws IOException {
 		ByteArrayInputStream bin = null;
 		if (inputData != null) {
@@ -296,8 +297,8 @@ public class Requester implements ReflexServletConst {
 	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
 	 * @return HttpURLConnection
 	 */
-	public HttpURLConnection prepare(String urlStr, String method, 
-			InputStream inputData, Map<String, String> property, int timeoutMillis) 
+	public HttpURLConnection prepare(String urlStr, String method,
+			InputStream inputData, Map<String, String> property, int timeoutMillis)
 	throws IOException {
 		URL url = new URL(urlStr);
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
@@ -325,14 +326,14 @@ public class Requester implements ReflexServletConst {
 				BufferedOutputStream bout = null;
 				try {
 					bout = new BufferedOutputStream(http.getOutputStream());
-					
+
 					int len = 0;
 					byte[] buffer = new byte[2048];
-					
+
 					while ((len = inputData.read(buffer)) > -1) {
 						bout.write(buffer, 0, len);
 					}
-					
+
 				} finally {
 					if (bout != null) {
 						bout.close();
@@ -340,7 +341,45 @@ public class Requester implements ReflexServletConst {
 				}
 			}
 		}
-		
+
+		return http;
+	}
+
+	/**
+	 * HTTPリクエスト送信準備.
+	 * connectは実施していない状態。
+	 * OutputStreamを取得するためのメソッド。
+	 *
+	 * 後続処理で以下の処理を行ってください。(HttpURLConnection http)
+	 *   http.setDoOutput(true);
+	 *   http.connect();
+	 *   http.getOutputStream()
+	 *
+	 * @param urlStr URL
+	 * @param method method
+	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection beforeConnection(String urlStr, String method,
+			Map<String, String> property, int timeoutMillis)
+	throws IOException {
+		URL url = new URL(urlStr);
+		HttpURLConnection http = (HttpURLConnection)url.openConnection();
+		http.setRequestMethod(method);
+		if (property != null && !property.isEmpty()) {
+			Iterator<String> it = property.keySet().iterator();
+			while (it.hasNext()) {
+				String key = it.next();
+				String val = property.get(key);
+				http.setRequestProperty(key, val);
+			}
+		}
+		if (timeoutMillis > 0) {
+			http.setConnectTimeout(timeoutMillis);
+			http.setReadTimeout(timeoutMillis);
+		}
+
 		return http;
 	}
 
@@ -361,7 +400,7 @@ public class Requester implements ReflexServletConst {
 			while ((size = bis.read()) != -1) {
 				out.write(size);
 			}
-		
+
 		} finally {
 			out.close();
 			in.close();
@@ -387,7 +426,7 @@ public class Requester implements ReflexServletConst {
 					out.write(size);
 				}
 			}
-		
+
 		} finally {
 			for (OutputStream out : outList) {
 				out.close();
@@ -396,7 +435,12 @@ public class Requester implements ReflexServletConst {
 		}
 	}
 
-	public String getResponseString(HttpURLConnection http) 
+	/**
+	 * レスポンスボディを文字列として返却
+	 * @param http HttpURLConnection
+	 * @return レスポンスボディの文字列
+	 */
+	public String getResponseString(HttpURLConnection http)
 	throws IOException {
 		BufferedReader br = getResponseReader(http);
 		if (br == null) {
@@ -417,8 +461,33 @@ public class Requester implements ReflexServletConst {
 		}
 		return sb.toString();
 	}
-	
-	public BufferedReader getResponseReader(HttpURLConnection http) 
+
+	/**
+	 * レスポンスボディを文字列の配列として返却.
+	 * 改行ごとに配列に格納する。
+	 * @param http HttpURLConnection
+	 * @return レスポンスボディの文字列配列
+	 */
+	public String[] getResponseStringArray(HttpURLConnection http)
+	throws IOException {
+		BufferedReader br = getResponseReader(http);
+		if (br == null) {
+			return null;
+		}
+		List<String> list = new ArrayList<String>();
+		try {
+			String str = br.readLine();
+			while (str != null) {
+				list.add(str);
+				str = br.readLine();
+			}
+		} finally {
+			br.close();
+		}
+		return list.toArray(new String[0]);
+	}
+
+	public BufferedReader getResponseReader(HttpURLConnection http)
 	throws IOException {
 		InputStream in = getResponseStream(http);
 		if (in == null) {
@@ -427,7 +496,7 @@ public class Requester implements ReflexServletConst {
 		return new BufferedReader(new InputStreamReader(in, ENCODING));
 	}
 
-	public InputStream getResponseStream(HttpURLConnection http) 
+	public InputStream getResponseStream(HttpURLConnection http)
 	throws IOException {
 		if (http == null) {
 			return null;
