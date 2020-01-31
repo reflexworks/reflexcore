@@ -167,6 +167,19 @@ public class Requester implements ReflexServletConst {
 	 * HTTPリクエスト送信
 	 * @param urlStr URL
 	 * @param method method
+	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0は無制限とならず、デフォルトになります。
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection request(String urlStr, String method,
+			Map<String, String> property, int timeoutMillis) throws IOException {
+		return request(urlStr, method, (InputStream)null, property, timeoutMillis);
+	}
+
+	/**
+	 * HTTPリクエスト送信
+	 * @param urlStr URL
+	 * @param method method
 	 * @param inputData POSTデータ
 	 * @param property リクエストヘッダ
 	 * @return HttpURLConnection
