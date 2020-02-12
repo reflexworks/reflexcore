@@ -1,13 +1,13 @@
 package jp.sourceforge.reflex.util;
 
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 文字操作ユーティリティ.
  */
 public class StringUtils {
-	
+
 	/** 英数字の正規表現 */
 	public static final Pattern PATTERN_ALPHANUMERIC = Pattern.compile("^[0-9a-zA-Z]*$");
 
@@ -177,7 +177,7 @@ public class StringUtils {
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Long.MIN_VALUE;
 				else return Long.MAX_VALUE;
-			}	
+			}
 		}
 		return def;
 	}
@@ -210,7 +210,7 @@ public class StringUtils {
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Float.MIN_VALUE;
 				else return Float.MAX_VALUE;
-			}	
+			}
 		}
 		return def;
 	}
@@ -361,7 +361,7 @@ public class StringUtils {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}	
+		}
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class StringUtils {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}	
+		}
 	}
 
 	/**
@@ -414,14 +414,14 @@ public class StringUtils {
 	 * @return 置換結果文字列
 	 */
 	public static String replaceAll(String str, String regex, String replacement) {
-		if (!StringUtils.isBlank(str) && !StringUtils.isBlank(regex) && 
+		if (!StringUtils.isBlank(str) && !StringUtils.isBlank(regex) &&
 				replacement != null) {
 			String tmpReplacement = escapeDollar(replacement);
 			return str.replaceAll(regex, tmpReplacement);
 		}
 		return str;
 	}
-	
+
 	/**
 	 * 文字列が英数字かどうか判定します.
 	 * <p>
@@ -438,7 +438,7 @@ public class StringUtils {
 		Matcher matcher = PATTERN_ALPHANUMERIC.matcher(str);
 		return matcher.matches();
 	}
-	
+
 	/**
 	 * ゼロパディング
 	 * @param i 数値。0以上を指定する。
@@ -455,7 +455,7 @@ public class StringUtils {
 		}
 		return String.valueOf(i);
 	}
-	
+
 	/**
 	 * 文字列をInteger型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
@@ -465,7 +465,7 @@ public class StringUtils {
 	public static Integer parseInteger(String str) {
 		return parseInteger(str, null);
 	}
-	
+
 	/**
 	 * 文字列をInteger型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
@@ -483,7 +483,7 @@ public class StringUtils {
 			return def;
 		}
 	}
-	
+
 	/**
 	 * 文字列をLong型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
@@ -493,7 +493,7 @@ public class StringUtils {
 	public static Long parseLong(String str) {
 		return parseLong(str, null);
 	}
-	
+
 	/**
 	 * 文字列をInteger型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
@@ -511,7 +511,7 @@ public class StringUtils {
 			return def;
 		}
 	}
-	
+
 	/**
 	 * Booleanの値を文字列に変換
 	 * @param val Boolean型の値
@@ -524,7 +524,7 @@ public class StringUtils {
 		}
 		return val.toString();
 	}
-	
+
 	/**
 	 * Integerの値を文字列に変換
 	 * @param val Integer型
@@ -537,7 +537,7 @@ public class StringUtils {
 		}
 		return val.toString();
 	}
-	
+
 	/**
 	 * Longの値を文字列に変換
 	 * @param val Long型

@@ -12,12 +12,12 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Content-Type : XML */
 	public static final String CONTENT_TYPE_XML = "text/xml";
 	/** Content-Type : XML, charset : UTF-8 */
-	public static final String CONTENT_TYPE_REFLEX_XML = 
+	public static final String CONTENT_TYPE_REFLEX_XML =
 			CONTENT_TYPE_XML + ";charset=" + ENCODING;
 	/** Content-Type : JSON */
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	/** Content-Type : JSON, charset : UTF-8 */
-	public static final String CONTENT_TYPE_REFLEX_JSON = 
+	public static final String CONTENT_TYPE_REFLEX_JSON =
 			CONTENT_TYPE_JSON + ";charset=" + ENCODING;
 	/** Content-Type : MessagePack */
 	public static final String CONTENT_TYPE_MESSAGEPACK = "application/x-msgpack";
@@ -49,26 +49,28 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String CONTENT_TYPE_PDF = CONTENT_TYPE_APPLICATION + "pdf";
 	/** Content Type : application/xml */
 	public static final String CONTENT_TYPE_APPLICATION_XML = CONTENT_TYPE_APPLICATION + "xml";
+	/** Content Type : application/octet-stream (未知のバイナリ形式) */
+	public static final String CONTENT_TYPE_APPLICATION_OCTET_STREAM = CONTENT_TYPE_APPLICATION + "octet-stream";
 
 	/** Header : Content Type */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
 	/** Header : Content Type (lower case) */
-	public static final String HEADER_CONTENT_TYPE_LOWERCASE = 
+	public static final String HEADER_CONTENT_TYPE_LOWERCASE =
 			HEADER_CONTENT_TYPE.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Length */
 	public static final String HEADER_CONTENT_LENGTH = "Content-Length";
 	/** Header : Content Length (lower case) */
-	public static final String HEADER_CONTENT_LENGTH_LOWERCASE = 
+	public static final String HEADER_CONTENT_LENGTH_LOWERCASE =
 			HEADER_CONTENT_LENGTH.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Encoding */
 	public static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
 	/** Header : Content Encoding (lower case) */
-	public static final String HEADER_CONTENT_ENCODING_LOWERCASE = 
+	public static final String HEADER_CONTENT_ENCODING_LOWERCASE =
 			HEADER_CONTENT_ENCODING.toLowerCase(Locale.ENGLISH);
 	/** Header : Accept Encoding */
 	public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 	/** Header : Accept Encoding (lower case) */
-	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE = 
+	public static final String HEADER_ACCEPT_ENCODING_LOWERCASE =
 			HEADER_ACCEPT_ENCODING.toLowerCase(Locale.ENGLISH);
 	/** Header : Content Language */
 	public static final String HEADER_CONTENT_LANGUAGE = "Content-Language";
@@ -77,7 +79,7 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Header value : gzip */
 	public static final String HEADER_VALUE_GZIP = "gzip";
 	/** Header value : gzip, deflate */
-	public static final String HEADER_VALUE_GZIP_DEFLATE = HEADER_VALUE_GZIP + ", " + 
+	public static final String HEADER_VALUE_GZIP_DEFLATE = HEADER_VALUE_GZIP + ", " +
 			HEADER_VALUE_DEFLATE;
 	/** Header : Content Disposition */
 	public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
@@ -134,27 +136,27 @@ public interface ReflexServletConst extends HttpStatus {
 	/** Header :  Last-Modified */
 	public static final String HEADER_LAST_MODIFIED = "Last-Modified";
 	/** Response header : Access-Control-Allow-Origin */
-	public static final String ACCESS_CONTROL_ALLOW_ORIGIN = 
+	public static final String ACCESS_CONTROL_ALLOW_ORIGIN =
 			"Access-Control-Allow-Origin";
 	/** Response header : Access-Control-Allow-Headers */
-	public static final String ACCESS_CONTROL_ALLOW_HEADERS = 
+	public static final String ACCESS_CONTROL_ALLOW_HEADERS =
 			"Access-Control-Allow-Headers";
 	/** Response header : Access-Control-Allow-Methods */
-	public static final String ACCESS_CONTROL_ALLOW_METHODS = 
+	public static final String ACCESS_CONTROL_ALLOW_METHODS =
 			"Access-Control-Allow-Methods";
 	/** Response header : Access-Control-Allow-Credentials */
-	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = 
+	public static final String ACCESS_CONTROL_ALLOW_CREDENTIALS =
 			"Access-Control-Allow-Credentials";
 	/** Request header : Access-Control-Request-Headers */
-	public static final String ACCESS_CONTROL_REQUEST_HEADERS = 
+	public static final String ACCESS_CONTROL_REQUEST_HEADERS =
 			"Access-Control-Request-Headers";
 	/** Request header : Access-Control-Request-Method */
-	public static final String ACCESS_CONTROL_REQUEST_METHOD = 
+	public static final String ACCESS_CONTROL_REQUEST_METHOD =
 			"Access-Control-Request-Method";
 	/** Response header : Access-Control-Max-Age */
 	public static final String ACCESS_CONTROL_MAX_AGE = "Access-Control-Max-Age";
 	/** Response header value : Access-Control-Allow-Methods */
-	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = 
+	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE =
 			"POST, PUT, GET, DELETE, OPTIONS";
 	/** Response header value : Access-Control-Max-Age */
 	public static final String ACCESS_CONTROL_MAX_AGE_VALUE = "-1";
@@ -197,7 +199,7 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String SCHEMA_HTTP = "http";
 	/** Schema : https */
 	public static final String SCHEMA_HTTPS = "https";
-	
+
 	/** Port : http default */
 	public static final int PORT_DEFAULT_HTTP = 80;
 	/** Port : https default */
@@ -211,7 +213,7 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String ACCESSTOKEN_KEY_DELIMITER = ",";
 
 	/** XMLヘッダ */
-	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING + 
+	public static final String XMLHEAD = "<?xml version=\"1.0\" encoding=\"" + ENCODING +
 			"\" ?>\n";
 	/** json */
 	public static final String JSON = "json";
