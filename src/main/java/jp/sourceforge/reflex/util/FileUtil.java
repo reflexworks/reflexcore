@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 public class FileUtil {
-	
+
 	public static final int BUFFER_SIZE = 8192;
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	public static final String USER_DIR = "user.dir";
@@ -39,7 +39,7 @@ public class FileUtil {
 	 * URLエンコードされたパスはデコードして返却します.
 	 * </p>
 	 */
-	public static String getResourceFilename(String resource) 
+	public static String getResourceFilename(String resource)
 	throws FileNotFoundException {
 		if (StringUtils.isBlank(resource)) {
 			return null;
@@ -50,7 +50,7 @@ public class FileUtil {
 		}
 
 		//URL url = Loader.getResource(resource);
-		
+
 		File file = new File(resource);
 		if (file.exists()) {
 			return file.getPath();
@@ -72,11 +72,11 @@ public class FileUtil {
 				errorpath.set(defaultpath.get()+resource);
 				return defaultpath.get()+resource;
 			}
-			throw new FileNotFoundException();
+			throw new FileNotFoundException(resource);
 		}
 
 	}
-	
+
 	public static String getErrorpath() {
 		return errorpath.get();
 	}
@@ -85,7 +85,9 @@ public class FileUtil {
 	 * クラスパス配下に存在する、指定ファイル名のURLを返却します。
 	 */
 	public static String getResourceUrl(String resource) throws FileNotFoundException {
-
+		if (StringUtils.isBlank(resource)) {
+			return null;
+		}
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 5)))) {
 			return resource;
@@ -110,7 +112,7 @@ public class FileUtil {
 			return changeBlankString(filename);
 
 		} else {
-			throw new FileNotFoundException();
+			throw new FileNotFoundException(resource);
 		}
 
 	}
@@ -124,7 +126,7 @@ public class FileUtil {
 		return ret;
 	}
 
-	public static InputStream getResourceStream(Class instance, String resource) 
+	public static InputStream getResourceStream(Class instance, String resource)
 	throws FileNotFoundException {
 		InputStream inStream = instance.getResourceAsStream(resource);
 		return inStream;
@@ -155,7 +157,7 @@ public class FileUtil {
 	 * @param reqGZip gzip送受信する・しないを指定する（URLの場合有効）
 	 * @param num_retries リトライ回数
 	 */
-	public static InputStream getResourceStream(String resource, 
+	public static InputStream getResourceStream(String resource,
 			boolean reqGZip, int num_retries)
 	throws IOException {
 		if (StringUtils.isBlank(resource)) {
@@ -387,7 +389,7 @@ public class FileUtil {
 		try {
 			in = getInputStreamFromFile(filepath);
 			return readInputStream(in, bufferSize);
-			
+
 		} finally {
 			if (in != null) {
 				in.close();
@@ -471,7 +473,7 @@ public class FileUtil {
 	 * @param in InputStream
 	 * @param out OutputStream
 	 */
-	public static void fromInputToOutput(InputStream in, OutputStream out) 
+	public static void fromInputToOutput(InputStream in, OutputStream out)
 	throws IOException {
 		fromInputToOutput(in, out, 4096);
 	}
@@ -482,8 +484,8 @@ public class FileUtil {
 	 * @param out OutputStream
 	 * @param bufferSize バッファサイズ
 	 */
-	public static void fromInputToOutput(InputStream in, OutputStream out, 
-			int bufferSize) 
+	public static void fromInputToOutput(InputStream in, OutputStream out,
+			int bufferSize)
 	throws IOException {
 		if (in == null || out == null) {
 			return;
@@ -496,7 +498,7 @@ public class FileUtil {
 			out.write(buffer, 0, size);
 		}
 	}
-	
+
 	/**
 	 * ファイル名から入力ストリームを取得します.
 	 * @param filename ファイル名
@@ -515,7 +517,7 @@ public class FileUtil {
 				logger.log(Level.WARNING, e.getClass().getName(), e);
 			}
 		}
-		
+
 		if (in == null) {
 			ClassLoader loader = FileUtil.class.getClassLoader();
 			URL url = loader.getResource(filename);
@@ -529,7 +531,7 @@ public class FileUtil {
 		}
 		return in;
 	}
-	
+
 	/**
 	 * ファイル名から出力ストリームを取得します.
 	 * @param filename ファイル名
@@ -567,7 +569,7 @@ public class FileUtil {
 	 * @param enctype エンコードタイプ。デフォルト値はUTF-8。
 	 * @return Reader
 	 */
-	public static BufferedReader getReaderFromFile(String filename, 
+	public static BufferedReader getReaderFromFile(String filename,
 			String enctype) {
 		String encoding = enctype;
 		if (encoding == null || encoding.length() == 0) {
@@ -575,7 +577,7 @@ public class FileUtil {
 		}
 
 		InputStream in = getInputStreamFromFile(filename);
-		
+
 		BufferedReader reader = null;
 		if (in != null) {
 			try {
@@ -586,7 +588,7 @@ public class FileUtil {
 		}
 		return reader;
 	}
-	
+
 	/**
 	 * ファイル名からWriterを取得します.
 	 * <p>
@@ -598,7 +600,7 @@ public class FileUtil {
 	public static BufferedWriter getWriterFromFile(String filename) {
 		return getWriterFromFile(filename, DEFAULT_ENCODING);
 	}
-	
+
 	/**
 	 * ファイル名からWriterを取得します.
 	 * @param filename ファイル名
@@ -613,7 +615,7 @@ public class FileUtil {
 		}
 
 		OutputStream out = getOutputStreamFromFile(filename);
-		
+
 		BufferedWriter writer = null;
 		if (out != null) {
 			try {
@@ -624,7 +626,7 @@ public class FileUtil {
 		}
 		return writer;
 	}
-	
+
 	/**
 	 * カレントディレクトリを取得します.
 	 * <p>
@@ -635,7 +637,7 @@ public class FileUtil {
 	public static String getUserDir() {
 		return System.getProperty(USER_DIR);
 	}
-	
+
 	/**
 	 * ディレクトリの区切り文字を取得します.
 	 * <p>
@@ -646,7 +648,7 @@ public class FileUtil {
 	public static String getFileSeparator() {
 		return File.separator;
 	}
-	
+
 	/**
 	 * 改行コードを取得します.
 	 * <p>
@@ -663,7 +665,7 @@ public class FileUtil {
 		}
 		return separator;
 	}
-	
+
 	/**
 	 * ファイルやディレクトリを削除します.
 	 * <p>
@@ -684,7 +686,7 @@ public class FileUtil {
 			dir.delete();
 		}
 	}
-	
+
 	/**
 	 * ディレクトリ配下のファイルを削除します.
 	 * <p>
@@ -702,21 +704,21 @@ public class FileUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * バイト配列データを指定されたファイルに出力します.
 	 * @param data データ
 	 * @param outFile 出力ファイル
 	 * @throws IOException IOエラー
 	 */
-	public static void writeToFile(byte[] data, File outFile) 
+	public static void writeToFile(byte[] data, File outFile)
 	throws IOException {
 		if (data != null && outFile != null) {
 			OutputStream out = null;
 			try {
 				out = new BufferedOutputStream(new FileOutputStream(outFile));
 				out.write(data);
-				
+
 			} finally {
 				if (out != null) {
 					out.close();
@@ -724,31 +726,31 @@ public class FileUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * ストリームのデータを指定されたファイルに出力します.
 	 * @param in データ
 	 * @param outFile 出力ファイル
 	 * @throws IOException IOエラー
 	 */
-	public static void writeToFile(InputStream in, File outFile) 
+	public static void writeToFile(InputStream in, File outFile)
 	throws IOException {
 		if (in != null && outFile != null) {
 			OutputStream out = new FileOutputStream(outFile);
 			writeToOutputStream(in, out);
-			
+
 			/*
 			OutputStream out = null;
 			try {
 				out = new BufferedOutputStream(new FileOutputStream(outFile));
-				
+
 				// default buffer size = 8192
 				BufferedInputStream bis = new BufferedInputStream(in);
 				int size;
 				while ((size = bis.read()) != -1) {
 					out.write(size);
 				}
-				
+
 			} finally {
 				if (in != null) {
 					in.close();
@@ -760,14 +762,14 @@ public class FileUtil {
 			*/
 		}
 	}
-	
+
 	/**
 	 * 入力ストリームのデータを出力ストリームに出力します.
 	 * @param in データ
 	 * @param outFile 出力ファイル
 	 * @throws IOException IOエラー
 	 */
-	public static void writeToOutputStream(InputStream in, OutputStream out) 
+	public static void writeToOutputStream(InputStream in, OutputStream out)
 	throws IOException {
 		try {
 			fromInputToOutput(in, out);
@@ -792,5 +794,5 @@ public class FileUtil {
 			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 	}
-	
+
 }
