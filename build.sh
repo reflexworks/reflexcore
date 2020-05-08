@@ -14,7 +14,6 @@ copylist=$REFLEXCORE
 echo '[build] start'
 echo '[build] pom: '$DIR/pom.xml
 
-
 # jar作成
 mvn clean install
 
@@ -38,16 +37,16 @@ do
       vtag=${line:0:$versionTagLen}
       if [ -n "$vtag" ] && [ "$vtag" = "<version>" ]; then
         tmp=${tmpline:$versionTagLen}
-        version=${tmp%</version>}
-        #echo 'version='$version
+        version=${tmp%<*}
+        echo '* version='$version
       fi
     fi
     if [ -z "$artifactId" ] && [ $len -ge $artifactIdTagLen ]; then
       atag=${line:0:$artifactIdTagLen}
       if [ -n "$atag" ] && [ "$atag" = "<artifactId>" ]; then
         tmp=${tmpline:$artifactIdTagLen}
-        artifactId=${tmp%</artifactId>}
-        #echo 'artifactId='$artifactId
+        artifactId=${tmp%<*}
+        echo '* artifactId='$artifactId
       fi
     fi
     if [ -n "$version" ] && [ -n "$artifactId" ]; then
