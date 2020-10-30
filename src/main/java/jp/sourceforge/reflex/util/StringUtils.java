@@ -1,5 +1,6 @@
 package jp.sourceforge.reflex.util;
 
+import java.text.Normalizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -549,6 +550,23 @@ public class StringUtils {
 			return String.valueOf(def);
 		}
 		return val.toString();
+	}
+
+	/**
+	 * 全角・半角の正規化 (Normalize).
+	 * Form.NFKD で変換。
+	 * 検索インデックスなどに使用してください。
+	 *   * 全角英数字・記号を半角英数字・記号に変換
+	 *   * 半角カナを全角カナに変換
+	 *   * 丸囲み文字、組文字を正規化
+	 * @param text 文字列
+	 * @return 編集した文字列
+	 */
+	public static String normalize(String text) {
+		if (isBlank(text)) {
+			return text;
+		}
+		return Normalizer.normalize(text, Normalizer.Form.NFKD);
 	}
 
 }
