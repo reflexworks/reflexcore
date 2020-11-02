@@ -566,7 +566,11 @@ public class StringUtils {
 		if (isBlank(text)) {
 			return text;
 		}
-		return Normalizer.normalize(text, Normalizer.Form.NFKD);
+		String tmp = Normalizer.normalize(text, Normalizer.Form.NFKD);
+		// 全角ハイフンを半角に変換
+		tmp = tmp.replace("ー", "-");
+		tmp = tmp.replace("−", "-");
+		return tmp;
 	}
 
 }

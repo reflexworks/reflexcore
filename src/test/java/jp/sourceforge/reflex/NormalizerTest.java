@@ -49,6 +49,15 @@ public class NormalizerTest {
 			System.out.println("NFKC   :" + Normalizer.normalize(target, Normalizer.Form.NFKC));
 			System.out.println("NFKD   :" + Normalizer.normalize(target, Normalizer.Form.NFKD));
 
+			// 全角ハイフン
+			System.out.println("--------");
+			target = "[全角ハイフン]ＲＩＧＨＴ−ＯＮ";
+			System.out.println("target :" + target);
+			System.out.println("NFC    :" + Normalizer.normalize(target, Normalizer.Form.NFC));
+			System.out.println("NFD    :" + Normalizer.normalize(target, Normalizer.Form.NFD));
+			System.out.println("NFKC   :" + Normalizer.normalize(target, Normalizer.Form.NFKC));
+			System.out.println("NFKD   :" + Normalizer.normalize(target, Normalizer.Form.NFKD));
+
 			System.out.println("--- test end ---");
 
 		} catch (Throwable e) {
@@ -91,6 +100,16 @@ public class NormalizerTest {
 			System.out.println("target      :" + target);
 			System.out.println("normalized  :" + normalized);
 			System.out.println("toLowerCase :" + normalized.toLowerCase(Locale.ENGLISH));
+
+			// 全角ハイフン
+			System.out.println("--------");
+			target = "[全角ハイフン]ＲＩＧＨＴ−ＯＮ";
+			normalized = StringUtils.normalize(target);
+			System.out.println("target :" + target);
+			System.out.println("normalized  :" + normalized);
+			System.out.println("toLowerCase :" + normalized.toLowerCase(Locale.ENGLISH));
+			// − を - に変換
+			System.out.println("hyphen :" + normalized.replace("−", "-"));
 
 			System.out.println("--- normalizeTest end ---");
 
