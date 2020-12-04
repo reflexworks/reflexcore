@@ -314,7 +314,6 @@ public class FileUtil {
 	 * @param in InputStream
 	 * @param bufferSize buffer size
 	 * @return byte array
-	 * @throws IOException
 	 */
 	public static byte[] readInputStream(InputStream in, int bufferSize)
 	throws IOException {
@@ -347,7 +346,6 @@ public class FileUtil {
 	 * ファイルは絶対パスを指定してください。
 	 * @param filepath ファイルの絶対パス
 	 * @return byte array
-	 * @throws IOException
 	 */
 	public static byte[] readFile(String filepath)
 	throws IOException {
@@ -359,7 +357,6 @@ public class FileUtil {
 	 * ファイルは絶対パスを指定してください。
 	 * @param filepath ファイルの絶対パス
 	 * @return byte array
-	 * @throws IOException
 	 */
 	public static byte[] readFile(File file)
 	throws IOException {
@@ -375,7 +372,6 @@ public class FileUtil {
 	 * @param filepath ファイルの絶対パス
 	 * @param bufferSize buffer size
 	 * @return byte array
-	 * @throws IOException
 	 */
 	public static byte[] readFile(String filepath, int bufferSize)
 	throws IOException {
@@ -501,7 +497,7 @@ public class FileUtil {
 
 	/**
 	 * ファイル名から入力ストリームを取得します.
-	 * @param filename ファイル名
+	 * @param filename ファイル名(フルパス)
 	 * @return InputStream
 	 */
 	public static InputStream getInputStreamFromFile(String filename) {
@@ -534,7 +530,7 @@ public class FileUtil {
 
 	/**
 	 * ファイル名から出力ストリームを取得します.
-	 * @param filename ファイル名
+	 * @param filename ファイル名(フルパス)
 	 * @return OutputStream
 	 */
 	public static OutputStream getOutputStreamFromFile(String filename) {
@@ -556,7 +552,7 @@ public class FileUtil {
 	 * <p>
 	 * UTF-8でエンコーディングしたReaderを返却します。
 	 * </p>
-	 * @param filename ファイル名
+	 * @param filename ファイル名(フルパス)
 	 * @return Reader
 	 */
 	public static BufferedReader getReaderFromFile(String filename) {
@@ -565,7 +561,7 @@ public class FileUtil {
 
 	/**
 	 * ファイル名からReaderを取得します.
-	 * @param filename ファイル名
+	 * @param filename ファイル名(フルパス)
 	 * @param enctype エンコードタイプ。デフォルト値はUTF-8。
 	 * @return Reader
 	 */
@@ -625,6 +621,43 @@ public class FileUtil {
 			}
 		}
 		return writer;
+	}
+
+	/**
+	 * ファイルの内容の文字列を取得します.
+	 * <p>
+	 * UTF-8でエンコーディングしたReaderを返却します。
+	 * </p>
+	 * @param filename ファイル名(フルパス)
+	 * @return ファイルの内容の文字列
+	 */
+	public static String getStringFromFile(String filename)
+	throws IOException {
+		return getStringFromFile(filename, null);
+	}
+
+	/**
+	 * ファイルの内容の文字列を取得します.
+	 * @param filename ファイル名(フルパス)
+	 * @param enctype エンコードタイプ。デフォルト値はUTF-8。
+	 * @return ファイルの内容の文字列
+	 */
+	public static String getStringFromFile(String filename,
+			String enctype)
+	throws IOException {
+		Reader reader = getReaderFromFile(filename, enctype);
+		return readString(reader);
+	}
+
+	/**
+	 * ファイルを読み込み、byte配列に変換します。
+	 * ファイルは絶対パスを指定してください。
+	 * @param filepath ファイルの絶対パス
+	 * @return byte array
+	 */
+	public static byte[] getBytesFromFile(String filename)
+	throws IOException {
+		return readFile(filename);
 	}
 
 	/**
