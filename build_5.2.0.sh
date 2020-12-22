@@ -8,7 +8,7 @@ DIR=`pwd`
 # build.txt を1階層上に配置する。
 # build.txt の定数 REFLEXCORE には、コピー先ディレクトリを記述したファイルを絶対パスで指定する。
 # 指定したファイルには、コピー先ディレクトリを記述する。コピー先が複数ある場合は改行して記述する。
-source ../build.txt
+source ../build_5.2.0.txt
 copylist=$REFLEXCORE
 
 echo '[build] start'
