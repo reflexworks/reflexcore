@@ -21,7 +21,7 @@ public class NumberingUtil {
 	public static long getNumber() {
 		return System.currentTimeMillis();
 	}
-	
+
 	/**
 	 * 番号に1を加算します.
 	 * @param num 番号
@@ -30,7 +30,7 @@ public class NumberingUtil {
 	public static long correct(long num) {
 		return num + 1;
 	}
-	
+
 	/**
 	 * 指定された範囲の中でランダムな値を返します.
 	 * @param start 範囲開始
@@ -54,22 +54,48 @@ public class NumberingUtil {
 		String pass = null;
 		try {
 			SecureRandom.getInstance(AuthTokenUtil.RANDOM_ALGORITHM).nextBytes(passB);
-			
+
 			// 変換文字を生成
 			String time = String.valueOf(new Date().getTime());
 			String replacement = time.substring(time.length() - 1);
-			
+
 			// Base64エンコード
-			pass = Base64Util.encodeAndReplace(passB, Base64Util.REGEX_BASE64_SYMBOL, 
+			pass = Base64Util.encodeAndReplace(passB, Base64Util.REGEX_BASE64_SYMBOL,
 					replacement);
-			
+
 			// 長さ調整
 			pass = pass.substring(0, len);
 
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
-		
+
 		return pass;
 	}
+
+	/**
+	 * ランダムな数値文字列を生成します
+	 * @param len 文字数
+	 * @return 生成された数値文字列
+	 */
+	public static String randomNumber(int len) {
+		// 例) Math.random() = 0.3772163982938326
+		StringBuilder sb = new StringBuilder();
+		int sbLen = 0;
+		do {
+			String tmp = String.valueOf(Math.random());
+			int tmpLen = len - sbLen;
+			int tmpStrLen = tmp.length() - 2;
+			if (tmpLen > tmpStrLen) {
+				tmpLen = tmpStrLen;
+			}
+			String tmpVal = tmp.substring(2, tmpLen + 2);
+			sb.append(tmpVal);
+			sbLen += tmpLen;
+
+		} while (sbLen < len);
+
+		return sb.toString();
+	}
+
 }
