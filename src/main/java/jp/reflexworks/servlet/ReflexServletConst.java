@@ -174,6 +174,9 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String NO_STORE = "no-store";
 	/** Response header value : must-revalidate */
 	public static final String MUST_REVALIDATE = "must-revalidate";
+	/** Response header value : Cache-Control value */
+	public static final String CACHE_CONTROL_VALUE = NO_CACHE + ", " + NO_STORE
+			+ ", " + MUST_REVALIDATE;
 	/** Response header value : past date */
 	public static final String PAST_DATE = "Fri, 1 Jan 2010 00:00:00";
 	/** Request header : Method Override (PUT、DELETEをPOSTで代行する場合に付加) */
