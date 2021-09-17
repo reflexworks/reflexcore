@@ -30,12 +30,11 @@ import jp.sourceforge.reflex.exception.JSONException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.XMLTokener;
 
 /**
  * This provides static methods to convert an XML text into a JSONObject, and to
  * covert a JSONObject into an XML text.
- * 
+ *
  * @author JSON.org
  * @version 2
  */
@@ -70,14 +69,14 @@ public class XML {
 
 	/**
 	 * Replace special characters with XML escapes:
-	 * 
+	 *
 	 * <pre>
 	 * &amp; &lt;small&gt;(ampersand)&lt;/small&gt; is replaced by &amp;amp;
 	 * &lt; &lt;small&gt;(less than)&lt;/small&gt; is replaced by &amp;lt;
 	 * &gt; &lt;small&gt;(greater than)&lt;/small&gt; is replaced by &amp;gt;
 	 * &quot; &lt;small&gt;(double quote)&lt;/small&gt; is replaced by &amp;quot;
 	 * </pre>
-	 * 
+	 *
 	 * @param string
 	 *            The string to be escaped.
 	 * @return The escaped string.
@@ -108,7 +107,7 @@ public class XML {
 
 	/**
 	 * Scan the content following the named tag, attaching it to the context.
-	 * 
+	 *
 	 * @param x
 	 *            The XMLTokener containing the source string.
 	 * @param context
@@ -118,6 +117,7 @@ public class XML {
 	 * @return true if the close tag is processed.
 	 * @throws JSONException
 	 */
+	/*
 	private static boolean parse(XMLTokener x, JSONObject context, String name)
 			throws JSONException {
 		char c;
@@ -273,6 +273,7 @@ public class XML {
 			}
 		}
 	}
+	*/
 
 	/**
 	 * Convert a well-formed (but not necessarily valid) XML string into a
@@ -284,12 +285,13 @@ public class XML {
 	 * elements are represented as JSONArrays. Content text may be placed in a
 	 * "content" member. Comments, prologs, DTDs, and <code>&lt;[ [ ]]></code>
 	 * are ignored.
-	 * 
+	 *
 	 * @param string
 	 *            The source string.
 	 * @return A JSONObject containing the structured data from the XML string.
 	 * @throws JSONException
 	 */
+	/*
 	public static JSONObject toJSONObject(String string) throws JSONException {
 		JSONObject o = new JSONObject();
 		XMLTokener x = new XMLTokener(string);
@@ -298,10 +300,11 @@ public class XML {
 		}
 		return o;
 	}
+	*/
 
 	/**
 	 * Convert a JSONObject into a well-formed, element-normal XML string.
-	 * 
+	 *
 	 * @param o
 	 *            A JSONObject.
 	 * @return A string.
@@ -313,7 +316,7 @@ public class XML {
 
 	/**
 	 * Convert a JSONObject into a well-formed, element-normal XML string.
-	 * 
+	 *
 	 * @param o
 	 *            A JSONObject.
 	 * @param tagName
@@ -362,9 +365,9 @@ public class XML {
 				 * for (i = 0; i < len; i += 1) { if (i > 0) { b.append('\n'); }
 				 * b.append(escape(ja.get(i).toString())); } } else {
 				 * b.append(escape(v.toString())); }
-				 * 
+				 *
 				 * // Emit an array of similar keys
-				 * 
+				 *
 				 * } else
 				 */
 				if (v instanceof JSONArray) {

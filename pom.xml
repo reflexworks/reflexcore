@@ -126,8 +126,9 @@
       <version>20160810</version>
 
       <version>20200518</version>  // このバージョンにするとコンパイルエラーが発生する。
-    -->
       <version>20160810</version>
+    -->
+      <version>20200518</version>
     </dependency>
     <!--
     <dependency>
