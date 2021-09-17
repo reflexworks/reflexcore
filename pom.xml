@@ -126,8 +126,9 @@
       <version>20160810</version>
 
       <version>20200518</version>  // このバージョンにするとコンパイルエラーが発生する。
-    -->
       <version>20160810</version>
+    -->
+      <version>20200518</version>
     </dependency>
     <!--
     <dependency>
@@ -156,7 +157,7 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.11</version>
+      <version>1.15</version>
     </dependency>
     <dependency>
       <groupId>com.carrotsearch</groupId>
