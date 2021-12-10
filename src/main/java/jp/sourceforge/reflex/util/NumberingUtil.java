@@ -3,6 +3,7 @@ package jp.sourceforge.reflex.util;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.List;
 
 import jp.reflexworks.servlet.util.AuthTokenUtil;
 
@@ -96,6 +97,21 @@ public class NumberingUtil {
 		} while (sbLen < len);
 
 		return sb.toString();
+	}
+
+	/**
+	 * リストからどれか1件選択して返却する.
+	 * ランダム数値を発行し、リスト件数で割った余りの位置にある値を返す。
+	 * @param values リスト
+	 * @return リストの中の1件
+	 */
+	public static String chooseOne(List<String> values) {
+		if (values == null || values.isEmpty()) {
+			return null;
+		}
+		int num = random(1, Integer.MAX_VALUE);
+		int idx = num % values.size();
+		return values.get(idx);
 	}
 
 }
