@@ -1,99 +1,32 @@
 package jp.sourceforge.reflex;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import org.junit.Test;
+
 import jp.sourceforge.reflex.util.NumberingUtil;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 /**
- * Unit test for simple App.
+ * NumberingUtil テスト
  */
-public class NumberingUtilTest extends TestCase {
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public NumberingUtilTest(String testName) {
-		super(testName);
-	}
+public class NumberingUtilTest {
 
-	/**
-	 * @return the suite of tests being tested
-	 */
-	public static Test suite() {
-		return new TestSuite(NumberingUtilTest.class);
-	}
-
-	/**
-	 * Rigourous Test :-)
-	 */
+	@Test
 	public void test() {
-
-		int start = 1;
-		int end = 10;
-		
 		try {
-			int ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
-			
-			ran = NumberingUtil.random(start, end);
-			System.out.println("numbered : " + ran);
+			int start = 1;
+			int end = 10;
+			int cnt = 10;
+
+			testRandom(start, end, cnt);
+
+			start = 1;
+			end = Integer.MAX_VALUE;
+			cnt = 2;
+
+			testRandom(start, end, cnt);
 
 			int len = 1;
 			String ranStr = NumberingUtil.randomString(len);
@@ -147,10 +80,43 @@ public class NumberingUtilTest extends TestCase {
 			ranStr = NumberingUtil.randomString(len);
 			System.out.println("random string (len = " + len + ", String len = " + ranStr.length() + ") : " + ranStr);
 
+			List<String> values = new ArrayList<>();
+			values.add("aa");
+			values.add("bb");
+			values.add("cc");
+			values.add("dd");
+			values.add("ee");
+
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+			System.out.println("chooseOne : " + NumberingUtil.chooseOne(values));
+
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-
-
 	}
+
+	/**
+	 * randomメソッドを指定回数繰り返し
+	 * @param start start
+	 * @param end end
+	 * @param cnt 回数
+	 */
+	private void testRandom(int start, int end, int cnt) {
+		System.out.println("numbered start=" + start + " end=" + end);
+
+		for (int i = 0; i < cnt; i++) {
+			int ran = NumberingUtil.random(start, end);
+			System.out.println("numbered : " + ran);
+			assertTrue(ran >= start && ran <= end);
+		}
+	}
+
 }

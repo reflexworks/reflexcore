@@ -39,8 +39,8 @@ public class NumberingUtil {
 	 * @return ランダムな数値
 	 */
 	public static int random(int start, int end) {
-		int m = start - 1;
-		int n = end + 1;
+		long m = (long)start - 1;
+		long n = (long)end + 1;
 		double i = Math.floor(Math.random() * (m - n + 1)) + n;
 		return (int)i;
 	}
@@ -101,7 +101,6 @@ public class NumberingUtil {
 
 	/**
 	 * リストからどれか1件選択して返却する.
-	 * ランダム数値を発行し、リスト件数で割った余りの位置にある値を返す。
 	 * @param values リスト
 	 * @return リストの中の1件
 	 */
@@ -109,8 +108,7 @@ public class NumberingUtil {
 		if (values == null || values.isEmpty()) {
 			return null;
 		}
-		int num = random(1, Integer.MAX_VALUE);
-		int idx = num % values.size();
+		int idx = random(0, values.size() - 1);
 		return values.get(idx);
 	}
 
