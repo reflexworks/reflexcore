@@ -28,7 +28,12 @@ import jp.reflexworks.servlet.ReflexServletConst;
  */
 public class Requester implements ReflexServletConst {
 
+	/** ステータスのエラー判定コード */
 	private static final int ERROR_STATUS = 400;
+	/** リクエストのタイムアウト時間(ミリ秒)デフォルト */
+	private static final int TIMEOUTMILLIS_DEFAULT = -1;
+
+	/** ロガー */
 	protected Logger logger = Logger.getLogger(this.getClass().getName());
 
 	/**
@@ -186,11 +191,25 @@ public class Requester implements ReflexServletConst {
 	 */
 	public HttpURLConnection request(String urlStr, String method, byte[] inputData,
 			Map<String, String> property) throws IOException {
+		return request(urlStr, method, inputData, property, TIMEOUTMILLIS_DEFAULT);
+	}
+
+	/**
+	 * HTTPリクエスト送信
+	 * @param urlStr URL
+	 * @param method method
+	 * @param inputData POSTデータ
+	 * @param property リクエストヘッダ
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)
+	 * @return HttpURLConnection
+	 */
+	public HttpURLConnection request(String urlStr, String method, byte[] inputData,
+			Map<String, String> property, int timeoutMillis) throws IOException {
 		ByteArrayInputStream bin = null;
 		if (inputData != null) {
 			bin = new ByteArrayInputStream(inputData);
 		}
-		return request(urlStr, method, bin, property);
+		return request(urlStr, method, bin, property, timeoutMillis);
 	}
 
 	/**
@@ -203,7 +222,7 @@ public class Requester implements ReflexServletConst {
 	 */
 	public HttpURLConnection request(String urlStr, String method, InputStream inputData,
 			Map<String, String> property) throws IOException {
-		return request(urlStr, method, inputData, property, -1);
+		return request(urlStr, method, inputData, property, TIMEOUTMILLIS_DEFAULT);
 	}
 
 	/**
@@ -279,7 +298,7 @@ public class Requester implements ReflexServletConst {
 	public HttpURLConnection prepare(String urlStr, String method,
 			InputStream inputData, Map<String, String> property)
 	throws IOException {
-		return prepare(urlStr, method, inputData, property, -1);
+		return prepare(urlStr, method, inputData, property, TIMEOUTMILLIS_DEFAULT);
 	}
 
 	/**
