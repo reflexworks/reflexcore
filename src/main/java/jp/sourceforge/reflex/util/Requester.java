@@ -326,7 +326,7 @@ public class Requester implements ReflexServletConst {
 	 * @param method method
 	 * @param inputData リクエストデータ
 	 * @param property リクエストヘッダ
-	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。
+	 * @param timeoutMillis タイムアウト時間(ミリ秒)。0(無制限)は無効とし、デフォルト設定になります。マイナス値もデフォルト設定。
 	 * @return HttpURLConnection
 	 */
 	public HttpURLConnection prepare(String urlStr, String method,
