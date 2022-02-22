@@ -164,12 +164,15 @@ public class FieldMapper {
 	public void setValue(Object source, Object target, boolean isCheckAnnotation,
 			boolean isCheckMultiObj, int level) {
 		// 自クラス
-		Class targetClass = target.getClass();
-		Field[] fields = targetClass.getDeclaredFields();
+		//Class targetClass = target.getClass();
+		//Field[] fields = targetClass.getDeclaredFields();
+		Class sourceClass = source.getClass();
+		Field[] fields = sourceClass.getDeclaredFields();
 		setValue(fields, source, target, isCheckAnnotation, isCheckMultiObj);
 
 		// スーパークラス
-		Class superClass = targetClass.getSuperclass();
+		//Class superClass = targetClass.getSuperclass();
+		Class superClass = sourceClass.getSuperclass();
 		int cnt = 0;
 		while (superClass != null && !Object.class.equals(superClass) &&
 				(level <= 0 || level > cnt)) {
