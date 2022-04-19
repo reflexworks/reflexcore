@@ -1,8 +1,14 @@
 package model3;
 
 import model3.sub.SubInfo;
+
+import java.util.List;
+
+import org.msgpack.annotation.Message;
+
 import model3.Error;
 
+@Message
 public class Userinfo {
 
 	public String _id;
@@ -12,14 +18,8 @@ public class Userinfo {
 	public String _given_name;
 	public String _family_name;
 	public Error _error;
-	private SubInfo _subInfo;
+	public List<SubInfo> _subInfo;
 	
-	public SubInfo getSubInfo() {
-		return _subInfo;
-	}
-	public void setSubInfo(SubInfo subInfo) {
-		this._subInfo = subInfo;
-	}
 
 	@Override
 	public String toString() {

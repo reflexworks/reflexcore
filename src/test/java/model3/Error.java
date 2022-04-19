@@ -2,6 +2,9 @@ package model3;
 
 import java.util.List;
 
+import org.msgpack.annotation.Message;
+
+@Message
 public class Error {
 	
 	public List<Errors> _errors;

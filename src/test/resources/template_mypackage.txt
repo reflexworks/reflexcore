@@ -1,0 +1,14 @@
+info
+ item_1
+ item_2
+ item_3
+email
+ before_message{}
+  message_no
+  before_message_text
+ after_message{}
+  message_no
+  after_message_text
+address
+ zip
+ address

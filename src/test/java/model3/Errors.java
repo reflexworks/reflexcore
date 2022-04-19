@@ -1,5 +1,8 @@
 package model3;
 
+import org.msgpack.annotation.Message;
+
+@Message
 public class Errors {
 
 	public String _domain;

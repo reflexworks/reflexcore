@@ -1,0 +1,4 @@
+contributor=@+RW,/@mypackage/_group/$admin+RW
+contributor.uri#
+rights#=@+RW,/@mypackage/_group/$admin+RW
+title:^/$|^/@mypackage$
