@@ -13,19 +13,18 @@ import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import jp.sourceforge.reflex.util.FileUtil;
-import jp.sourceforge.reflex.util.StringUtils;
 import jp.reflexworks.atom.api.Condition;
 import jp.reflexworks.atom.api.EntryUtil;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.FeedBase;
 import jp.reflexworks.atom.mapper.CipherUtil;
 import jp.reflexworks.atom.mapper.FeedTemplateMapper;
+import jp.sourceforge.reflex.util.FileUtil;
+import jp.sourceforge.reflex.util.StringUtils;
 
 public class TemplateChecker {
 
@@ -53,7 +52,7 @@ public class TemplateChecker {
 		
 		// データチェック
 		String dataPath = getFilePathData(SERVICE_NAME);
-		FeedBase feed = createFeedFromXmlFile(mapper, dataPath);
+		FeedBase feed = createFeedFromJsonFile(mapper, dataPath);
 		if (feed == null) {
 			throw new IllegalArgumentException("Feed is null. file path = " + dataPath);
 		}
@@ -176,7 +175,7 @@ public class TemplateChecker {
 		}
 		
 		dataStr = dataStr.replaceAll("XXX", "219");
-		feed = createFeedFromXml(mapper, dataStr);
+		feed = createFeedFromJson(mapper, dataStr);
 		entry = feed.entry.get(0);
 		
 		// isMatch
@@ -367,12 +366,12 @@ public class TemplateChecker {
 		return sb.toString();
 	}
 
-	// data_{サービス名}.xml
+	// data_{サービス名}.json
 	private String editFileNameData(String serviceName) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("data_");
 		sb.append(serviceName);
-		sb.append(".xml");
+		sb.append(".json");
 		return sb.toString();
 	}
 
@@ -399,12 +398,12 @@ public class TemplateChecker {
 	/**
 	 * XML文字列からFeedオブジェクトを作成
 	 */
-	private FeedBase createFeedFromXmlFile(FeedTemplateMapper mapper, String filePath) 
+	private FeedBase createFeedFromJsonFile(FeedTemplateMapper mapper, String filePath) 
 	throws IOException, URISyntaxException {
 		BufferedReader reader = getReader(filePath);
 		if (reader != null) {
 			try {
-				return (FeedBase)mapper.fromXML(reader);
+				return (FeedBase)mapper.fromJSON(reader);
 				
 			} finally {
 				try {
@@ -422,9 +421,9 @@ public class TemplateChecker {
 		return FileUtil.readString(reader);
 	}
 
-	private FeedBase createFeedFromXml(FeedTemplateMapper mapper, String str) {
+	private FeedBase createFeedFromJson(FeedTemplateMapper mapper, String str) {
 		if (!StringUtils.isBlank(str)) {
-			return (FeedBase)mapper.fromXML(str);
+			return (FeedBase)mapper.fromJSON(str);
 		}
 		return null;
 	}

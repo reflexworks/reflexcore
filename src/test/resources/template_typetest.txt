@@ -1,0 +1,18 @@
+info
+ name!
+ category
+ color
+ size=^[a-zA-Z0-9]{1,2}$
+ sale_boolean(boolean)
+ stock_int(int)
+ stock_long(long)
+ stock_float(float)
+ stock_double(double)
+ stock_string(string)
+ stock_date(date)
+ aaa(desc)
+comment{}
+ $$text
+ nickname
+ secret
+deleteFlg

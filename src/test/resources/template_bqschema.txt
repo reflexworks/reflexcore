@@ -1,0 +1,22 @@
+user_parent{}
+ parent_text
+ user_child{}
+  child_text
+user_pine{}
+ pine_text
+ user_bamboo{}
+  bamboo_text
+  user_plum{}
+   plum_text
+user_paintset
+ paintset_text
+ user_palette
+  palette_text
+  palette_size
+ user_paintbrush
+  paintbrush_text
+  user_measure
+   length_text
+   weight_text
+ user_colors{}
+  colors_text

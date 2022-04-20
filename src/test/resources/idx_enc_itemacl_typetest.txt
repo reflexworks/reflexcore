@@ -1,0 +1,12 @@
+title:^/$|^/@XXXX$
+contributor=/_group/$admin+RW
+contributor.uri#
+rights#=@+RW,/_group/$admin+RW
+info.category=/1/group/office+RW
+comment=7+RW
+info.name:^/index[^/]*$
+info.stock_int:^/index[^/]*$
+info.stock_long:^/index[^/]*$
+info.stock_float:^/index[^/]*$
+info.stock_double:^/index[^/]*$
+comment.secret#

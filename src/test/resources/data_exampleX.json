@@ -1,0 +1,610 @@
+{"feed": {
+        "entry": [
+            {
+                "testinfo": {
+                    "str": {
+                        "___attribute": "tXXXt",
+                        "___attribute_alphabet": "mmmmm",
+                        "required": "qqqXXX-d",
+                        "required_num": "8181888",
+                        "num": "837184",
+                        "alphabet": "jjjjj",
+                        "japaneze": "日本語日本語",
+                        "map": [
+                            {
+                                "required": "qXXXqq-md",
+                                "required_num": "7171888",
+                                "num": "736184",
+                                "alphabet": "jjjjjmd",
+                                "japaneze": "日本語日本語マップデフォルト",
+                                "encrypt": "encstrmapencenc1"
+                            },
+                            {
+                                "required": "qXXXrr-md",
+                                "required_num": "7171388",
+                                "num": "736166",
+                                "alphabet": "jjjrrmd",
+                                "japaneze": "日本語日本語マップデフォルトに",
+                                "encrypt": "encstrmapencenc2"
+                            },
+                            {
+                                "required": "qXXXss-md",
+                                "required_num": "7171378",
+                                "num": "736156",
+                                "alphabet": "jjjssmd",
+                                "japaneze": "日本語日本語マップデフォルトさん",
+                                "encrypt": "encstrmapencenc3"
+                            }
+                        ],
+                        "map_required": [
+                            {
+                                "required": "qXXXqq-mrq",
+                                "required_num": "7171843",
+                                "num": "736123",
+                                "alphabet": "jjjjjmmrq",
+                                "japaneze": "日本語日本語マップ必須",
+                                "encrypt": "encXXXenc-1mrq",
+                                "group_useradmin_r": "gggrrrrXXXu-mrq",
+                                "group_useradmin_w": "gggwwwwXXXu-mrq",
+                                "group_useradmin_rw": "gggrwrXXXeu-mrq",
+                                "group_users_r": "gggrrrXXXkk-mrq",
+                                "group_users_w": "gggwwwXXXkk-mrq",
+                                "group_users_rw": "gggrwrXXXkk-mrq",
+                                "group_uid_r": "gggrrrXXXii-mrq",
+                                "group_uid_w": "gggwwwXXXii-mrq",
+                                "group_uid_rw": "gggrwrXXXii-mrq",
+                                "group_creater_r": "gggrrrXXXcc-mrq",
+                                "group_creater_w": "gggwwwXXXcc-mrq",
+                                "group_creater_rw": "gggrwrXXXcc-mrq",
+                                "group_all_r": "gggrrrXXXaa-mrq",
+                                "group_all_w": "gggwwwXXXaa-mrq",
+                                "group_all_rw": "gggrwrXXXaa-mrq"
+                            },
+                            {
+                                "required": "qXXXrr-mrq",
+                                "required_num": "7171383",
+                                "num": "736164",
+                                "alphabet": "jjjrrmrq",
+                                "japaneze": "日本語日本語マップ必須に",
+                                "encrypt": "encXXXenc-2mrq",
+                                "group_useradmin_r": "gggrrrXXXeu-mrq2",
+                                "group_useradmin_w": "gggwwwXXXeu-mrq2",
+                                "group_useradmin_rw": "gggrwrXXXeu-mrq2",
+                                "group_users_r": "gggrrrXXXkk-mrq2",
+                                "group_users_w": "gggwwwXXXkk-mrq2",
+                                "group_users_rw": "gggrwrXXXkk-mrq2",
+                                "group_uid_r": "gggrrrXXXii-mrq2",
+                                "group_uid_w": "gggwwwXXXii-mrq2",
+                                "group_uid_rw": "gggrwrXXXii-mrq2",
+                                "group_creater_r": "gggrrrXXXcc-mrq2",
+                                "group_creater_w": "gggwwwXXXcc-mrq2",
+                                "group_creater_rw": "gggrwrXXXcc-mrq2",
+                                "group_all_r": "gggrrrXXXaa-mrq2",
+                                "group_all_w": "gggwwwXXXaa-mrq2",
+                                "group_all_rw": "gggrwrXXXaa-mrq2"
+                            },
+                            {
+                                "required": "qXXXss-mrq",
+                                "required_num": "7173378",
+                                "num": "736336",
+                                "alphabet": "jjjssmrq",
+                                "japaneze": "日本語日本語マップ必須さん",
+                                "encrypt": "encXXXenc-3mrq",
+                                "group_useradmin_r": "gggrrrXXXeu-3mrq",
+                                "group_useradmin_w": "gggwwwXXXeu-3mrq",
+                                "group_useradmin_rw": "gggrwrXXXeu-3mrq",
+                                "group_users_r": "gggrrrXXXkk-3mrq",
+                                "group_users_w": "gggwwwXXXkk-3mrq",
+                                "group_users_rw": "gggrwrXXXkk-3mrq",
+                                "group_uid_r": "gggrrrXXXii-3mrq",
+                                "group_uid_w": "gggwwwXXXii-3mrq",
+                                "group_uid_rw": "gggrwrXXXii-3mrq",
+                                "group_creater_r": "gggrrrXXXcc-3mrq",
+                                "group_creater_w": "gggwwwXXXcc-3mrq",
+                                "group_creater_rw": "gggrwrXXXcc-3mrq",
+                                "group_all_r": "gggrrrXXXaa-3mrq",
+                                "group_all_w": "gggwwwXXXaa-3mrq",
+                                "group_all_rw": "gggrwrXXXaa-3mrq"
+                            }
+                        ],
+                        "map_limit": [
+                            {
+                                "required": "qXXXqq-ml",
+                                "required_num": "7171858",
+                                "num": "736154",
+                                "alphabet": "jjjjjml",
+                                "japaneze": "日本語日本語マップ件数制限"
+                            },
+                            {
+                                "required": "qXXXrr-ml",
+                                "required_num": "7171358",
+                                "num": "736156",
+                                "alphabet": "jjjrrml",
+                                "japaneze": "日本語日本語マップ件数制限に"
+                            },
+                            {
+                                "required": "qXXXss-ml",
+                                "required_num": "7171368",
+                                "num": "736166",
+                                "alphabet": "jjjssml",
+                                "japaneze": "日本語日本語マップ件数制限さん"
+                            }
+                        ],
+                        "map_limit_required": [
+                            {
+                                "required": "qXXXqq-mlr",
+                                "required_num": "7171828",
+                                "num": "736124",
+                                "alphabet": "jjjjjmlr",
+                                "japaneze": "日本語日本語マップ必須件数制限"
+                            },
+                            {
+                                "required": "qXXXrr-mlr",
+                                "required_num": "7171328",
+                                "num": "736126",
+                                "alphabet": "jjjrrmlr",
+                                "japaneze": "日本語日本語マップ必須件数制限に"
+                            },
+                            {
+                                "required": "qXXXss-mlr",
+                                "required_num": "7171328",
+                                "num": "736125",
+                                "alphabet": "jjjssmlr",
+                                "japaneze": "日本語日本語マップ必須件数制限さん"
+                            }
+                        ],
+                        "array": "uuuXXXcc",
+                        "array_required": "hhhXXXcc",
+                        "array_limit": "lllXXXcc",
+                        "array_required_limit": "rrrXXXcc",
+                        "encrypt": "encstrencenc",
+                        "group_useradmin_r": "gggrrrXXXeu",
+                        "group_useradmin_w": "gggwwwXXXeu",
+                        "group_useradmin_rw": "gggrwrXXXeu",
+                        "group_users_r": "gggrrXXXkkk",
+                        "group_users_w": "gggwwXXXkkk",
+                        "group_users_rw": "gggrwXXXkkk",
+                        "group_uid_r": "gggrrrXXXii",
+                        "group_uid_w": "gggwwwXXXii",
+                        "group_uid_rw": "gggrwrXXXii",
+                        "group_creater_r": "gggrrrXXXcc",
+                        "group_creater_w": "gggwwwXXXcc",
+                        "group_creater_rw": "gggrwrXXXcc",
+                        "group_all_r": "gggrrrXXXaa",
+                        "group_all_w": "gggwwwXXXaa",
+                        "group_all_rw": "gggrwrXXXaa",
+                        "free": "フリー項目。長い文章を書く所。"
+                    },
+                    "str_idx": {
+                        "___attribute": "tXXXtsi",
+                        "___attribute_alphabet": "mmmmmsi",
+                        "required": "qXXXqq-si",
+                        "required_num": "7181888",
+                        "num": "737184",
+                        "alphabet": "jjjjjsi",
+                        "japaneze": "日本語日本語インデックス",
+                        "map": [
+                            {
+                                "required": "qXXXsi-md",
+                                "required_num": "6171888",
+                                "num": "636184",
+                                "alphabet": "jjjsimd",
+                                "japaneze": "日本語インデックス日本語マップデフォルト",
+                                "encrypt": "encstrIdxMapencenc1"
+                            },
+                            {
+                                "required": "qXXXsi-md",
+                                "required_num": "7171388",
+                                "num": "736166",
+                                "alphabet": "jjjrrsimd",
+                                "japaneze": "日本語インデックス日本語マップデフォルトに",
+                                "encrypt": "encstrIdxMapencenc2"
+                            },
+                            {
+                                "required": "qXXXsi-md",
+                                "required_num": "6171378",
+                                "num": "636156",
+                                "alphabet": "jjjsssimd",
+                                "japaneze": "日本語インデックス日本語マップデフォルトさん",
+                                "encrypt": "encstrIdxMapencenc3"
+                            }
+                        ],
+                        "map_required": [
+                            {
+                                "required": "qXXXsi-mrq",
+                                "required_num": "6171843",
+                                "num": "636123",
+                                "alphabet": "jjjsimmrq",
+                                "japaneze": "日本語インデックス日本語マップ必須",
+                                "encrypt": "encstrIdxMapRequired1enc",
+                                "group_useradmin_r": "gggrrrreXXXsi-mrq",
+                                "group_useradmin_w": "gggwwwweXXXsi-mrq",
+                                "group_useradmin_rw": "gggrwrweXXXsi-mrq",
+                                "group_users_r": "gggrrrrkXXXsi-mrq",
+                                "group_users_w": "gggwwwwkXXXsi-mrq",
+                                "group_users_rw": "gggrwrwkXXXsi-mrq",
+                                "group_uid_r": "gggrrrriXXXsi-mrq",
+                                "group_uid_w": "gggwwwwiXXXsi-mrq",
+                                "group_uid_rw": "gggrwrwiXXXsi-mrq",
+                                "group_creater_r": "gggrrrrcXXXsi-mrq",
+                                "group_creater_w": "gggwwwwcXXXsi-mrq",
+                                "group_creater_rw": "gggrwrwcXXXsi-mrq",
+                                "group_all_r": "gggrrrraXXXsi-mrq",
+                                "group_all_w": "gggwwwwaXXXsi-mrq",
+                                "group_all_rw": "gggrwrwaXXXsi-mrq"
+                            },
+                            {
+                                "required": "qXXXsi-mrq",
+                                "required_num": "6171383",
+                                "num": "736164",
+                                "alphabet": "jjjsimrq",
+                                "japaneze": "日本語インデックス日本語マップ必須に",
+                                "encrypt": "encstrIdxMapRequired2enc",
+                                "group_useradmin_r": "gggrrrreXXXsi-mrq2",
+                                "group_useradmin_w": "gggwwwweXXXsi-mrq2",
+                                "group_useradmin_rw": "gggrwrweXXXsi-mrq2",
+                                "group_users_r": "gggrrrrkXXXsi-mrq2",
+                                "group_users_w": "gggwwwwkXXXsi-mrq2",
+                                "group_users_rw": "gggrwrwkXXXsi-mrq2",
+                                "group_uid_r": "gggrrrriXXXsi-mrq2",
+                                "group_uid_w": "gggwwwwiXXXsi-mrq2",
+                                "group_uid_rw": "gggrwrwiXXXsi-mrq2",
+                                "group_creater_r": "gggrrrrcXXXsi-mrq2",
+                                "group_creater_w": "gggwwwwcXXXsi-mrq2",
+                                "group_creater_rw": "gggrwrwcXXXsi-mrq2",
+                                "group_all_r": "gggrrrraXXXsi-mrq2",
+                                "group_all_w": "gggwwwwaXXXsi-mrq2",
+                                "group_all_rw": "gggrwrwaXXXsi-mrq2"
+                            },
+                            {
+                                "required": "qXXXsi-mrq",
+                                "required_num": "6173378",
+                                "num": "636336",
+                                "alphabet": "jjjsimrq",
+                                "japaneze": "日本語インデックス日本語マップ必須さん",
+                                "encrypt": "encstrIdxMapRequired3enc",
+                                "group_useradmin_r": "gggrrrreXXXsi-3mrq",
+                                "group_useradmin_w": "gggwwwweXXXsi-3mrq",
+                                "group_useradmin_rw": "gggrwrweXXXsi-3mrq",
+                                "group_users_r": "gggrrrrkXXXsi-3mrq",
+                                "group_users_w": "gggwwwwkXXXsi-3mrq",
+                                "group_users_rw": "gggrwrwkXXXsi-3mrq",
+                                "group_uid_r": "gggrrrriXXXsi-3mrq",
+                                "group_uid_w": "gggwwwwiXXXsi-3mrq",
+                                "group_uid_rw": "gggrwrwiXXXsi-3mrq",
+                                "group_creater_r": "gggrrrrcXXXsi-3mrq",
+                                "group_creater_w": "gggwwwwcXXXsi-3mrq",
+                                "group_creater_rw": "gggrwrwcXXXsi-3mrq",
+                                "group_all_r": "gggrrrraXXXsi-3mrq",
+                                "group_all_w": "gggwwwwaXXXsi-3mrq",
+                                "group_all_rw": "gggrwrwaXXXsi-3mrq"
+                            }
+                        ],
+                        "map_limit": [
+                            {
+                                "required": "qXXXsi-ml",
+                                "required_num": "6171858",
+                                "num": "636154",
+                                "alphabet": "jjjsiml",
+                                "japaneze": "日本語インデックス日本語マップ件数制限"
+                            },
+                            {
+                                "required": "qXXXsi-ml",
+                                "required_num": "6171358",
+                                "num": "636156",
+                                "alphabet": "jjjsiml",
+                                "japaneze": "日本語日本語マップ件数制限に"
+                            },
+                            {
+                                "required": "qXXXsi-ml",
+                                "required_num": "6171368",
+                                "num": "636166",
+                                "alphabet": "jjjsiml",
+                                "japaneze": "日本語インデックス日本語マップ件数制限さん"
+                            }
+                        ],
+                        "map_limit_required": [
+                            {
+                                "required": "qXXXsi-mlr",
+                                "required_num": "6171828",
+                                "num": "636124",
+                                "alphabet": "jjjsimlr",
+                                "japaneze": "日本語インデックス日本語マップ必須件数制限"
+                            },
+                            {
+                                "required": "qXXXsi-mlr",
+                                "required_num": "6171328",
+                                "num": "636126",
+                                "alphabet": "jjjsimlr",
+                                "japaneze": "日本語インデックス日本語マップ必須件数制限に"
+                            },
+                            {
+                                "required": "qXXXsi-mlr",
+                                "required_num": "6171328",
+                                "num": "636125",
+                                "alphabet": "jjjsimlr",
+                                "japaneze": "日本語インデックス日本語マップ必須件数制限さん"
+                            }
+                        ],
+                        "encrypt": "encstrIdxencenc",
+                        "group_useradmin_r": "gggrrrXXXsi",
+                        "group_useradmin_w": "gggwwwXXXsi",
+                        "group_useradmin_rw": "gggrwrXXXsi",
+                        "group_users_r": "gggrrrXXXsi",
+                        "group_users_w": "gggwwwXXXsi",
+                        "group_users_rw": "gggrwrXXXsi",
+                        "group_uid_r": "gggrrrXXXsi",
+                        "group_uid_w": "gggwwwXXXsi",
+                        "group_uid_rw": "gggrwrXXXsi",
+                        "group_creater_r": "gggrrrXXXsi",
+                        "group_creater_w": "gggwwwXXXsi",
+                        "group_creater_rw": "gggrwrXXXsi",
+                        "group_all_r": "gggrrrXXXsi",
+                        "group_all_w": "gggwwwXXXsi",
+                        "group_all_rw": "gggrwrXXXsi",
+                        "free": "フリー項目。長い文章を書く所。"
+                    },
+                    "int": {
+                        "required": 15XXX51,
+                        "range": 199,
+                        "minus": -333XXX77,
+                        "minus_range": -299,
+                        "intmap": [
+                            {
+                                "required": 1238XXX01,
+                                "range": 111
+                            },
+                            {
+                                "required": 1238XXX02,
+                                "range": 112
+                            },
+                            {
+                                "required": 1238XXX03,
+                                "range": 113
+                            }
+                        ],
+                        "intmap_required": [
+                            {
+                                "required": 123XXX201,
+                                "range": 121,
+                                "minus": -344XXX71,
+                                "minus_range": -281,
+                                "group_useradmin_r": 15003XXX1,
+                                "group_useradmin_w": 15003XXX2,
+                                "group_useradmin_rw": 15003XXX3,
+                                "group_users_r": 15023XXX1,
+                                "group_users_w": 15023XXX2,
+                                "group_users_rw": 15023XXX3,
+                                "group_uid_r": 15033XXX1,
+                                "group_uid_w": 15033XXX2,
+                                "group_uid_rw": 15033XXX3,
+                                "group_creater_r": 15043XXX1,
+                                "group_creater_w": 15043XXX2,
+                                "group_creater_rw": 15043XXX3,
+                                "group_all_r": 15053XXX1,
+                                "group_all_w": 15053XXX1,
+                                "group_all_rw": 15053XXX1
+                            },
+                            {
+                                "required": 12388XXX2,
+                                "range": 122,
+                                "minus": -34477772,
+                                "minus_range": -282,
+                                "group_useradmin_r": 15003XXX1,
+                                "group_useradmin_w": 15003XXX2,
+                                "group_useradmin_rw": 15003XXX3,
+                                "group_users_r": 15023XXX1,
+                                "group_users_w": 15023XXX2,
+                                "group_users_rw": 15023XXX3,
+                                "group_uid_r": 15033XXX1,
+                                "group_uid_w": 15033XXX2,
+                                "group_uid_rw": 15033XXX3,
+                                "group_creater_r": 15043XXX1,
+                                "group_creater_w": 15043XXX2,
+                                "group_creater_rw": 15043XXX3,
+                                "group_all_r": 15053XXX1,
+                                "group_all_w": 15053XXX1,
+                                "group_all_rw": 15053XXX1
+                            },
+                            {
+                                "required": 123XXX203,
+                                "range": 123,
+                                "minus": -344XXX73,
+                                "minus_range": -283,
+                                "group_useradmin_r": 15003XXX1,
+                                "group_useradmin_w": 15003XXX2,
+                                "group_useradmin_rw": 15003XXX3,
+                                "group_users_r": 15023XXX1,
+                                "group_users_w": 15023XXX2,
+                                "group_users_rw": 15023XXX3,
+                                "group_uid_r": 15033XXX1,
+                                "group_uid_w": 15033XXX2,
+                                "group_uid_rw": 15033XXX3,
+                                "group_creater_r": 15043XXX1,
+                                "group_creater_w": 15043XXX2,
+                                "group_creater_rw": 15043XXX3,
+                                "group_all_r": 15053XXX1,
+                                "group_all_w": 15053XXX1,
+                                "group_all_rw": 15053XXX1
+                            }
+                        ],
+                        "intmap_limit": [
+                            {
+                                "required": 12388XXX1,
+                                "range": 131
+                            },
+                            {
+                                "required": 12388XXX2,
+                                "range": 132
+                            },
+                            {
+                                "required": 12388XXX3,
+                                "range": 133
+                            }
+                        ],
+                        "intmap_limit_required": [
+                            {
+                                "required": 12388XXX1,
+                                "range": 141
+                            },
+                            {
+                                "required": 12388XXX2,
+                                "range": 142
+                            },
+                            {
+                                "required": 12388XXX3,
+                                "range": 143
+                            }
+                        ],
+                        "group_useradmin_r": 1200XXX01,
+                        "group_useradmin_w": 1200XXX02,
+                        "group_useradmin_rw": 1200XXX03,
+                        "group_users_r": 1202XXX01,
+                        "group_users_w": 1202XXX02,
+                        "group_users_rw": 1202XXX03,
+                        "group_uid_r": 1203XXX01,
+                        "group_uid_w": 1203XXX02,
+                        "group_uid_rw": 1203XXX03,
+                        "group_creater_r": 1204XXX01,
+                        "group_creater_w": 1204XXX02,
+                        "group_creater_rw": 1204XXX03,
+                        "group_all_r": 1205XXX01,
+                        "group_all_w": 1205XXX01,
+                        "group_all_rw": 1205XXX01,
+                        "free": 1122334455
+                    },
+                    "int_idx": {
+                        "required": 25XXX51,
+                        "range": 299,
+                        "minus": -3446XXX6,
+                        "minus_range": -266,
+                        "intmap": [
+                            {
+                                "required": 20388XXX1,
+                                "range": 211
+                            },
+                            {
+                                "required": 20388XXX2,
+                                "range": 212
+                            },
+                            {
+                                "required": 20388XXX3,
+                                "range": 213
+                            }
+                        ],
+                        "intmap_required": [
+                            {
+                                "required": 20388XXX1,
+                                "range": 221,
+                                "minus": -3446XXX1,
+                                "minus_range": -261,
+                                "group_useradmin_r": 20503XXX1,
+                                "group_useradmin_w": 20503XXX2,
+                                "group_useradmin_rw": 20503XXX3,
+                                "group_users_r": 20523XXX1,
+                                "group_users_w": 20523XXX2,
+                                "group_users_rw": 20523XXX3,
+                                "group_uid_r": 20533XXX1,
+                                "group_uid_w": 20533XXX2,
+                                "group_uid_rw": 20533XXX3,
+                                "group_creater_r": 20543XXX1,
+                                "group_creater_w": 20543XXX2,
+                                "group_creater_rw": 20543XXX3,
+                                "group_all_r": 20553XXX1,
+                                "group_all_w": 20553XXX1,
+                                "group_all_rw": 20553XXX1
+                            },
+                            {
+                                "required": 20388XXX2,
+                                "range": 222,
+                                "minus": -3446XXX2,
+                                "minus_range": -262,
+                                "group_useradmin_r": 20503XXX1,
+                                "group_useradmin_w": 20503XXX2,
+                                "group_useradmin_rw": 20503XXX3,
+                                "group_users_r": 20523XXX1,
+                                "group_users_w": 20523XXX2,
+                                "group_users_rw": 20523XXX3,
+                                "group_uid_r": 20533XXX1,
+                                "group_uid_w": 20533XXX2,
+                                "group_uid_rw": 20533XXX3,
+                                "group_creater_r": 20543XXX1,
+                                "group_creater_w": 20543XXX2,
+                                "group_creater_rw": 20543XXX3,
+                                "group_all_r": 20553XXX1,
+                                "group_all_w": 20553XXX1,
+                                "group_all_rw": 20553XXX1
+                            },
+                            {
+                                "required": 20388XXX3,
+                                "range": 223,
+                                "minus": -3446XXX3,
+                                "minus_range": -263,
+                                "group_useradmin_r": 20503XXX1,
+                                "group_useradmin_w": 20503XXX2,
+                                "group_useradmin_rw": 20503XXX3,
+                                "group_users_r": 20523XXX1,
+                                "group_users_w": 20523XXX2,
+                                "group_users_rw": 20523XXX3,
+                                "group_uid_r": 20533XXX1,
+                                "group_uid_w": 20533XXX2,
+                                "group_uid_rw": 20533XXX3,
+                                "group_creater_r": 20543XXX1,
+                                "group_creater_w": 20543XXX2,
+                                "group_creater_rw": 20543XXX3,
+                                "group_all_r": 20553XXX1,
+                                "group_all_w": 20553XXX1,
+                                "group_all_rw": 20553XXX1
+                            }
+                        ],
+                        "intmap_limit": [
+                            {
+                                "required": 20388XXX1,
+                                "range": 231
+                            },
+                            {
+                                "required": 20388XXX2,
+                                "range": 232
+                            },
+                            {
+                                "required": 20388XXX3,
+                                "range": 233
+                            }
+                        ],
+                        "intmap_limit_required": [
+                            {
+                                "required": 20388XXX1,
+                                "range": 241
+                            },
+                            {
+                                "required": 20388XXX2,
+                                "range": 242
+                            },
+                            {
+                                "required": 20388XXX3,
+                                "range": 243
+                            }
+                        ],
+                        "group_useradmin_r": 20203XXX1,
+                        "group_useradmin_w": 20203XXX2,
+                        "group_useradmin_rw": 20203XXX3,
+                        "group_users_r": 20223XXX1,
+                        "group_users_w": 20223XXX2,
+                        "group_users_rw": 20223XXX3,
+                        "group_uid_r": 20233XXX1,
+                        "group_uid_w": 20233XXX2,
+                        "group_uid_rw": 20233XXX3,
+                        "group_creater_r": 20243XXX1,
+                        "group_creater_w": 20243XXX2,
+                        "group_creater_rw": 20243XXX3,
+                        "group_all_r": 20253XXX1,
+                        "group_all_w": 20253XXX1,
+                        "group_all_rw": 20253XXX1,
+                        "free": 212233XXX5
+                    }
+                },
+                "id": "/1/new,1"
+            }
+        ]
+    }
+}

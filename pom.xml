@@ -7,87 +7,9 @@
   <packaging>jar</packaging>
   <version>8.0.0</version>
 
-  <description>Reflex core module is a serializer/deserializer tool of XML/JSON. Based on the concept of a Reflex architecture
-  </description>
-  <name>Reflex Core Module</name>
-  <url>http://reflex.sourceforge.jp/</url>
+  <description>Reflex Core</description>
+  <name>Reflex Core</name>
 
-  <ciManagement>
-    <system>continuum</system>
-    <url>http://reflexworks.jp/continuum/</url>
-    <notifiers>
-      <notifier>
-        <configuration>
-          <address>vtecadmin@reflexworks.jp</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
-  <inceptionYear>2006</inceptionYear>
-  <developers>
-    <developer>
-      <id>shinichiro takezaki</id>
-      <name>Shinichiro Takezaki</name>
-      <email>takezaki@virtual-tech.net</email>
-      <url></url>
-      <organization>Virtual Technology Inc.</organization>
-      <organizationUrl>http://www.virtual-tech.net/</organizationUrl>
-      <roles>
-        <role>Developer</role>
-      </roles>
-      <timezone>+9</timezone>
-    </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name></name>
-      <email></email>
-      <url></url>
-      <organization></organization>
-      <organizationUrl></organizationUrl>
-      <timezone></timezone>
-    </contributor>
-  </contributors>
-  <licenses>
-    <license>
-      <name>Virtual Technology, BSD license</name>
-      <distribution>available under a BSD license.</distribution>
-      <comments>
-
-  Copyright (c) 2003-2022, Virtual Technology All Rights Reserved
-  Licensed Materials - Property of Virtual Technology
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
-
-  Redistributions of source code must retain the above copyright notice, this list of
-  conditions and the following disclaimer. Redistributions in binary form must reproduce
-  the above copyright notice, this list of conditions and the following disclaimer in
-  the documentation and/or other materials provided with the distribution.
-
-  Neither the name of Reflex nor the names of its contributors may be used to endorse
-  or promote products derived from this software without specific prior written
-  permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
-  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-  SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
-  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-  DAMAGE.
-
-      </comments>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:svn:http://reflexworks.jp/svn/repos/reflexcore/trunk</connection>
-    <developerConnection>scm:svn:http://reflexworks.jp/svn/repos/reflexcore/trunk</developerConnection>
-    <url>http://reflexworks.jp/svn/repos/reflexcore/trunk</url>
-  </scm>
   <organization>
     <name>Virtual Technology</name>
     <url>http://www.virtual-tech.net/</url>
@@ -129,19 +51,5 @@
     </dependency>
 
   </dependencies>
-
-  <distributionManagement>
-    <repository>
-      <id>scp-repository</id>
-      <name>SourceForge</name>
-      <url>scp://shell.sourceforge.jp/misc/groups/r/re/reflex/htdocs/maven2/</url>
-    </repository>
-    <site>
-      <id>scp-repository</id>
-      <name>Sourceforge Site</name>
-      <url>scp://shell.sourceforge.jp/misc/groups/r/re/reflex/htdocs/resource/</url>
-    </site>
-    <downloadUrl>http://reflex.sourceforge.jp/</downloadUrl>
-  </distributionManagement>
 
 </project>
