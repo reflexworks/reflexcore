@@ -69,3 +69,6 @@ Desktop.ini
 
 /out
 
+# テストで出力されるディレクトリ
+/_default
+/_mypackage
