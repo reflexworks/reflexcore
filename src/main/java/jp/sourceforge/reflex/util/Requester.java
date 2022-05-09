@@ -8,14 +8,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jp.reflexworks.servlet.ReflexServletConst;
@@ -30,143 +28,9 @@ public class Requester implements ReflexServletConst {
 
 	/** ステータスのエラー判定コード */
 	private static final int ERROR_STATUS = 400;
-	/** リクエストのタイムアウト時間(ミリ秒)デフォルト */
-	private static final int TIMEOUTMILLIS_DEFAULT = -1;
 
 	/** ロガー */
 	protected Logger logger = Logger.getLogger(this.getClass().getName());
-
-	/**
-	 * HTTPリクエストを行い、レスポンスをOutputStreamに出力します。
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData POSTデータ
-	 * @param property リクエストヘッダ
-	 * @param out レスポンス出力先
-	 * @throws IOException
-	 */
-	public void request(String urlStr, String method, byte[] inputData,
-			Map<String, String> property, OutputStream out)
-	throws IOException {
-		if (out == null) {
-			return;
-		}
-
-		HttpURLConnection http = null;
-		try {
-			http = request(urlStr, method, inputData, property);
-			InputStream in = null;
-			if (http.getResponseCode() >= ERROR_STATUS) {
-				in = http.getErrorStream();
-			} else {
-				in = http.getInputStream();
-			}
-			write(in, out);
-		} finally {
-			http.disconnect();
-		}
-	}
-
-	/**
-	 * HTTPリクエストを行い、レスポンスをOutputStreamに出力します。
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputDataStr POSTデータ
-	 * @param property リクエストヘッダ
-	 * @param out レスポンス出力先
-	 * @throws IOException
-	 */
-	public void requestString(String urlStr, String method, String inputDataStr,
-			Map<String, String> property, OutputStream out)
-	throws IOException {
-		if (out == null) {
-			return;
-		}
-
-		HttpURLConnection http = null;
-		try {
-			http = requestString(urlStr, method, inputDataStr, property);
-			InputStream in = null;
-			if (http.getResponseCode() >= ERROR_STATUS) {
-				in = http.getErrorStream();
-			} else {
-				in = http.getInputStream();
-			}
-			write(in, out);
-
-		} finally {
-			http.disconnect();
-		}
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputDataStr POSTデータ
-	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 * @throws IOException
-	 */
-	public HttpURLConnection requestString(String urlStr, String method,
-			String inputDataStr, Map<String, String> property) throws IOException {
-		byte[] inputData = null;
-		try {
-			if (inputDataStr != null) {
-				inputData = inputDataStr.getBytes(ENCODING);
-			}
-		} catch (UnsupportedEncodingException e) {
-			logger.log(Level.WARNING, e.getClass().getName(), e);
-		}
-		return request(urlStr, method, inputData, property);
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection request(String urlStr, String method)
-	throws IOException {
-		return request(urlStr, method, (InputStream)null, null);
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData POSTデータ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection request(String urlStr, String method, byte[] inputData)
-	throws IOException {
-		return request(urlStr, method, inputData, null);
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData POSTデータ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection request(String urlStr, String method, InputStream inputData)
-	throws IOException {
-		return request(urlStr, method, inputData, null);
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection request(String urlStr, String method,
-			Map<String, String> property) throws IOException {
-		return request(urlStr, method, (InputStream)null, property);
-	}
 
 	/**
 	 * HTTPリクエスト送信
@@ -187,19 +51,6 @@ public class Requester implements ReflexServletConst {
 	 * @param method method
 	 * @param inputData POSTデータ
 	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection request(String urlStr, String method, byte[] inputData,
-			Map<String, String> property) throws IOException {
-		return request(urlStr, method, inputData, property, TIMEOUTMILLIS_DEFAULT);
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData POSTデータ
-	 * @param property リクエストヘッダ
 	 * @param timeoutMillis タイムアウト時間(ミリ秒)
 	 * @return HttpURLConnection
 	 */
@@ -210,19 +61,6 @@ public class Requester implements ReflexServletConst {
 			bin = new ByteArrayInputStream(inputData);
 		}
 		return request(urlStr, method, bin, property, timeoutMillis);
-	}
-
-	/**
-	 * HTTPリクエスト送信
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData POSTデータ
-	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection request(String urlStr, String method, InputStream inputData,
-			Map<String, String> property) throws IOException {
-		return request(urlStr, method, inputData, property, TIMEOUTMILLIS_DEFAULT);
 	}
 
 	/**
@@ -254,51 +92,6 @@ public class Requester implements ReflexServletConst {
 			Map<String, String> property, int timeoutMillis)
 	throws IOException {
 		return prepare(urlStr, method, (InputStream)null, property, timeoutMillis);
-	}
-
-	/**
-	 * HTTPリクエスト送信準備
-	 * @param urlStr URL
-	 * @param method method
-	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection prepare(String urlStr, String method,
-			Map<String, String> property)
-	throws IOException {
-		return prepare(urlStr, method, (InputStream)null, property);
-	}
-
-	/**
-	 * HTTPリクエスト送信準備
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData リクエストデータ
-	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection prepare(String urlStr, String method,
-			byte[] inputData, Map<String, String> property)
-	throws IOException {
-		ByteArrayInputStream bin = null;
-		if (inputData != null) {
-			bin = new ByteArrayInputStream(inputData);
-		}
-		return prepare(urlStr, method, bin, property);
-	}
-
-	/**
-	 * HTTPリクエスト送信準備
-	 * @param urlStr URL
-	 * @param method method
-	 * @param inputData リクエストデータ
-	 * @param property リクエストヘッダ
-	 * @return HttpURLConnection
-	 */
-	public HttpURLConnection prepare(String urlStr, String method,
-			InputStream inputData, Map<String, String> property)
-	throws IOException {
-		return prepare(urlStr, method, inputData, property, TIMEOUTMILLIS_DEFAULT);
 	}
 
 	/**
@@ -519,6 +312,11 @@ public class Requester implements ReflexServletConst {
 		return list.toArray(new String[0]);
 	}
 
+	/**
+	 * レスポンスボディをReaderとして返却.
+	 * @param http HttpURLConnection
+	 * @return レスポンスボディのReader
+	 */
 	public BufferedReader getResponseReader(HttpURLConnection http)
 	throws IOException {
 		InputStream in = getResponseStream(http);
@@ -528,6 +326,11 @@ public class Requester implements ReflexServletConst {
 		return new BufferedReader(new InputStreamReader(in, ENCODING));
 	}
 
+	/**
+	 * レスポンスボディをInputStreamとして返却.
+	 * @param http HttpURLConnection
+	 * @return レスポンスボディのInputStream
+	 */
 	public InputStream getResponseStream(HttpURLConnection http)
 	throws IOException {
 		if (http == null) {
