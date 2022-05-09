@@ -380,11 +380,10 @@ public class FieldMapper {
 	 */
 	public Object newInstance(Class cls) {
 		try {
-			return cls.newInstance();
+			return cls.getDeclaredConstructor().newInstance();
 
-		} catch (IllegalAccessException e) {
-			logger.log(Level.WARNING, e.getClass().getName(), e);
-		} catch (InstantiationException e) {
+		} catch (IllegalAccessException | InstantiationException |
+				InvocationTargetException | NoSuchMethodException e) {
 			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 		return null;

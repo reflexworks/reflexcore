@@ -2020,7 +2020,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 						String childclsname = packagename + "." + toCamelcase(fld);
 						Object child = parseValue(childclsname,e.getValue());
 						if (!classname.isEmpty()) {
-							if (!isCreated) parent = (Object) cc.newInstance();
+							if (!isCreated) parent = (Object) cc.getDeclaredConstructor().newInstance();
 							f.set(parent, child);
 							isCreated = true;
 						} else {
@@ -2030,7 +2030,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 					} else {
 						if (e.getValue().isArrayValue()) {
 							if (!isCreated) {
-								parent = (Object) cc.newInstance();
+								parent = (Object) cc.getDeclaredConstructor().newInstance();
 								isCreated = true;
 							}
 							List child = new ArrayList();
@@ -2051,7 +2051,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 						} else {
 							if (!isCreated) {
-								parent = (Object) cc.newInstance();
+								parent = (Object) cc.getDeclaredConstructor().newInstance();
 								isCreated = true;
 							}
 							if (e.getValue().isBooleanValue()) f.set(parent, e.getValue().asBooleanValue().getBoolean());
