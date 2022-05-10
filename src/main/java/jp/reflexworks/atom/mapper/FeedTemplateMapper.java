@@ -13,11 +13,9 @@ import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -61,7 +59,6 @@ import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.core.JSONSerializer;
 import jp.sourceforge.reflex.exception.JSONException;
 import jp.sourceforge.reflex.util.DateUtil;
-import jp.sourceforge.reflex.util.FieldMapper;
 import jp.sourceforge.reflex.util.StringUtils;
 
 public class FeedTemplateMapper implements IResourceMapper{
@@ -165,7 +162,8 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 */
 	public FeedTemplateMapper(String[] template, String secretkey) 
 	throws ParseException {
-		this(template, null, 0, null, false, false, false, null, secretkey);
+		//this(template, null, 0, null, false, false, false, null, secretkey);
+		this(template, null, 0, secretkey, false, null);
 	}
 
 	/**
@@ -176,10 +174,12 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param jo_packages 既存クラスパッケージ指定
 	 * @throws ParseException
 	 */
+	/*
 	public FeedTemplateMapper(String[] template, String secretkey, Object jo_packages) 
 	throws ParseException {
 		this(template, null, 0, jo_packages, false, false, false, null, secretkey);
 	}
+	*/
 
 	/**
 	 * コンストラクタ
@@ -189,10 +189,12 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param secretkey
 	 * @throws ParseException
 	 */
+	/*
 	public FeedTemplateMapper(String[] template, boolean compatible, String secretkey) 
 	throws ParseException {
 		this(template, null, 0, null, false, false, compatible, null, secretkey);
 	}
+	*/
 
 	/**
 	 * コンストラクタ
@@ -206,7 +208,8 @@ public class FeedTemplateMapper implements IResourceMapper{
 	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
 			String secretkey) 
 	throws ParseException {
-		this(template, propAcls, indexmax, null, false, false, false, null, secretkey);
+		//this(template, propAcls, indexmax, null, false, false, false, null, secretkey);
+		this(template, propAcls, indexmax, secretkey, false, null);
 	}
 
 	/**
@@ -219,12 +222,14 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param secretkey
 	 * @throws ParseException
 	 */
+	/*
 	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
 			String secretkey, Object jo_package) 
 	throws ParseException {
 		this(template, propAcls, indexmax, jo_package, false, false, false, null, 
 				secretkey);
 	}
+	*/
 
 	/**
 	 * コンストラクタ
@@ -236,12 +241,14 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param secretkey
 	 * @throws ParseException
 	 */
+	/*
 	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
 			boolean compatible, String secretkey) 
 	throws ParseException {
 		this(template, propAcls, indexmax, null, false, false, compatible, null, 
 				secretkey);
 	}
+	*/
 
 	/**
 	 * コンストラクタ
@@ -249,16 +256,18 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param template
 	 * @param propAcls
 	 * @param indexmax
-	 * @param compatible
-	 * @param folderpath
 	 * @param secretkey
+	 * @param folderpath
 	 * @throws ParseException
 	 */
+	//public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
+	//		boolean compatible, String folderpath, String secretkey) 
 	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
-			boolean compatible, String folderpath, String secretkey) 
+			String secretkey, String folderpath) 
 	throws ParseException {
-		this(template, propAcls, indexmax, null, false, false, compatible, folderpath, 
-				secretkey);
+		//this(template, propAcls, indexmax, null, false, false, compatible, folderpath, 
+		//		secretkey);
+		this(template, propAcls, indexmax, secretkey, false, folderpath);
 	}
 
 	/**
@@ -273,12 +282,14 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param secretkey
 	 * @throws ParseException
 	 */
+	/*
 	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
 			boolean isCamel, boolean compatible, String folderpath, String secretkey) 
 	throws ParseException {
 		this(template, propAcls, indexmax, null, isCamel, false, compatible, folderpath, 
 				secretkey);
 	}
+	*/
 
 	/**
 	 * コンストラクタ
@@ -295,9 +306,13 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param secretkey
 	 * @throws ParseException
 	 */
+	/*
 	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
 			Object jo_packages, boolean isCamel, boolean useSingleQuote, 
 			boolean compatible, String folderpath, String secretkey) 
+	*/
+	public FeedTemplateMapper(String[] template, String[] propAcls, int indexmax, 
+			String secretkey, boolean compatible, String folderpath) 
 	throws ParseException {
 //		super(getJo_packages(template, jo_packages), isCamel, useSingleQuote, compatible);
 
@@ -337,13 +352,15 @@ public class FeedTemplateMapper implements IResourceMapper{
 			metalist = getMetalistFromPropAcls(propAcls);
 		}
 
-		if (jo_packages == null && template != null) {
+		//if (jo_packages == null && template != null) {
 			// テンプレートからクラスを生成
 			registerClasses();
-			if (template.length == 1) {
+			//if (template.length == 1) {
+			if (template == null || template.length <= 1) {
 				isDefaultTemplate = true;
 			}
 
+			/*
 		} else if (jo_packages instanceof Map | jo_packages instanceof String) {
 			// package名からregistClass
 			// パッケージ名からクラス一覧を取得
@@ -376,7 +393,6 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 			// MessagePackにクラスを登録
 			if (classnames != null) {
-				Set<Class<?>> registSet = new HashSet<Class<?>>();
 				for (String classname : classnames) {
 					try {
 						loader.delegateLoadingOf(classname);			// 既存classは先に読めるようにする
@@ -391,6 +407,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 			}
 
 		}
+			*/
 	}
 
 	private List<Meta> getMetalistFromPropAcls(String[] propAcls) {
@@ -438,6 +455,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		return metalist;
 	}
 
+	/*
 	private List<String> getClassNamesFromPackage(String packagename) throws ClassNotFoundException {
 		List<String> result = getClasses(packagename + ".Entry");
 		List<String> resultlist = new ArrayList<String>(result);
@@ -486,6 +504,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		if (field.getType().getName().equals("java.util.Date")) return false;
 		return true;	
 	}
+	*/
 
 	private String[] mergeAtomEntry(String[] jo_packages){
 		if (jo_packages.length == 1) {
@@ -694,6 +713,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		}
 	}
 
+	/*
 	private boolean isSkip(Class<?> type) {
 		if (type.isPrimitive()) {
 			// プリミティブ型はスキップする。
@@ -710,6 +730,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 		return false;
 	}
+	*/
 
 	// プリミティブ型、java〜パッケージは除く。
 	// Listの場合、ジェネリックタイプも調べる。
@@ -760,6 +781,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param jo_packages
 	 * @return
 	 */
+	/*
 	private static Map<String, String> getJo_packages(String[] template, 
 			Object jo_packages) {
 		if (jo_packages != null) {
@@ -778,6 +800,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		}
 		return result_packages;
 	}
+	*/
 
 	/**
 	 * Entityメタ情報インナークラス
@@ -1923,7 +1946,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	private void registerClasses() throws ParseException {
 
 		List<String> classnames = new ArrayList<String>();
-		classnames.addAll(new ArrayList(Arrays.asList(ATOMCLASSES)));
+		classnames.addAll(new ArrayList<>(Arrays.asList(ATOMCLASSES)));
 
 		try {
 			classnames.addAll(generateClass());
@@ -2270,7 +2293,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	public static void main(String args[]) throws ParseException {
 
 		if (args.length<4) {
-			System.out.println("Usage: Java FeedTemplateMapper <servicename> <templatefile> <folderpath> <secretkey> (<aclfile>)");
+			System.out.println("Usage: Java FeedTemplateMapper <servicename> <templatefile> <secretkey> <folderpath> (<aclfile>)");
 		}else {
 			String[] entitytempl1 = readtemplatefile(args[1]);
 			String[] entitytempl = new String[entitytempl1.length+1];
@@ -2280,7 +2303,8 @@ public class FeedTemplateMapper implements IResourceMapper{
 			String[] aclfile = null;
 			if (args.length==5&&args[4]!=null) aclfile = readtemplatefile(args[4]);
 
-			new FeedTemplateMapper(entitytempl,aclfile,30,false,args[2],args[3]);
+			//new FeedTemplateMapper(entitytempl,aclfile,30,false,args[2],args[3]);
+			new FeedTemplateMapper(entitytempl,aclfile,30,args[2],false,args[3]);
 		}
 	}
 

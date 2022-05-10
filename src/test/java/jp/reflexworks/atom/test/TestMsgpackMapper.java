@@ -3,7 +3,6 @@ package jp.reflexworks.atom.test;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -29,11 +28,9 @@ import org.junit.Test;
 import jp.reflexworks.atom.api.AtomConst;
 import jp.reflexworks.atom.api.Condition;
 import jp.reflexworks.atom.api.EntryUtil;
-import jp.reflexworks.atom.entry.Author;
 import jp.reflexworks.atom.entry.Contributor;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.FeedBase;
-import jp.reflexworks.atom.entry.Link;
 import jp.reflexworks.atom.mapper.BQJSONSerializer;
 import jp.reflexworks.atom.mapper.CipherUtil;
 import jp.reflexworks.atom.mapper.FeedTemplateConst;
@@ -45,7 +42,6 @@ import jp.sourceforge.reflex.exception.JSONException;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.DeflateUtil;
 import jp.sourceforge.reflex.util.FieldMapper;
-import jp.sourceforge.reflex.util.FileUtil;
 
 public class TestMsgpackMapper {
 
@@ -846,7 +842,7 @@ public class TestMsgpackMapper {
 	 * @param mp
 	 * @param feed
 	 */
-	private static void editTestEntry(FeedTemplateMapper mp,Object feed)  {
+	private static void editTestEntry(FeedTemplateMapper mp, Object feed)  {
 		try {
 			Field f = feed.getClass().getField("entry");
 			List entrylist = (List) f.get(feed);
@@ -992,7 +988,7 @@ public class TestMsgpackMapper {
 		String d0 = (String) entry.getValue("item_desc");
 		System.out.println("(validate前) item_desc="+d0);
 
-		List groups = new ArrayList<String>();
+		List<String> groups = new ArrayList<>();
 		groups.add("/$content");	// contentに書込できるグループ
 //		System.out.println("Validtion:"+entry.validate("123",groups));
 
@@ -1083,7 +1079,7 @@ public class TestMsgpackMapper {
 	}
 	*/
 	
-	/*
+	/* TODO package
 	@Test
 	public void testStaticGeneratedFeed() throws ParseException {
 		// Generate
@@ -1111,7 +1107,8 @@ public class TestMsgpackMapper {
 		String xml =  mp.toXML(entry2);
 		System.out.println(xml);
 	}
-	 */
+	*/
+
 	@Test
 	public void testMsgPackEntryWithDeflateAndValidate() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, entityAcls, 30, SECRETKEY);
@@ -1162,7 +1159,7 @@ public class TestMsgpackMapper {
 			System.out.println("\n=== MessagePack Entry デシリアライズ ===");
 
 			EntryBase  muserinfo = (EntryBase) mp.fromMessagePack(in,ENTRY);	// false でEntryをデシリアライズ
-			List groups = new ArrayList<String>();
+			List<String> groups = new ArrayList<>();
 			groups.add("/@hoge/grp2");
 			groups.add("/@hoge/grp1");
 			groups.add("1");
@@ -1190,7 +1187,7 @@ public class TestMsgpackMapper {
 		String json = "{ \"feed\" : {\"entry\" : [{\"id\" : \"/@svc/123/new,1\",\"link\" : [{\"$title\" : \"署名\",\"$href\" : \"/@svc/123/allA/759188985520\",\"$rel\" : \"alternate\"}],\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}}]}}";
 
 		FeedBase feed = (FeedBase) mp.fromJSON(json);
-		List groups = new ArrayList<String>();
+		List<String> groups = new ArrayList<>();
 		groups.add("/grp2");
 		groups.add("/grp1");
 		groups.add("1");
@@ -1375,6 +1372,7 @@ public class TestMsgpackMapper {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);		// 変更前
 		//		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl,null,30,"/Users/stakezaki/git/taggingservicecore/src/test/resources");		// 変更前
 
+		/* TODO package
 		// for static class test
 		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
 		String NAMESPACE_VT = "vt=http://reflexworks.jp/test/1.0";
@@ -1383,6 +1381,7 @@ public class TestMsgpackMapper {
 		MODEL_PACKAGE.put("jp.reflexworks.atom.entry", NAMESPACE_ATOM);
 		MODEL_PACKAGE.put("_default", NAMESPACE_VT);
 		//		FeedTemplateMapper mp = new FeedTemplateMapper(MODEL_PACKAGE);
+		 */
 
 		String json = "{\"feed\" : {\"entry\" : [{\"subInfo\" : {\"hobby\" : [{\"______text\" : \"テキストノード\"}]},\"link\" : [{\"___href\" : \"/0762678511-/allA/759188985520\",\"___rel\" : \"self\"},{\"___href\" : \"/transferring/all/0762678511-/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/@/spool/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/historyA/759188985520\",\"___rel\" : \"alternate\"}]}]}}";
 		FeedBase feed = (FeedBase) mp.fromJSON(json);
@@ -1403,6 +1402,7 @@ public class TestMsgpackMapper {
 //		assertEquals(json, mp.toJSON(mp.fromXML(xml)));
 	}
 
+	/* TODO package
 	@Test
 	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 
@@ -1421,20 +1421,22 @@ public class TestMsgpackMapper {
 		DeflateUtil deflateUtil = new DeflateUtil(Deflater.BEST_SPEED, true);
 
 		try {
-			/* TODO xml
 			String dataXmlFile = FileUtil.getResourceFilename("feed_test.txt");
 			FileReader fi = new FileReader(dataXmlFile);
 
+			Date d1 = null;
+			Object obj = null;
+			
 			// XMLからデシリアライズ
-			Date d1 = new Date();
-			Object obj = mp.fromXML(fi);
-			*/
+			d1 = new Date();
+			obj = mp.fromXML(fi);
+
 			String dataJsonFile = FileUtil.getResourceFilename("feed_test.json");
-			FileReader fi = new FileReader(dataJsonFile);
+			fi = new FileReader(dataJsonFile);
 
 			// JSONからデシリアライズ
-			Date d1 = new Date();
-			Object obj = mp.fromJSON(fi);
+			d1 = new Date();
+			obj = mp.fromJSON(fi);
 
 			FeedBase feedobj = null;
 			if (obj instanceof FeedBase) {
@@ -1445,7 +1447,6 @@ public class TestMsgpackMapper {
 
 			Date d2 = new Date();
 
-			/* TODO xml
 			Date d3 = new Date();
 			String xml = mp.toXML(feedobj);
 			Date d4 = new Date();
@@ -1454,7 +1455,6 @@ public class TestMsgpackMapper {
 			System.out.println("\n=== XML Feed デシリアライズ ===");
 			System.out.println("time:"+(d2.getTime()-d1.getTime()));
 			System.out.println(xml);
-			*/
 
 			Date d5 = new Date();
 			String json = mp.toJSON(feedobj);
@@ -1502,7 +1502,9 @@ public class TestMsgpackMapper {
 
 		assertTrue(true);
 	}
+	*/
 
+	/* TODO package
 	@Test
 	public void testStaticPackages2() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 
@@ -1514,14 +1516,13 @@ public class TestMsgpackMapper {
 		FeedBase retFeed = null;
 
 		jp.reflexworks.test2.model.Feed feed = createTest2Feed();
-		/* TODO xml
+
 		String xml = mp.toXML(feed);
 		System.out.println("--- testStaticPackages2 (to XML) ---");
 		System.out.println(xml);
 		retFeed = (FeedBase)mp.fromXML(xml);
 		System.out.println("--- testStaticPackages2 (from XML) ---");
 		System.out.println(retFeed);
-		*/
 
 		String json = mp.toJSON(feed);
 		System.out.println("--- testStaticPackages2 (to JSON) ---");
@@ -1539,12 +1540,12 @@ public class TestMsgpackMapper {
 
 		System.out.println("------");
 
-		/* TODO xml
 		int idx = xml.indexOf("<test2:");
 		assertTrue(idx == -1);
-		*/
 	}
+	*/
 
+	/* TODO package
 	@Test
 	public void testStaticPackages3() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 
@@ -1586,7 +1587,9 @@ public class TestMsgpackMapper {
 		System.out.println("[testStaticPackages3] 名前空間テスト end");
 
 	}
+	*/
 
+	/* TODO package
 	private jp.reflexworks.test2.model.Feed createTest2Feed() {
 		jp.reflexworks.test2.model.Feed feed = new jp.reflexworks.test2.model.Feed();
 		feed.entry = new ArrayList<EntryBase>();
@@ -1627,6 +1630,7 @@ public class TestMsgpackMapper {
 
 		return entry;
 	}
+	*/
 
 
 	@Test
@@ -2827,7 +2831,7 @@ public class TestMsgpackMapper {
 
 	}
 
-
+	/*
 	private boolean printMetalist(List<Meta> metalist) {
 		boolean existsMetalist = false;
 		StringBuilder prn = new StringBuilder();
@@ -2854,6 +2858,7 @@ public class TestMsgpackMapper {
 		System.out.println(prn.toString());
 		return existsMetalist;
 	}
+	*/
 
 	private boolean printMetalist2(List<Meta> metalist) {
 		boolean existsMetalist = false;
@@ -4158,7 +4163,7 @@ public class TestMsgpackMapper {
 		Class cls = mapper.getClass(clsName);
 
 		// インスタンス生成
-		Object obj = cls.newInstance();
+		Object obj = cls.getDeclaredConstructor().newInstance();
 
 		// setterで値を設定
 		String field = "name";
