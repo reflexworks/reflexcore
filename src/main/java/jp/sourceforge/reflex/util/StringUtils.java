@@ -11,6 +11,10 @@ public class StringUtils {
 
 	/** 英数字の正規表現 */
 	public static final Pattern PATTERN_ALPHANUMERIC = Pattern.compile("^[0-9a-zA-Z]*$");
+	/** 変換対象ハイフンの正規表現 */
+	public static final String REGEX_CONVERT_HYPHEN = "[\\‐\\–\\ー\\−\\－]";
+	/** 半角ハイフン */
+	public static final String HYPHEN = "－";
 
 	/**
 	 * nullの場合空文字を返却します.
@@ -568,9 +572,7 @@ public class StringUtils {
 		}
 		String tmp = Normalizer.normalize(text, Normalizer.Form.NFKD);
 		// 全角ハイフンを半角に変換
-		tmp = tmp.replace("ー", "-");
-		tmp = tmp.replace("−", "-");
-		return tmp;
+		return tmp.replaceAll(REGEX_CONVERT_HYPHEN, HYPHEN);
 	}
 
 }
