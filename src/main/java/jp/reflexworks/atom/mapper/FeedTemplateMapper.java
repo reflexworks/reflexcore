@@ -62,6 +62,17 @@ import jp.sourceforge.reflex.exception.JSONException;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.StringUtils;
 
+/**
+ * FeedTemplateMapper
+ * <p>
+ * テンプレートから動的にエンティティクラスを作り、オブジェクトをJSON/MessgaePackにシリアライズを行います。またその逆のデシリアライズを行います。
+ * <ul>
+ * <li>テンプレートにユーザ項目を記述することでATOMを拡張できます。</li>
+ * <li>項目ごとにValidationやマスク化、暗号化、ACLなどを設定できます</li>
+ * <li>動的に生成したクラスは静的なクラスとして保存できます</li>
+ * <li>new FeedTemplateMapper(new String[] {"パッケージ名"}); とするとユーザ定義項目はなくATOM Feed/Entryのみとなります</li>
+ * </ul>
+ */
 public class FeedTemplateMapper implements IResourceMapper{
 
 	private static Logger logger = Logger.getLogger(FeedTemplateMapper.class.getName());
