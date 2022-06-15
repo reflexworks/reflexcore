@@ -54,6 +54,7 @@ import javassist.bytecode.annotation.IntegerMemberValue;
 import jp.reflexworks.atom.api.AtomConst;
 import jp.reflexworks.atom.entry.Element;
 import jp.reflexworks.atom.entry.EntryBase;
+import jp.reflexworks.atom.entry.FeedBase;
 import jp.reflexworks.atom.util.SurrogateConverter;
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.core.JSONSerializer;
@@ -103,7 +104,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		" $rel",
 		" $type",
 		" $title",
-		" $length", 
+		" $length",
 		"published",
 		"rights",
 		"rights_$type",
@@ -114,7 +115,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		"subtitle",
 		"subtitle_$type",
 		"updated",
-	};	
+	};
 
 	private static final String SERIALIZABLE = "java.io.Serializable";
 	private static final String ENTRYBASE = "jp.reflexworks.atom.entry.EntryBase";
@@ -141,17 +142,16 @@ public class FeedTemplateMapper implements IResourceMapper{
 	/** ATOM : Package map */
 	public static Map<String, String> ATOM_PACKAGE = AtomConst.ATOM_PACKAGE;
 
-	private MessagePack msgpack;
+	private MessagePack msgpack = new MessagePack();
 	private List<Meta> metalist;
-	public TemplateRegistry registry;
+	private TemplateRegistry registry;
 	private ReflectionTemplateBuilder builder;
-	public ClassPool pool;
+	private ClassPool pool;
 	private Loader loader;
 	private String packagename;
 	private boolean isDefaultTemplate;
 	private String folderpath;
 	private String secretkey;
-	private JSONSerializer jsonc;
 
 	/**
 	 * コンストラクタ
@@ -316,7 +316,6 @@ public class FeedTemplateMapper implements IResourceMapper{
 	throws ParseException {
 //		super(getJo_packages(template, jo_packages), isCamel, useSingleQuote, compatible);
 
-		jsonc = new JSONSerializer(compatible);
 		this.folderpath = folderpath;
 		this.secretkey = secretkey;
 
@@ -340,8 +339,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 		registry = new TemplateRegistry(null);
 		builder = new ReflectionTemplateBuilder(registry); // msgpack準備(Javassistで動的に作成したクラスはReflectionTemplateBuilderを使わないとエラーになる)
-		msgpack = new MessagePack(registry) {};
-		
+
 		// Entityテンプレートからメタ情報を作成する
 		if (template != null) {
 			metalist = getMetalist(mergeAtomEntry(template));
@@ -522,7 +520,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	}
 
 	private static final String aclpattern = "([/0-9a-zA-Z_$*@]+\\+(?:R|W|RW),?)+";
-	private static final String STRMAXLENGTH = "1048576";	// 1MB
+	private static final String STRMAXLENGTH = "10485760";	// 10MB
 	
 	private void addPropAcls(String[] propAcls, int indexmax) throws ParseException {
 
@@ -836,7 +834,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		/**
 		 * インデックス
 		 */
-		public String index; 
+		public String index;
 
 		/**
 		 * 全文検索インデックス
@@ -846,12 +844,12 @@ public class FeedTemplateMapper implements IResourceMapper{
 		/**
 		 * 必須項目
 		 */
-		public boolean isMandatory; 
+		public boolean isMandatory;
 
 		/**
-		 * 降順
+		 * 降順(数字)
 		 */
-		public boolean isDesc; 
+		public boolean isDesc;
 
 		/**
 		 * 降順(文字列)
@@ -861,7 +859,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		/**
 		 * バリーデーション用正規表現
 		 */
-		public String regex; 
+		public String regex;
 
 		/**
 		 * ACL(READ）
@@ -891,7 +889,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		/**
 		 * 最大
 		 */
-		public String max;	
+		public String max;
 
 		/**
 		 * 名前
@@ -902,7 +900,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 		 * XMLの属性
 		 */
 		public boolean canattr;
-		
+
 		/**
 		 * 繰り返し項目
 		 */
@@ -925,7 +923,6 @@ public class FeedTemplateMapper implements IResourceMapper{
 		 */
 		public String distkey;
 
-		
 		/**
 		 * Camelケースで名前を返す
 		 * @return Camelcaseの名前
@@ -1018,7 +1015,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Object fromMessagePack(byte[] msg) 
+	public Object fromMessagePack(byte[] msg)
 			throws IOException, ClassNotFoundException  {
 		return fromMessagePack(msg, true);
 	}
@@ -1057,6 +1054,53 @@ public class FeedTemplateMapper implements IResourceMapper{
 			throws IOException, ClassNotFoundException {
 		if (msg==null) return null;
 		else return msgpack.read(msg, loader.loadClass(getRootEntry(isFeed)));
+	}
+
+	public String toJSON(Object entity) {
+		if (entity==null) return null;
+		Writer writer = new StringWriter();
+		JSONSerializer jsonc = new JSONSerializer(false);
+		if ((entity instanceof FeedBase)&&(((FeedBase)entity).getStartArrayBracket())) {
+			jsonc.marshal(((FeedBase)entity).entry, writer);
+			return writer.toString();
+		}else {
+			jsonc.marshal(entity, writer);
+			return writer.toString();
+		}
+	}
+
+	public String toJSON(Object entity,boolean dispChildNum) {
+		if (entity==null) return null;
+		Writer writer = new StringWriter();
+		JSONSerializer jsonc = new JSONSerializer(false);
+		if ((entity instanceof FeedBase)&&(((FeedBase)entity).getStartArrayBracket())) {
+			jsonc.marshal(((FeedBase)entity).entry, writer,dispChildNum);
+			return writer.toString();
+		}else {
+			jsonc.marshal(entity, writer);
+			return writer.toString();
+		}
+	}
+
+	public void toJSON(Object entity, Writer writer) {
+		if (entity==null) return;
+		JSONSerializer jsonc = new JSONSerializer(false);
+		if ((entity instanceof FeedBase)&&(((FeedBase)entity).getStartArrayBracket())) {
+			jsonc.marshal(((FeedBase)entity).entry, writer);
+		}else {
+			jsonc.marshal(entity, writer);
+		}
+	}
+
+	public void toJSON(Object entity, Writer writer,boolean dispChildNum) {
+		if (entity==null) return;
+		JSONSerializer jsonc = new JSONSerializer(false);
+		if ((entity instanceof FeedBase)&&(((FeedBase)entity).getStartArrayBracket())) {
+			jsonc.marshal(((FeedBase)entity).entry, writer,dispChildNum);
+		}else {
+			jsonc.marshal(entity, writer,dispChildNum);
+		}
+
 	}
 
 	/* (非 Javadoc)
@@ -1128,7 +1172,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 			ci = new CtClass[] { pool.get(SOFTSCHEMA), pool.get(SERIALIZABLE) };
 		} catch (NotFoundException e1) {
 			throw new CannotCompileException(e1);
-		} 
+		}
 
 		for (String classname : classnames) {
 			CtClass cc;
@@ -1157,7 +1201,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 					} catch (NotFoundException e) {
 						throw new CannotCompileException(e);
 					}
-				} 
+				}
 			}
 
 			StringBuilder getvalue = new StringBuilder();
@@ -1207,7 +1251,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 					if (meta.isArray) {
 						try {
 							CtClass objClass = pool.get("java.util.List");
-							CtField arrayfld = new CtField(objClass, meta.self, cc); 
+							CtField arrayfld = new CtField(objClass, meta.self, cc);
 							arrayfld.setModifiers(Modifier.PUBLIC);
 							SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(ELEMENTSIG);
 							arrayfld.setGenericSignature(st.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
@@ -1218,11 +1262,11 @@ public class FeedTemplateMapper implements IResourceMapper{
 							Annotation annot = new Annotation("org.msgpack.annotation.Index", constpool);
 							annot.addMemberValue("value", new IntegerMemberValue(constpool,i));
 							attr.addAnnotation(annot);
-							// add the annotation 
+							// add the annotation
 							arrayfld.getFieldInfo().addAttribute(attr);
 
 							cc.addField(arrayfld);
-							
+
 							// getter/setterはTaggingServiceの更新処理で使用
 							CtMethod m = CtNewMethod.make("public java.util.List get" + meta.getSelf()
 									+ "() {" + "  return " + meta.self + "; }", cc);
@@ -1242,18 +1286,18 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 						try {
 							CtClass objClass = pool.get("java.util.List");
-							CtField arrayfld = new CtField(objClass, meta.self, cc); 
+							CtField arrayfld = new CtField(objClass, meta.self, cc);
 							arrayfld.setModifiers(Modifier.PUBLIC);
 							SignatureAttribute.ObjectType st = SignatureAttribute.toFieldSignature(getSignature(packagename+"."+meta.getSelf()));
 							arrayfld.setGenericSignature(st.encode());    // <T:Ljava/lang/Object;>Ljava/lang/Object;
-							
+
 							// create the annotation
 							ConstPool constpool = cc.getClassFile().getConstPool();
 							AnnotationsAttribute attr = new AnnotationsAttribute(constpool,AnnotationsAttribute.visibleTag);
 							Annotation annot = new Annotation("org.msgpack.annotation.Index", constpool);
 							annot.addMemberValue("value", new IntegerMemberValue(constpool,i));
 							attr.addAnnotation(annot);
-							// add the annotation 
+							// add the annotation
 							arrayfld.getFieldInfo().addAttribute(attr);
 
 							cc.addField(arrayfld);
@@ -1282,7 +1326,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 						Annotation annot = new Annotation("org.msgpack.annotation.Index", constpool);
 						annot.addMemberValue("value", new IntegerMemberValue(constpool,i));
 						attr.addAnnotation(annot);
-						// add the annotation 
+						// add the annotation
 						f2.getFieldInfo().addAttribute(attr);
 
 						cc.addField(f2);
@@ -1421,10 +1465,10 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 			/* 静的classFile作成 */
 			if (folderpath != null && !cc.getName().equals("Author")
-					&& !cc.getName().equals("Category") 
-					&& !cc.getName().equals("Content") 
-					&& !cc.getName().equals("Link") 
-					&& !cc.getName().equals("Element") 
+					&& !cc.getName().equals("Category")
+					&& !cc.getName().equals("Content")
+					&& !cc.getName().equals("Link")
+					&& !cc.getName().equals("Element")
 					&& !cc.getName().equals("Contributor")) {
 				try {
 					cc.writeFile(folderpath);
@@ -1451,7 +1495,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	private String setparent(String classname) {
 		return "String parent=_context.parent;if (_context.parent==null) _context.parent=\""+cutPackagename(classname) + "\";else _context.parent=_context.parent+\"." + cutPackagename(classname) + "\";";
 	}
-	
+
 	private String cutPackagename(String classname) {
 		String result = classname.substring(classname.lastIndexOf(".")+1);
 		return (""+result.charAt(0)).toLowerCase(Locale.ENGLISH)+result.substring(1);
@@ -1574,7 +1618,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 			line += "java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(\"" + meta.regex + "\");";
 			line += "java.util.regex.Matcher matcher = pattern.matcher(\"\"+" + meta.self + ");";
 			line += "if (!matcher.find()) throw new java.text.ParseException(\"Property '" + meta.self + "' is not valid.(regex=" + meta.regex + ", value=\"+" + meta.self + "+\")\",0);";
-			line += "}";			
+			line += "}";
 		}
 		line += getMinmax(meta);
 
@@ -1625,15 +1669,15 @@ public class FeedTemplateMapper implements IResourceMapper{
 				} else if (meta.isArray || meta.hasChild()) {
 					line += "if (" + meta.self + "!=null&&" + max + "<" + meta.self + ".size()) throw new java.text.ParseException(\"Maximum number of '" + meta.self + "' exceeded.\",0);";
 				} else if (meta.type.equals("String")) {
-					line += "if (" + meta.self + "!=null&&" + max + "<" + meta.self + ".length()) throw new java.text.ParseException(\"Maximum length of '" + meta.self + "' exceeded.\",0);";					
+					line += "if (" + meta.self + "!=null&&" + max + "<" + meta.self + ".length()) throw new java.text.ParseException(\"Maximum length of '" + meta.self + "' exceeded.\",0);";
 				}
 			}
 		}
-		
+
 		if (!meta.isArray && meta.type.equals("String")) {
-			line += "if (" + meta.self + "!=null&&" + STRMAXLENGTH + "<" + meta.self + ".length()) throw new java.text.ParseException(\"Maximum length of '" + meta.self + "' exceeded.\",0);";					
+			line += "if (" + meta.self + "!=null&&" + STRMAXLENGTH + "<" + meta.self + ".length()) throw new java.text.ParseException(\"Maximum length of '" + meta.self + "' exceeded.\",0);";
 		}
-		
+
 		return line;
 	}
 
@@ -1647,8 +1691,8 @@ public class FeedTemplateMapper implements IResourceMapper{
 			return "";
 		}
 	}
-	
-	private List<Meta> getMetalist(String[] entitytmpl) 
+
+	private List<Meta> getMetalist(String[] entitytmpl)
 	throws ParseException {
 		// 先頭のパッケージ名を退避してentryに置き換える
 		this.packagename = parseLine0(entitytmpl[0]);
@@ -1761,14 +1805,14 @@ public class FeedTemplateMapper implements IResourceMapper{
 				meta.isMandatory = matcherf.group(9).equals(MANDATORY);
 				meta.aclR = null;
 				meta.aclW = null;
-				
+
 				// for BugQuery Schema
 				if (matcherf.group(5) != null && !matcherf.group(5).equals("")) {
 					meta.repeated = true;
 				} else {
 					meta.repeated = false;
 				}
-				
+
 				meta.bigquerytype = "STRING";
 				if (matcherf.group(4) != null) {
 					switch(matcherf.group(4)) {
@@ -1844,8 +1888,8 @@ public class FeedTemplateMapper implements IResourceMapper{
 					} else {
 						meta.type = "String"; // その他
 					}
-				} 
-				
+				}
+
 				if (meta.min != null && meta.type==null) {
 					meta.isMap = true;
 				} else {
@@ -1983,7 +2027,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 */
 	private void registerClass(String classname) throws CannotCompileException {
 		if (!isBaseclass(classname)) {
-			try {	
+			try {
 				Class<?> cls = loader.loadClass(classname);
 				Template template = builder.buildTemplate(cls);
 				// 途中はregistryに登録
@@ -1999,7 +2043,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 				}
 			} catch (ClassNotFoundException e) {
 				throw new CannotCompileException(e);
-			} 
+			}
 		}
 	}
 
@@ -2008,7 +2052,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 	 * @param classname
 	 * @param value
 	 * @return オブジェクト
-	 * @throws JSONException 
+	 * @throws JSONException
 	 */
 	private Object parseValue(String classname,Value value) throws JSONException  {
 
@@ -2057,7 +2101,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 								isCreated = true;
 							}
 							List child = new ArrayList();
-							f.set(parent, child);	// TODO reflexmapper v7から移行
+							f.set(parent, child);
 							for (Value v : e.getValue().asArrayValue().getElementArray()) {
 								if (v.isMapValue()) {
 									String childclsname = packagename + "." + toCamelcase(fld);
@@ -2115,7 +2159,7 @@ public class FeedTemplateMapper implements IResourceMapper{
 					int idx = msg.lastIndexOf(".");
 					if (idx > 0) {
 						String tmpName = msg.substring(idx + 1);
-						String name = tmpName.substring(0, 1).toLowerCase(Locale.ENGLISH) + 
+						String name = tmpName.substring(0, 1).toLowerCase(Locale.ENGLISH) +
 								tmpName.substring(1);
 						throw new JSONException("JSON parse error: " + name + " is not defined in the schema template.");
 					}
@@ -2397,30 +2441,6 @@ public class FeedTemplateMapper implements IResourceMapper{
 		}
 		return prop;
 
-	}
-
-	public String toJSON(Object entity,boolean dispChildNum) {
-		if (entity==null) return null;
-		Writer writer = new StringWriter();
-		jsonc.marshal(entity, writer,dispChildNum);
-		return writer.toString();
-	}
-
-	public String toJSON(Object entity) {
-		if (entity==null) return null;
-		Writer writer = new StringWriter();
-		jsonc.marshal(entity, writer);
-		return writer.toString();
-	}
-
-	public void toJSON(Object entity, Writer writer) {
-		if (entity==null) return;
-		else jsonc.marshal(entity, writer);
-	}
-
-	public void toJSON(Object entity, Writer writer,boolean dispChildNum) {
-		if (entity==null) return;
-		else jsonc.marshal(entity, writer,dispChildNum);
 	}
 
 	@Override
