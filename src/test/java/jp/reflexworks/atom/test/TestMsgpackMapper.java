@@ -11,6 +11,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -5449,6 +5450,20 @@ public class TestMsgpackMapper {
 		System.out.println("[testMaskprop4] maskprop uid=" + uid + ": ");
 		System.out.println(mapper.toXML(feed));
 
+	}
+
+	@Test
+	public void testEncryptBlank() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, GeneralSecurityException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl4, entityAclsDistkey1, 30, SECRETKEY);
+		
+		// 空のリスト「"category": [{}]」がある状態で、CipherUtil#encryptが正しく動作することを確認する。
+		String json = "{\"feed\":{\"entry\":[{\"info\": {\"name\": \"data 0000001\",\"category\": \"カテゴリ0000001\",\"color\": \"色0000001\"},\"category\": [{}],\"link\": [{\"___href\": \"/singleindex/0000001\",\"___rel\": \"self\"},{\"___href\": \"/doubledisp/0000001\",\"___rel\": \"alternate\"}]}]}}";
+
+		FeedBase feed = (FeedBase)mp.fromJSON(json);
+		
+		CipherUtil cipherUtil = new CipherUtil();
+		cipherUtil.encrypt(feed);
+		
 	}
 
 }
