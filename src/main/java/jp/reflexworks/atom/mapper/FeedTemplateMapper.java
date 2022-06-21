@@ -1365,16 +1365,16 @@ public class FeedTemplateMapper implements IResourceMapper{
 					if (meta.isMap) {
 						getvalue.append("if (fldname.indexOf(\"" + meta.name + ".\")>=0&&" + meta.self + "!=null) { java.util.List result = new java.util.ArrayList(); for (int i=0;i<" + meta.self + ".size();i++) { Object value =((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).getValue(fldname);result.add(value);} if (result.size()>0) return result;}");
 						if (!isFeed(classname)) {
-							encrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).encrypt(_context);}");
-							decrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).decrypt(_context);}");
-							ismatch.append("if (" + meta.self + "!=null) {for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).isMatch(_context);}}");
-							maskprop.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).maskprop(_context);}");
-							getsize.append("if (" + meta.self + "!=null) {for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).getsize(_context);_context.arraycount++;}_context.count++;_context.mapcount++;_context.keysize+=\"+meta.self+\".length();}");
+							encrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).encrypt(_context);}");
+							decrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).decrypt(_context);}");
+							ismatch.append("if (" + meta.self + "!=null) {for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).isMatch(_context);}}");
+							maskprop.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).maskprop(_context);}");
+							getsize.append("if (" + meta.self + "!=null) {for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.SoftSchema)" + meta.self + ".get(i)).getsize(_context);_context.arraycount++;}_context.count++;_context.mapcount++;_context.keysize+=\"+meta.self+\".length();}");
 						} else {
-							encrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).encrypt(_cipher);}");
-							decrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).decrypt(_cipher);}");
-							maskprop.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).maskprop(_uid,_groups);}");
-							getsize.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).getsize();}");
+							encrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).encrypt(_cipher);}");
+							decrypt.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).decrypt(_cipher);}");
+							maskprop.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).maskprop(_uid,_groups);}");
+							getsize.append("if (" + meta.self + "!=null) for (int i=0;i<" + meta.self + ".size();i++) { if (" + meta.self + ".get(i)!=null) ((jp.reflexworks.atom.entry.EntryBase)" + meta.self + ".get(i)).getsize();}");
 						}
 					} else {
 						getvalue.append("if (fldname.indexOf(\"" + meta.name + ".\")>=0&&" + meta.self + "!=null) { Object value=" + meta.self + ".getValue(fldname);if (value!=null) return value;}");
