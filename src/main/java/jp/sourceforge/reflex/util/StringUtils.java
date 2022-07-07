@@ -384,6 +384,74 @@ public class StringUtils {
 	}
 
 	/**
+	 * 文字列が数値(Double)かどうか判定します。
+	 * @param str 文字列
+	 * @return Doubleの場合true
+	 */
+	public static boolean isNumber(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が自然数のInteger型かどうか判定します。
+	 * @param str 文字列
+	 * @return 自然数のInteger型の場合true
+	 */
+	public static boolean isNaturalInteger(String str) {
+		try {
+			int num = Integer.parseInt(str);
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が自然数かどうか判定します。
+	 * @param str 文字列
+	 * @return 自然数の場合true
+	 */
+	public static boolean isNaturalNumber(String str) {
+		try {
+			long num = Long.parseLong(str);
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が正の数かどうか判定します。
+	 * @param str 文字列
+	 * @return 正の数の場合true
+	 */
+	public static boolean isPositiveNumber(String str) {
+		try {
+			double num = Double.parseDouble(str);
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
 	 * "$" をエスケープ文字 "\$" に変換します.
 	 * <p>
 	 * {@link String#replaceAll(String, String)} の引数に$があると<br>
