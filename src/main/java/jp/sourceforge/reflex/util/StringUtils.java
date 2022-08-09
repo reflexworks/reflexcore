@@ -1,6 +1,7 @@
 package jp.sourceforge.reflex.util;
 
 import java.text.Normalizer;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -449,6 +450,38 @@ public class StringUtils {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	/**
+	 * 文字列が正の数かどうか判定します。
+	 * @param str 文字列
+	 * @return 正の数の場合true
+	 */
+	public static boolean isPositiveNumber(double num) {
+		try {
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列がbooleanかどうか判定します。
+	 * @param str 文字列
+	 * @return booleanの場合true
+	 */
+	public static boolean isBoolean(String str) {
+		if (!StringUtils.isBlank(str)) {
+			String lower = str.toLowerCase(Locale.ENGLISH);
+			if ("true".equals(lower) || "false".equals(lower)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
