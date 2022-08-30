@@ -1342,10 +1342,10 @@ public class TestMsgpackMapper {
 		EntryBase entry = (EntryBase) mp.fromJSON(json);
 
 		// MessagePack test
-		/* TODO xml
 		System.out.println("\n=== XML Entry(テキストノード+Link) シリアライズ ===");
 		String xml = mp.toXML(entry);
 		System.out.println(xml);
+		/* TODO xml
 		System.out.println("\n=== XML Entry(テキストノード+Link2) シリアライズ ===");
 		System.out.println(mp.toJSON(mp.fromXML(xml)));
 		*/
