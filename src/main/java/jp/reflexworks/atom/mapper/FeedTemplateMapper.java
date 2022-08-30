@@ -58,6 +58,7 @@ import jp.reflexworks.atom.entry.FeedBase;
 import jp.reflexworks.atom.util.SurrogateConverter;
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.core.JSONSerializer;
+import jp.sourceforge.reflex.core.XMLSerializer;
 import jp.sourceforge.reflex.exception.JSONException;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.StringUtils;
@@ -73,7 +74,7 @@ import jp.sourceforge.reflex.util.StringUtils;
  * <li>new FeedTemplateMapper(new String[] {"パッケージ名"}); とするとユーザ定義項目はなくATOM Feed/Entryのみとなります</li>
  * </ul>
  */
-public class FeedTemplateMapper implements IResourceMapper{
+public class FeedTemplateMapper implements IResourceMapper {
 
 	private static Logger logger = Logger.getLogger(FeedTemplateMapper.class.getName());
 	public static final String FIELDPATTERN = "^( *)([a-zA-Z_$][0-9a-zA-Z_$]{0,127})(\\(([a-zA-Z_]+)\\))?((?:\\[([0-9]+)?\\]|\\{([\\-0-9]*)~?([\\-0-9]+)?\\})?)(\\!?)(?:=(.+))?(?:[ \\t]*)$";
@@ -1043,6 +1044,20 @@ public class FeedTemplateMapper implements IResourceMapper{
 			throws IOException, ClassNotFoundException  {
 		if (msg==null) return null;
 		else return msgpack.read(msg, loader.loadClass(getRootEntry(isFeed)));
+	}
+
+	@Override
+	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException {
+		if (msg == null) {
+			return null;
+		}
+		byte[] data = null;
+		try {
+			data = msg.readAllBytes();
+		} finally {
+			msg.close();
+		}
+		return fromMessagePack(data);
 	}
 
 	/* (非 Javadoc)
@@ -2454,29 +2469,57 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 	}
 
+	/**
+	 * XMLシリアライズ.
+	 * @param entity オブジェクト
+	 * @return XML
+	 */
 	@Override
 	public String toXML(Object entity) {
-		// TODO Auto-generated method stub
-		return null;
+		String ret = null;
+		StringWriter writer = null;
+		try {
+			writer = new StringWriter();
+			toXML(entity, writer);
+			ret = writer.toString();
+			
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// Do nothing.
+			}
+		}
+		
+		return ret;
 	}
 
+	/*
 	@Override
 	public String toXML(Object entity, boolean printns) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 
+	/**
+	 * XMLシリアライズ.
+	 * @param entity オブジェクト
+	 * @param writer 出力先
+	 */
 	@Override
 	public void toXML(Object entity, Writer writer) {
-		// TODO Auto-generated method stub
-		
+		XMLSerializer xmlSerializer = new XMLSerializer();
+		xmlSerializer.marshal(entity, writer);
 	}
 
+	/*
 	@Override
 	public void toXML(Object entity, Writer writer, boolean printns) {
 		// TODO Auto-generated method stub
 		
 	}
+	*/
 
 	@Override
 	public Object fromXML(String xml) {
@@ -2486,12 +2529,6 @@ public class FeedTemplateMapper implements IResourceMapper{
 
 	@Override
 	public Object fromXML(Reader xml) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Object fromMessagePack(InputStream msg) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -5082,7 +5082,8 @@ public class TestMsgpackMapper {
 			System.out.println("[before] " + json);
 
 			FeedBase feed = (FeedBase)mapper.fromJSON(json);
-			String outXML1 = XMLHEAD + mapper.toXML(feed, false);
+			//String outXML1 = XMLHEAD + mapper.toXML(feed, false);
+			String outXML1 = XMLHEAD + mapper.toXML(feed);
 
 			System.out.println("[after1] " + outXML1);
 
@@ -5090,7 +5091,8 @@ public class TestMsgpackMapper {
 			PrintWriter writer = new PrintWriter(sw);
 			try {
 				writer.print(XMLHEAD);
-				mapper.toXML(feed, writer, false);
+				//mapper.toXML(feed, writer, false);
+				mapper.toXML(feed, writer);
 			} finally {
 				writer.close();
 			}
