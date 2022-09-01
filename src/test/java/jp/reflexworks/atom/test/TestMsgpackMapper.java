@@ -23,6 +23,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 
 import javax.crypto.Cipher;
+import javax.xml.stream.XMLStreamException;
 
 import org.junit.Test;
 
@@ -1369,7 +1370,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testTextNodeFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	public void testTextNodeFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLStreamException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);		// 変更前
 		//		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl,null,30,"/Users/stakezaki/git/taggingservicecore/src/test/resources");		// 変更前
 
@@ -1402,237 +1403,6 @@ public class TestMsgpackMapper {
 		System.out.println(mp.toJSON(mp.fromXML(xml)));
 //		assertEquals(json, mp.toJSON(mp.fromXML(xml)));
 	}
-
-	/* TODO package
-	@Test
-	public void testStaticPackages() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
-
-		String NAMESPACE_VT = "vt=http://reflexworks.jp/test/1.0";
-		String NAMESPACE_ATOM = "http://www.w3.org/2005/Atom";
-
-		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
-		MODEL_PACKAGE.put("jp.reflexworks.atom.feed", NAMESPACE_ATOM);
-		MODEL_PACKAGE.put("jp.reflexworks.atom.entry", NAMESPACE_ATOM);
-		//MODEL_PACKAGE.put("jp.reflexworks.atom.source", NAMESPACE_ATOM);
-		MODEL_PACKAGE.put("jp.reflexworks.test.model", NAMESPACE_VT);
-
-		FeedTemplateMapper mp = new FeedTemplateMapper(null, SECRETKEY, MODEL_PACKAGE);
-		//		FeedTemplateMapper mp = new FeedTemplateMapper(new String[]{"jp.reflexworks.test.model"});
-		//DeflateUtil deflateUtil = new DeflateUtil();
-		DeflateUtil deflateUtil = new DeflateUtil(Deflater.BEST_SPEED, true);
-
-		try {
-			String dataXmlFile = FileUtil.getResourceFilename("feed_test.txt");
-			FileReader fi = new FileReader(dataXmlFile);
-
-			Date d1 = null;
-			Object obj = null;
-			
-			// XMLからデシリアライズ
-			d1 = new Date();
-			obj = mp.fromXML(fi);
-
-			String dataJsonFile = FileUtil.getResourceFilename("feed_test.json");
-			fi = new FileReader(dataJsonFile);
-
-			// JSONからデシリアライズ
-			d1 = new Date();
-			obj = mp.fromJSON(fi);
-
-			FeedBase feedobj = null;
-			if (obj instanceof FeedBase) {
-				feedobj = (FeedBase)obj;
-			} else {
-				System.out.println("The text is not feed : " + obj.getClass().getName());
-			}
-
-			Date d2 = new Date();
-
-			Date d3 = new Date();
-			String xml = mp.toXML(feedobj);
-			Date d4 = new Date();
-			System.out.println("\n=== XML Feed シリアライズ ===");
-			System.out.println("xml size:"+xml.length()+" time:"+(d4.getTime()-d3.getTime()));
-			System.out.println("\n=== XML Feed デシリアライズ ===");
-			System.out.println("time:"+(d2.getTime()-d1.getTime()));
-			System.out.println(xml);
-
-			Date d5 = new Date();
-			String json = mp.toJSON(feedobj);
-			Date d6 = new Date();
-			System.out.println("\n=== JSON Feed シリアライズ ===");
-			System.out.println("json size:"+json.length()+" time:"+(d6.getTime()-d5.getTime()));
-			System.out.println(json);
-			Date d7 = new Date();
-			Object json2 = mp.fromJSON(json);
-			Date d8 = new Date();
-			System.out.println("\n=== JSON Feed デシリアライズ ===");
-			System.out.println("time:"+(d8.getTime()-d7.getTime()));
-
-			//		System.out.println("object size:"+ObjectTree.dump(feedobj));
-
-			System.out.println("\n=== Messagepack Feed シリアライズ ===");
-			Date d9 = new Date();
-			byte[] msgpack = mp.toMessagePack(feedobj);
-			Date d10 = new Date();
-			//        for(int i=0;i<msgpack.length;i++) {
-			//        	System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" ");
-			//        }
-			System.out.println("\nmsgpack size:"+msgpack.length+" time:"+(d10.getTime()-d9.getTime()));
-			Date d11 = new Date();
-			FeedBase msgpack2 = (FeedBase) mp.fromMessagePack(msgpack,true);
-			Date d12 = new Date();
-			System.out.println("\n=== Messagepack Feed デシリアライズ ===");
-			System.out.println("time:"+(d12.getTime()-d11.getTime()));
-
-			System.out.println("\n=== MessagePack Entry deflate圧縮 ===");
-			Date d13 = new Date();
-			byte[] de = deflateUtil.deflate(msgpack);
-			Date d14 = new Date();
-			// TODO xml
-			//System.out.println("defleted size:"+de.length+" 圧縮率(対msgpack)："+(de.length*100/msgpack.length)+"% 圧縮率(対json)："+(de.length*100/json.length())+"% 圧縮率(対xml)："+(de.length*100/xml.length())+"%");
-			System.out.println("defleted size:"+de.length+" 圧縮率(対msgpack)："+(de.length*100/msgpack.length)+"% 圧縮率(対json)："+(de.length*100/json.length())+"%");
-			//        for(int i=0;i<de.length;i++) {
-			//        	System.out.print(Integer.toHexString(de[i]& 0xff)+" ");
-			//        }
-			System.out.println("time:"+(d14.getTime()-d13.getTime()));
-
-		} finally {
-			deflateUtil.end();
-		}
-
-		assertTrue(true);
-	}
-	*/
-
-	/* TODO package
-	@Test
-	public void testStaticPackages2() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
-
-		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
-		MODEL_PACKAGE.putAll(AtomConst.ATOM_PACKAGE);
-		// 名前空間の指定なし
-		MODEL_PACKAGE.put("jp.reflexworks.test2.model", "");
-		FeedTemplateMapper mp = new FeedTemplateMapper(null, SECRETKEY, MODEL_PACKAGE);
-		FeedBase retFeed = null;
-
-		jp.reflexworks.test2.model.Feed feed = createTest2Feed();
-
-		String xml = mp.toXML(feed);
-		System.out.println("--- testStaticPackages2 (to XML) ---");
-		System.out.println(xml);
-		retFeed = (FeedBase)mp.fromXML(xml);
-		System.out.println("--- testStaticPackages2 (from XML) ---");
-		System.out.println(retFeed);
-
-		String json = mp.toJSON(feed);
-		System.out.println("--- testStaticPackages2 (to JSON) ---");
-		System.out.println(json);
-		retFeed = (FeedBase)mp.fromJSON(json);
-		System.out.println("--- testStaticPackages2 (from JSON) ---");
-		System.out.println(retFeed);
-
-		byte[] msgData = mp.toMessagePack(feed);
-		System.out.println("--- testStaticPackages2 (to MessagePack) ---");
-		System.out.println(msgData);
-		retFeed = (FeedBase)mp.fromMessagePack(msgData);
-		System.out.println("--- testStaticPackages2 (from MessagePack) ---");
-		System.out.println(retFeed);
-
-		System.out.println("------");
-
-		int idx = xml.indexOf("<test2:");
-		assertTrue(idx == -1);
-	}
-	*/
-
-	/* TODO package
-	@Test
-	public void testStaticPackages3() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
-
-		String PACKAGE_VT = "jp.reflexworks.testvt.model";
-		String NAMESPACE_VT = "vt=http://reflexworks.jp/test/1.0";
-
-		Map<String, String> MODEL_PACKAGE = new HashMap<String, String>();
-		MODEL_PACKAGE.put(AtomConst.ATOM_PACKAGE_ENTRY, AtomConst.ATOM_NAMESPACE);
-		MODEL_PACKAGE.put(PACKAGE_VT, NAMESPACE_VT);
-
-		FeedTemplateMapper mp = new FeedTemplateMapper(null, SECRETKEY, MODEL_PACKAGE);
-
-		jp.reflexworks.testvt.model.Column column = new jp.reflexworks.testvt.model.Column();
-		column.vt$color = "red";
-		column.vt$size = "M";
-		column.vt$memo = "名前空間テスト";
-		jp.reflexworks.testvt.model.Entry entry = new jp.reflexworks.testvt.model.Entry();
-		entry.column = column;
-		entry.vt$item1 = "Tシャツ";
-		entry.vt$item2 = "半ズボン";
-		Author author = new Author();
-		author.uri = "urn:vte.cx:created:12";
-		entry.author = new ArrayList<Author>();
-		entry.author.add(author);
-		entry.id = "/12/item/001,1";
-		Link link = new Link();
-		link._$rel = Link.REL_SELF;
-		link._$href = "/12/item/001";
-		entry.addLink(link);
-
-		jp.reflexworks.testvt.model.Feed feed = new jp.reflexworks.testvt.model.Feed();
-		feed.addEntry(entry);
-
-		System.out.println("[testStaticPackages3] 名前空間テスト start");
-		System.out.println("[testStaticPackages3] 名前空間テスト Entry XML 出力");
-		System.out.println(mp.toXML(entry));
-		System.out.println("[testStaticPackages3] 名前空間テスト Feed XML 出力");
-		System.out.println(mp.toXML(feed));
-		System.out.println("[testStaticPackages3] 名前空間テスト end");
-
-	}
-	*/
-
-	/* TODO package
-	private jp.reflexworks.test2.model.Feed createTest2Feed() {
-		jp.reflexworks.test2.model.Feed feed = new jp.reflexworks.test2.model.Feed();
-		feed.entry = new ArrayList<EntryBase>();
-
-		String code = "100001";
-		jp.reflexworks.test2.model.Entry entry = createTest2Entry(code);
-		feed.entry.add(entry);
-		code = "100002";
-		entry = createTest2Entry(code);
-		feed.entry.add(entry);
-
-		return feed;
-	}
-
-	private jp.reflexworks.test2.model.Entry createTest2Entry(String code) {
-		jp.reflexworks.test2.model.Entry entry = new jp.reflexworks.test2.model.Entry();
-		entry.setMyUri("/1/item/" + code);
-		entry.setTitle("商品" + code);
-		entry.deleteFlg = "0";
-
-		jp.reflexworks.test2.model.Info info = new jp.reflexworks.test2.model.Info();
-		info.name = "えんぴつ";
-		info.color = "緑";
-		info.size = "15cm";
-		info.category = "文房具";
-		entry.info = info;
-
-		List<jp.reflexworks.test2.model.Comment> comments = new ArrayList<jp.reflexworks.test2.model.Comment>();
-		jp.reflexworks.test2.model.Comment comment = new jp.reflexworks.test2.model.Comment();
-		comment.nickname = "なまえ1";
-		comment._$$text = "普通のえんぴつです。";
-		comments.add(comment);
-		comment = new jp.reflexworks.test2.model.Comment();
-		comment.nickname = "なまえ2";
-		comment._$$text = "良い感じのえんぴつです。";
-		comments.add(comment);
-		entry.comment = comments;
-
-		return entry;
-	}
-	*/
-
 
 	@Test
 	public void testDefaultAtom()
@@ -1734,7 +1504,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testBasicFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	public void testBasicFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLStreamException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(new String[] {"_"}, SECRETKEY);		// ATOM Feed/Entryのみ。パッケージは_
 
 		//		String json = "{\"feed\" : {\"entry\" : [{\"link\" : [{\"_$href\" : \"/0762678511-/allA/759188985520\",\"_$rel\" : \"self\"}]}]}}";
@@ -1784,7 +1554,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testArrayFeed2() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	public void testArrayFeed2() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLStreamException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);		// ATOM Feed/Entryのみ。パッケージは_
 
 		//		String json = "{\"feed\" : {\"entry\" : [{\"link\" : [{\"_$href\" : \"/0762678511-/allA/759188985520\",\"_$rel\" : \"self\"}]}]}}";
@@ -2761,7 +2531,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testNull() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	public void testNull() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLStreamException {
 
 		// コンストラクタにnull。NullPointerExceptionがスローされなければOK。
 		FeedTemplateMapper mp1 = new FeedTemplateMapper(null, null, 0, null);
@@ -4282,7 +4052,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testSurrogate() throws ParseException, IOException, ClassNotFoundException {
+	public void testSurrogate() throws ParseException, IOException, ClassNotFoundException, XMLStreamException {
 		// 第三水準・第四水準文字（サロゲートペア）のテスト
 		Map<String, String> packages = new HashMap<String, String>();
 		packages.putAll(AtomConst.ATOM_PACKAGE);
@@ -4311,7 +4081,6 @@ public class TestMsgpackMapper {
 		}
 		System.out.println(message1);
 
-		/* TODO xml
 		// XML
 		String xml = "<feed><entry><title>" + testStr + "</title></entry></feed>";
 		System.out.println(xml);
@@ -4328,7 +4097,6 @@ public class TestMsgpackMapper {
 
 		System.out.println("[testSurrogate] (fromXML) title = " + feed.entry.get(0).title);
 		assertTrue(testStr.equals(feed.entry.get(0).title));
-		*/
 
 		byte[] msg = mapper.toMessagePack(feed);
 		FeedBase feed2 = (FeedBase)mapper.fromMessagePack(msg);
@@ -4338,7 +4106,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testBackSlash() throws ParseException {
+	public void testBackSlash() throws ParseException, XMLStreamException {
 		// \のテスト
 		Map<String, String> packages = new HashMap<String, String>();
 		packages.putAll(AtomConst.ATOM_PACKAGE);
@@ -4361,7 +4129,6 @@ public class TestMsgpackMapper {
 		System.out.println("[testBackSlash] (toJSON) title = " + feed.entry.get(0).title);
 		System.out.println("[testBackSlash] (toJSON) " + toJson);
 
-		/* TODO xml
 		// XML
 		String xml = "<feed><entry><title>\\</title></entry></feed>";
 		System.out.println(xml);
@@ -4369,7 +4136,6 @@ public class TestMsgpackMapper {
 		feed = (FeedBase)mapper.fromXML(xml);
 
 		System.out.println("[testBackSlash] (fromXML) title = " + feed.entry.get(0).title);
-		*/
 	}
 
 	@Test
@@ -4408,8 +4174,9 @@ public class TestMsgpackMapper {
 	/**
 	 * 改行・タブ文字テスト
 	 */
+	/* TODO xml
 	@Test
-	public void testControlCharactor() throws ParseException, IOException, ClassNotFoundException {
+	public void testControlCharactor() throws ParseException, IOException, ClassNotFoundException, XMLStreamException {
 		FeedTemplateMapper mapper = new FeedTemplateMapper(entitytempl3, entityAcls3, 30, SECRETKEY);
 		EntryBase entry = EntryUtil.createEntry(mapper);
 
@@ -4495,12 +4262,13 @@ public class TestMsgpackMapper {
 		assertEquals(entry.title, entryMsgpack.title);
 
 	}
+	*/
 
 	/**
 	 * 制御文字テスト
 	 */
 	@Test
-	public void testControlCharactor2() throws ParseException, IOException, ClassNotFoundException {
+	public void testControlCharactor2() throws ParseException, IOException, ClassNotFoundException, XMLStreamException {
 		FeedTemplateMapper mapper = new FeedTemplateMapper(entitytempl3, entityAcls3, 30, SECRETKEY);
 
 		String xml = null;
@@ -4545,16 +4313,18 @@ public class TestMsgpackMapper {
 			entryJson = (EntryBase)mapper.fromJSON(json);
 			System.out.println(prefixJson + num + ".   ret = " + entryJson.title);
 
-			/* TODO xml
+			/*
+			// TODO XMLはエラーとなる。(ドキュメントの要素コンテンツに無効なXML文字(Unicode: 0x1)が見つかりました。)
 			System.out.println(prefixXml + num + ". start = " + str);
 			entryXml = (EntryBase)mapper.fromXML(xml);
 			System.out.println(prefixXml + num + ".   ret = " + entryXml.title);
 
+			HexFormat hex = HexFormat.of();
 			if (num==13) {
-				String hexString = DatatypeConverter.printHexBinary(entryJson.title.getBytes());
+				String hexString = hex.formatHex(entryJson.title.getBytes());
 				assertEquals(hexString,"610D62");
 				// 0DはXMLでは0Aに変換されてしまう
-				hexString = DatatypeConverter.printHexBinary(entryXml.title.getBytes());
+				hexString = hex.formatHex(entryXml.title.getBytes());
 				assertEquals(hexString,"610A62");
 			}else {
 				assertEquals(entryJson.title, entryXml.title);

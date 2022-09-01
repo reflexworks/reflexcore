@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -27,6 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.msgpack.MessagePack;
 import org.msgpack.template.Template;
@@ -2476,12 +2479,14 @@ public class FeedTemplateMapper implements IResourceMapper {
 	 */
 	@Override
 	public String toXML(Object entity) {
-		String ret = null;
+		if (entity == null) {
+			return null;
+		}
 		StringWriter writer = null;
 		try {
 			writer = new StringWriter();
 			toXML(entity, writer);
-			ret = writer.toString();
+			return writer.toString();
 			
 		} finally {
 			try {
@@ -2490,8 +2495,6 @@ public class FeedTemplateMapper implements IResourceMapper {
 				// Do nothing.
 			}
 		}
-		
-		return ret;
 	}
 
 	/*
@@ -2509,6 +2512,9 @@ public class FeedTemplateMapper implements IResourceMapper {
 	 */
 	@Override
 	public void toXML(Object entity, Writer writer) {
+		if (entity == null || writer == null) {
+			return;
+		}
 		XMLSerializer xmlSerializer = new XMLSerializer();
 		xmlSerializer.marshal(entity, writer);
 	}
@@ -2522,15 +2528,21 @@ public class FeedTemplateMapper implements IResourceMapper {
 	*/
 
 	@Override
-	public Object fromXML(String xml) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object fromXML(String xml) throws XMLStreamException {
+		if (StringUtils.isBlank(xml)) {
+			return null;
+		}
+		StringReader reader = new StringReader(xml);
+		return fromXML(reader);
 	}
 
 	@Override
-	public Object fromXML(Reader xml) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object fromXML(Reader xml) throws XMLStreamException {
+		if (xml == null) {
+			return null;
+		}
+		XMLDeserializer xmlDeserializer = new XMLDeserializer();
+		return xmlDeserializer.deserialize(xml, this);
 	}
 
 }
