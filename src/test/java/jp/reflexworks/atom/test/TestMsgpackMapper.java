@@ -41,7 +41,7 @@ import jp.reflexworks.atom.mapper.FeedTemplateMapper.Meta;
 import jp.reflexworks.atom.mapper.SizeLimitExceededException;
 import jp.reflexworks.atom.util.SurrogateConverter;
 import jp.sourceforge.reflex.exception.JSONException;
-import jp.sourceforge.reflex.exception.ReflexXMLException;
+import jp.sourceforge.reflex.exception.XMLException;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.DeflateUtil;
 import jp.sourceforge.reflex.util.FieldMapper;
@@ -1371,7 +1371,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testTextNodeFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, ReflexXMLException {
+	public void testTextNodeFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);		// 変更前
 		//		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl,null,30,"/Users/stakezaki/git/taggingservicecore/src/test/resources");		// 変更前
 
@@ -1505,7 +1505,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testBasicFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, ReflexXMLException {
+	public void testBasicFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(new String[] {"_"}, SECRETKEY);		// ATOM Feed/Entryのみ。パッケージは_
 
 		//		String json = "{\"feed\" : {\"entry\" : [{\"link\" : [{\"_$href\" : \"/0762678511-/allA/759188985520\",\"_$rel\" : \"self\"}]}]}}";
@@ -1555,7 +1555,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testArrayFeed2() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, ReflexXMLException {
+	public void testArrayFeed2() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);		// ATOM Feed/Entryのみ。パッケージは_
 
 		//		String json = "{\"feed\" : {\"entry\" : [{\"link\" : [{\"_$href\" : \"/0762678511-/allA/759188985520\",\"_$rel\" : \"self\"}]}]}}";
@@ -2532,7 +2532,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testNull() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, ReflexXMLException {
+	public void testNull() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLException {
 
 		// コンストラクタにnull。NullPointerExceptionがスローされなければOK。
 		FeedTemplateMapper mp1 = new FeedTemplateMapper(null, null, 0, null);
@@ -4053,7 +4053,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testSurrogate() throws ParseException, IOException, ClassNotFoundException, ReflexXMLException {
+	public void testSurrogate() throws ParseException, IOException, ClassNotFoundException, XMLException {
 		// 第三水準・第四水準文字（サロゲートペア）のテスト
 		Map<String, String> packages = new HashMap<String, String>();
 		packages.putAll(AtomConst.ATOM_PACKAGE);
@@ -4107,7 +4107,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testBackSlash() throws ParseException, ReflexXMLException {
+	public void testBackSlash() throws ParseException, XMLException {
 		// \のテスト
 		Map<String, String> packages = new HashMap<String, String>();
 		packages.putAll(AtomConst.ATOM_PACKAGE);

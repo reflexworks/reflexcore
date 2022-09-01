@@ -61,7 +61,7 @@ import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.core.JSONSerializer;
 import jp.sourceforge.reflex.core.XMLSerializer;
 import jp.sourceforge.reflex.exception.JSONException;
-import jp.sourceforge.reflex.exception.ReflexXMLException;
+import jp.sourceforge.reflex.exception.XMLException;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.StringUtils;
 
@@ -2527,7 +2527,7 @@ public class FeedTemplateMapper implements IResourceMapper {
 	*/
 
 	@Override
-	public Object fromXML(String xml) throws ReflexXMLException {
+	public Object fromXML(String xml) throws XMLException {
 		if (StringUtils.isBlank(xml)) {
 			return null;
 		}
@@ -2536,7 +2536,7 @@ public class FeedTemplateMapper implements IResourceMapper {
 	}
 
 	@Override
-	public Object fromXML(Reader xml) throws ReflexXMLException {
+	public Object fromXML(Reader xml) throws XMLException {
 		if (xml == null) {
 			return null;
 		}

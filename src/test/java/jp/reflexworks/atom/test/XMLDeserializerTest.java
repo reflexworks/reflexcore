@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import jp.reflexworks.atom.mapper.FeedTemplateMapper;
 import jp.reflexworks.atom.mapper.XMLDeserializer;
-import jp.sourceforge.reflex.exception.ReflexXMLException;
+import jp.sourceforge.reflex.exception.XMLException;
 
 /**
  * XMLDeserializerテスト
@@ -50,7 +50,7 @@ public class XMLDeserializerTest {
 	private static String SECRETKEY = "testsecret123";
 
 	@Test
-	public void testFromXmlToJson() throws ReflexXMLException, ParseException {
+	public void testFromXmlToJson() throws XMLException, ParseException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
 		
 		String xml = getXml();
@@ -67,7 +67,7 @@ public class XMLDeserializerTest {
 	}
 
 	@Test
-	public void testFromXml() throws ReflexXMLException, ParseException {
+	public void testFromXml() throws XMLException, ParseException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
 		
 		String xml = getXml();

@@ -3,13 +3,13 @@ package jp.sourceforge.reflex.exception;
 /**
  * XML例外.
  */
-public class ReflexXMLException extends Exception {
+public class XMLException extends Exception {
 
 	/**
 	 * コンストラクタ
 	 * @param e 原因例外
 	 */
-	public ReflexXMLException(Throwable e) {
+	public XMLException(Throwable e) {
 		super(e);
 	}
 
