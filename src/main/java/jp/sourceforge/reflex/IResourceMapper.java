@@ -6,9 +6,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import javax.xml.stream.XMLStreamException;
-
 import jp.sourceforge.reflex.exception.JSONException;
+import jp.sourceforge.reflex.exception.ReflexXMLException;
 
 
 /**
@@ -96,14 +95,14 @@ public interface IResourceMapper {
 	 * @param xml XML文字列
 	 * @return オブジェクト
 	 */
-	public Object fromXML(String xml) throws XMLStreamException;
+	public Object fromXML(String xml) throws ReflexXMLException;
 
 	/**
 	 * XML文字列からオブジェクトを作成します。
 	 * @param xml XML文字列の読み込み元
 	 * @return オブジェクト
 	 */
-	public Object fromXML(Reader xml) throws XMLStreamException;
+	public Object fromXML(Reader xml) throws ReflexXMLException;
 
 	/**
 	 * オブジェクトをMessagePack形式にシリアライズします。

@@ -16,6 +16,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import jp.reflexworks.atom.mapper.FeedTemplateMapper.Meta;
+import jp.sourceforge.reflex.exception.ReflexXMLException;
 import jp.sourceforge.reflex.util.StringUtils;
 
 /**
@@ -36,9 +37,10 @@ public class XMLDeserializer {
 	 * @param xml XML
 	 * @param mapper FeedTemplateMapper
 	 * @return オブジェクト
+	 * @throws ReflexXMLException XMLパースエラー
 	 */
 	public Object deserialize(Reader xml, FeedTemplateMapper mapper) 
-	throws XMLStreamException {
+	throws ReflexXMLException {
 		String json = fromXmlToJson(xml, mapper);
 		if (StringUtils.isBlank(json)) {
 			return null;
@@ -51,9 +53,10 @@ public class XMLDeserializer {
 	 * @param xml XML
 	 * @param mapper FeedTemplateMapper
 	 * @return JSON
+	 * @throws ReflexXMLException XMLパースエラー
 	 */
 	public String fromXmlToJson(Reader xml, FeedTemplateMapper mapper) 
-	throws XMLStreamException {
+	throws ReflexXMLException {
 		if (xml == null) {
 			return null;
 		}
@@ -242,6 +245,8 @@ public class XMLDeserializer {
 			
 			return json.toString();
 
+		} catch (XMLStreamException e) {
+			throw new ReflexXMLException(e);
 		} finally {
 			if (reader != null) {
 				try {

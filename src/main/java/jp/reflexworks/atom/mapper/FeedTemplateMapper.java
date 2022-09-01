@@ -29,8 +29,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.stream.XMLStreamException;
-
 import org.msgpack.MessagePack;
 import org.msgpack.template.Template;
 import org.msgpack.template.TemplateRegistry;
@@ -63,6 +61,7 @@ import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.core.JSONSerializer;
 import jp.sourceforge.reflex.core.XMLSerializer;
 import jp.sourceforge.reflex.exception.JSONException;
+import jp.sourceforge.reflex.exception.ReflexXMLException;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.StringUtils;
 
@@ -2528,7 +2527,7 @@ public class FeedTemplateMapper implements IResourceMapper {
 	*/
 
 	@Override
-	public Object fromXML(String xml) throws XMLStreamException {
+	public Object fromXML(String xml) throws ReflexXMLException {
 		if (StringUtils.isBlank(xml)) {
 			return null;
 		}
@@ -2537,7 +2536,7 @@ public class FeedTemplateMapper implements IResourceMapper {
 	}
 
 	@Override
-	public Object fromXML(Reader xml) throws XMLStreamException {
+	public Object fromXML(Reader xml) throws ReflexXMLException {
 		if (xml == null) {
 			return null;
 		}
