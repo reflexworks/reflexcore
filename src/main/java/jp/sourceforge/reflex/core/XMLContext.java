@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Stack;
 
 public class XMLContext {
+
 	
 	private Writer out;
 	private Stack<String> stack = new Stack<String>();
 	private Map<String,String> attrmap = new HashMap<String,String>();
 	public String nodename;
-	private String nodevalue;
+	public String nodevalue;
 	
 	public void setNode(Field field,Object source) throws IllegalArgumentException, IllegalAccessException {
 		this.nodename = getNodename(field.getName());
@@ -46,8 +47,19 @@ public class XMLContext {
 				  .replaceAll("'", "&apos;");
 	}
 	
-	public void outNodename(String nodename) throws IOException {
-		out.write("<"+getNodename(nodename)+">");			
+	
+	public void outNodename(String nodename, Object source) throws IOException, IllegalArgumentException, IllegalAccessException {
+		out.write("<"+getNodename(nodename));
+	    Field[] fields = source.getClass().getFields();
+
+	    for (int fn = 0; fn < fields.length; fn++) {
+	    	String attr = fields[fn].getName();
+	    	Object value = fields[fn].get(source);
+	    	if ((attr.indexOf("_$")==0)&&(attr.indexOf("_$$text")<0)&&value!=null) {
+	    		out.write(" "+attr.substring(2)+"=\""+value+"\"");
+	    	}
+	    }
+		out.write(">");
 	}
 
 	public void flush() throws IOException {
@@ -59,11 +71,13 @@ public class XMLContext {
 		out.write("<"+getNodename(nodename)+"/>");			
 	}
 
+
 	public void outNode() throws IOException {
 		if (this.nodevalue!=null&&this.nodename.indexOf("$xml")<0) {
-			if (this.nodename.equals("_$$text")) {
+			if (this.nodename.equals("$$text")) {
 				out.write(this.nodevalue);						
-			}else {
+			}else if (this.nodename.indexOf("$")<0)
+			{
 				out.write("<"+getNodename(this.nodename));
 				for(String key:attrmap.keySet()) {
 					out.write(" "+key+"=\""+convert(attrmap.get(key))+"\"");
@@ -73,6 +87,7 @@ public class XMLContext {
 				out.write("</"+getNodename(this.nodename)+">");									
 			}
 		}
+		this.nodevalue = null;
 	}
 
 	private String getNodename(String nodename) {
@@ -89,7 +104,7 @@ public class XMLContext {
 	}
 
 	public boolean addattr(Field field, Object source) throws IllegalArgumentException, IllegalAccessException, IOException {
-	  if (this.nodename.equals(field.getName())) {
+	  if (this.nodename!=null&&this.nodename.equals(field.getName())) {
 		  return true;
 	  }
   	  if (isSameNode(this.nodename,field.getName())) {
