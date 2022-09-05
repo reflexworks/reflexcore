@@ -50,10 +50,47 @@ public class XMLSerializerTest {
 		" hobby{}",
 		"  $$text"				// テキストノード
 	};
+	/*
+	public static String entitytemplp[] = {
+			// {}がMap, []がArray　, {} [] は末尾にどれか一つだけが付けられる。また、!を付けると必須項目となる
+			"default{2}",        //  0行目はパッケージ名(service名)
+			"Idx",
+			"verified_email(Boolean)",// Boolean型 他に（int,date,long,float,doubleがある。先小文字OK、省略時はString）
+			"name",
+			"given_name",
+			"family_name",
+			"error",
+			" errors{}",				// 多重度(n)、*がないと多重度(1)、繰り返し最大{1}
+			"  domain",
+			"  reason",
+			"  message",
+			"  locationType",
+			"  location",
+			" code(int){1~100}",			// 1~100の範囲
+			" message",
+			"subInfo",
+			" favorite",
+			"  food!=^.{3}$",	// 必須項目、正規表現つき
+			"  music=^.{5}$",			// 配列(要素数max3)
+			" favorite2",
+			"  food",
+			"   food1",
+			" favorite3",
+			"  food",
+			"  updated(date)",
+			" hobby{}",
+			"  $$text",				// テキストノード
+			"public",	// public.intの位置を移動させてテスト
+			" int"
+		};
+	*/
+
 	public static String entitytempl[] = {
 			// {}がMap, []がArray　, {} [] は末尾にどれか一つだけが付けられる。また、!を付けると必須項目となる
 			"default{2}",        //  0行目はパッケージ名(service名)
 			"Idx 	",
+			"public",
+			" int",
 			"email(string){5~30}",	// 5文字~30文字の範囲
 			"verified_email(Boolean)",// Boolean型 他に（int,date,long,float,doubleがある。先小文字OK、省略時はString）
 			"name",
@@ -90,6 +127,7 @@ public class XMLSerializerTest {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
 
 		String json = "{\"entry\" : {\"public\" : {\"int\" : \"予約語\"},\"subInfo\" : {\"hobby\" : [{\"______text\" : \"テキストノード\\\"\\n\"}]},\"link\" : [{\"___href\" : \"/0762678511-/allA/759188985520\",\"___rel\" : \"self\"},{\"___href\" : \"/transferring/all/0762678511-/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/@/spool/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/historyA/759188985520\",\"___rel\" : \"alternate\"}]}}";
+		//String json = "{\"entry\" : {\"subInfo\" : {\"hobby\" : [{\"______text\" : \"テキストノード\\\"\\n\"}]},\"public\" : {\"int\" : \"予約語\"},\"link\" : [{\"___href\" : \"/0762678511-/allA/759188985520\",\"___rel\" : \"self\"},{\"___href\" : \"/transferring/all/0762678511-/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/@/spool/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/historyA/759188985520\",\"___rel\" : \"alternate\"}]}}";	// public.intの位置を移動させてテスト
 		
 		EntryBase entry = (EntryBase) mp.fromJSON(json);
 		
@@ -110,7 +148,8 @@ public class XMLSerializerTest {
 	public void testFeed() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);
 
-		String json = "{ \"feed\" : {\"entry\" : [{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}},{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}}]}}";
+		String json = "{ \"feed\" : {\"entry\" : [\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}},{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}}]}}";
+		//String json = "{ \"feed\" : {\"entry\" : [{\"public\" : {\"int\" : \"予約語\"},\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}},{\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : { \"errors\" : [{\"domain\": \"com.google.auth\",\"reason\": \"invalidAuthentication\",\"message\": \"invalid header\",\"locationType\": \"header\",\"location\": \"Authorization\"}],\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}}]}}";		// public.intを追加してテスト
 		FeedBase feed = (FeedBase) mp.fromJSON(json);
 				
 		// MessagePack test
