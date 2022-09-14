@@ -5237,4 +5237,22 @@ public class TestMsgpackMapper {
 		
 	}
 
+	@Test
+	public void testRepeated() throws ParseException, JSONException, XMLException {
+		System.out.println("--- testRepeated start ---");
+		
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl,entityAcls, 30, SECRETKEY);
+		
+		List<Meta> metalist = mp.getMetalist();
+		boolean repeatedEmail = false;
+		for (Meta meta : metalist) {
+			System.out.println("[name] " + meta.name + " [repeated] " + meta.repeated);
+			if ("email".equals(meta.name)) {
+				repeatedEmail = meta.repeated;
+			}
+		}
+		assertFalse(repeatedEmail);
+		System.out.println("--- testRepeated end ---");
+	}
+
 }
