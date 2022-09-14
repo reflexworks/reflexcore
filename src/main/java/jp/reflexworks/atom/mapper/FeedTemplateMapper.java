@@ -1835,7 +1835,7 @@ public class FeedTemplateMapper implements IResourceMapper {
 				meta.aclW = null;
 
 				// for BugQuery Schema
-				if (matcherf.group(5) != null && !matcherf.group(5).equals("")) {
+				if (matcherf.group(5) != null && !matcherf.group(5).equals("") && matcherf.group(4) != null && !matcherf.group(4).equals("string") && !matcherf.group(4).equals("int")) {
 					meta.repeated = true;
 				} else {
 					meta.repeated = false;
