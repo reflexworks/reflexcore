@@ -49,14 +49,17 @@ public class XMLSerializer {
 			            }
 				      }else if (isTextNode(fields[fn])) {
 			    		  context.setNode(fields[fn],source);
-			    		  for (;(fn < fields.length)&&!isList; fn++) {
-			    				  if (!context.addattr(fields[fn],source)) {
-			    					  if ((fields.length==1)||(fields.length>fn+1)&&!context.isSameNode(fields[fn].getName(),fields[fn+1].getName())) {
+			    		  
+			    		  for (;(fields.length>1)&&(fn < fields.length)&&!isList; fn++) {
+			    			  if ((fields.length>fn+1)&&!isTextNode(fields[fn+1])) break;
+			    				  if (!context.addattr(fields[fn],source)) {			    					  
+			    					  if ((fields.length>fn+1)&&!context.isSameNode(fields[fn].getName(),fields[fn+1].getName())) {
 			    						  context.nodevalue = null;
 				    					  break;			    						  
 			    					  }
 			    				  }
 					      }
+					      
 					      context.outNode();
 	    				  						      
 
