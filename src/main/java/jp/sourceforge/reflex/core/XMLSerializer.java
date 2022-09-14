@@ -52,7 +52,8 @@ public class XMLSerializer {
 			    		  
 			    		  for (;(fn < fields.length)&&!isList; fn++) {
 			    				  if (!context.addattr(fields[fn],source)) {			    					  
-			    					  if (fields.length==1||(fields.length>fn+1)&&!context.isSameNode(fields[fn].getName(),fields[fn+1].getName())) {
+			    					  if ((fields.length>fn+1)&&!context.isSameNode(fields[fn].getName(),fields[fn+1].getName())) break;
+				    				  if (fields.length==1) {
 			    						  context.nodevalue = null;
 				    					  break;			    						  
 			    					  }
