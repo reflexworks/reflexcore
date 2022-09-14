@@ -1334,7 +1334,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testTextNodeEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
+	public void testTextNodeEntry() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, XMLException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);		// 変更前
 
 		String json = "{\"entry\" : {\"public\" : {\"int\" : \"予約語\"},\"subInfo\" : {\"hobby\" : [{\"______text\" : \"テキストノード\\\"\\n\"}]},\"link\" : [{\"___href\" : \"/0762678511-/allA/759188985520\",\"___rel\" : \"self\"},{\"___href\" : \"/transferring/all/0762678511-/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/@/spool/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/historyA/759188985520\",\"___rel\" : \"alternate\"}]}}";
@@ -1345,10 +1345,8 @@ public class TestMsgpackMapper {
 		System.out.println("\n=== XML Entry(テキストノード+Link) シリアライズ ===");
 		String xml = mp.toXML(entry);
 		System.out.println(xml);
-		/* TODO xml
 		System.out.println("\n=== XML Entry(テキストノード+Link2) シリアライズ ===");
 		System.out.println(mp.toJSON(mp.fromXML(xml)));
-		*/
 
 		System.out.println("\n=== Messagepack Entry シリアライズ ===");
 		byte[] msgpack = mp.toMessagePack(entry);
@@ -1356,7 +1354,6 @@ public class TestMsgpackMapper {
 			System.out.print(Integer.toHexString(msgpack[i]& 0xff)+" ");
 		}
 
-		/* TODO xml
 		System.out.println(xml);
 		System.out.println("====");
 		System.out.println(mp.toJSON(mp.fromXML(xml)));
@@ -1365,7 +1362,6 @@ public class TestMsgpackMapper {
 
 		String json2 = "{\"public\" : {\"int\" : \"予約語\"},\"subInfo\" : {\"hobby\" : [{\"______text\" : \"テキストノード\\\"\\n\"}]},\"link\" : [{\"___href\" : \"/0762678511-/allA/759188985520\",\"___rel\" : \"self\"},{\"___href\" : \"/transferring/all/0762678511-/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/@/spool/759188985520\",\"___rel\" : \"alternate\"},{\"___href\" : \"/0762678511-/historyA/759188985520\",\"___rel\" : \"alternate\"}]}";
 		assertEquals(json2, mp.toJSON(mp.fromXML(xml)));
-		*/
 	}
 
 	@Test
@@ -1630,7 +1626,7 @@ public class TestMsgpackMapper {
 	}
 
 	@Test
-	public void testGetSetvalue() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, SizeLimitExceededException {
+	public void testGetSetvalue() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException, SizeLimitExceededException, XMLException {
 		//		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl);		// ATOM Feed/Entryのみ。パッケージは_
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, entityAcls, 30, SECRETKEY);
 
@@ -1640,7 +1636,6 @@ public class TestMsgpackMapper {
 		//		String json = "{\"feed\" : {\"entry\" : [{\"id\" : \"123\"}]}}";
 		FeedBase feed = (FeedBase) mp.fromJSON(json);
 
-		/* TODO xml
 		// MessagePack test
 		System.out.println("\n=== XML Entry(テキストノード+Link) シリアライズ ===");
 		String xml = mp.toXML(feed);
@@ -1652,7 +1647,6 @@ public class TestMsgpackMapper {
 		groups.add("/@default/_group/$content");
 		groups.add("1");
 		System.out.println("Validtion:"+feed2.validate("123",groups));
-		*/
 
 		EntryBase entry = feed.entry.get(0);
 		System.out.println("\n==== getValue test ====");
@@ -1697,19 +1691,19 @@ public class TestMsgpackMapper {
 
 		Cipher cipher = (new CipherUtil()).getInstance();
 		System.out.println("---(before encrypted)---");
-		//System.out.println(mp.toXML(entry));	// TODO xml
+		System.out.println(mp.toXML(entry));
 		System.out.println(mp.toJSON(entry));
 		System.out.println("--------------");
 		entry.encrypt(cipher);
 		System.out.println("Encrypted subInfo.favorite.food value="+entry.getValue("subInfo.favorite.food"));
 		System.out.println("---(after encrypted)---");
-		//System.out.println(mp.toXML(entry));	// TODO xml
+		System.out.println(mp.toXML(entry));
 		System.out.println(mp.toJSON(entry));
 		System.out.println("--------------");
 		entry.decrypt(cipher);
 		System.out.println("Decrypted subInfo.favorite.food value="+entry.getValue("subInfo.favorite.food"));
 		System.out.println("---(after decrypted)---");
-		//System.out.println(mp.toXML(entry));	// TODO xml
+		System.out.println(mp.toXML(entry));
 		System.out.println(mp.toJSON(entry));
 		System.out.println("--------------");
 
@@ -1946,7 +1940,6 @@ public class TestMsgpackMapper {
 		assertTrue(isMatch);
 	}
 
-	/* TODO xml
 	@Test
 	public void testXmlFormat() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
 		FeedTemplateMapper mp3 = new FeedTemplateMapper(entitytempl3, entityAcls3, 30, SECRETKEY);
@@ -1969,7 +1962,6 @@ public class TestMsgpackMapper {
 
 		assertTrue(isMatch);
 	}
-	*/
 
 	@Test
 	public void testFieldMapper() throws ParseException, JSONException, IOException, DataFormatException, ClassNotFoundException {
@@ -4175,7 +4167,7 @@ public class TestMsgpackMapper {
 	 */
 	/* TODO xml
 	@Test
-	public void testControlCharactor() throws ParseException, IOException, ClassNotFoundException, XMLStreamException {
+	public void testControlCharactor() throws ParseException, IOException, ClassNotFoundException, XMLStreamException, XMLException {
 		FeedTemplateMapper mapper = new FeedTemplateMapper(entitytempl3, entityAcls3, 30, SECRETKEY);
 		EntryBase entry = EntryUtil.createEntry(mapper);
 
@@ -4199,10 +4191,10 @@ public class TestMsgpackMapper {
 		System.out.println(xml);
 		System.out.println(json);
 		System.out.println("*      before : " + entry.title);
-		//System.out.println("*  (xml)after : " + entryXml.title);	// TODO xml
+		System.out.println("*  (xml)after : " + entryXml.title);
 		System.out.println("* (json)after : " + entryJson.title);
 		System.out.println("*  (msg)after : " + entryMsgpack.title);
-		//assertEquals(entry.title, entryXml.title);	// TODO xml
+		assertEquals(entry.title, entryXml.title);
 		assertEquals(entry.title, entryJson.title);
 		assertEquals(entry.title, entryMsgpack.title);
 
@@ -4217,10 +4209,10 @@ public class TestMsgpackMapper {
 		System.out.println(xml);
 		System.out.println(json);
 		System.out.println("*      before : " + entry.title);
-		//System.out.println("*  (xml)after : " + entryXml.title);	// TODO xml
+		System.out.println("*  (xml)after : " + entryXml.title);
 		System.out.println("* (json)after : " + entryJson.title);
 		System.out.println("*  (msg)after : " + entryMsgpack.title);
-		//assertEquals(entry.title, entryXml.title);	// TODO xml
+		assertEquals(entry.title, entryXml.title);
 		assertEquals(entry.title, entryJson.title);
 		assertEquals(entry.title, entryMsgpack.title);
 
@@ -4235,10 +4227,10 @@ public class TestMsgpackMapper {
 		System.out.println(xml);
 		System.out.println(json);
 		System.out.println("*      before : " + entry.title);
-		//System.out.println("*  (xml)after : " + entryXml.title);	// TODO xml
+		System.out.println("*  (xml)after : " + entryXml.title);
 		System.out.println("* (json)after : " + entryJson.title);
 		System.out.println("*  (msg)after : " + entryMsgpack.title);
-		//assertEquals(entry.title, entryXml.title);	// TODO xml
+		assertEquals(entry.title, entryXml.title);
 		assertEquals(entry.title, entryJson.title);
 		assertEquals(entry.title, entryMsgpack.title);
 
@@ -4253,10 +4245,10 @@ public class TestMsgpackMapper {
 		System.out.println(xml);
 		System.out.println(json);
 		System.out.println("*      before : " + entry.title);
-		//System.out.println("*  (xml)after : " + entryXml.title);	// TODO xml
+		System.out.println("*  (xml)after : " + entryXml.title);
 		System.out.println("* (json)after : " + entryJson.title);
 		System.out.println("*  (msg)after : " + entryMsgpack.title);
-		//assertEquals(entry.title, entryXml.title);	// TODO xml
+		assertEquals(entry.title, entryXml.title);
 		assertEquals(entry.title, entryJson.title);
 		assertEquals(entry.title, entryMsgpack.title);
 
@@ -5241,19 +5233,38 @@ public class TestMsgpackMapper {
 	public void testRepeated() throws ParseException, JSONException, XMLException {
 		System.out.println("--- testRepeated start ---");
 		
-		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl,entityAcls, 30, SECRETKEY);
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, entityAcls, 30, SECRETKEY);
 		
 		List<Meta> metalist = mp.getMetalist();
-		boolean repeatedEmail = false;
+		// キー:name、値:repeated
+		Map<String, Boolean> nameRepeatedMap = new HashMap<>();
 		for (Meta meta : metalist) {
 			System.out.println("[name] " + meta.name + " [repeated] " + meta.repeated);
-			if ("email".equals(meta.name)) {
-				repeatedEmail = meta.repeated;
-			}
+			nameRepeatedMap.put(meta.name, meta.repeated);
 		}
 		
 		// entitytempl テンプレートの email 項目は repeated(配列)ではない。
-		assertFalse(repeatedEmail);
+		assertFalse(nameRepeatedMap.get("email"));
+		assertFalse(nameRepeatedMap.get("name"));
+		assertFalse(nameRepeatedMap.get("error"));
+		assertFalse(nameRepeatedMap.get("error.code"));
+		assertFalse(nameRepeatedMap.get("error.errors.reason"));
+		assertFalse(nameRepeatedMap.get("subInfo"));
+		assertFalse(nameRepeatedMap.get("subInfo.favorite"));
+		assertFalse(nameRepeatedMap.get("subInfo.favorite.food"));
+		assertFalse(nameRepeatedMap.get("subInfo.hobby.$$text"));
+		assertFalse(nameRepeatedMap.get("link.$href"));
+		assertFalse(nameRepeatedMap.get("content.$$text"));
+		assertFalse(nameRepeatedMap.get("id"));
+		// 配列項目はrepeatedがtrue
+		assertTrue(nameRepeatedMap.get("entry"));
+		assertTrue(nameRepeatedMap.get("link"));
+		assertTrue(nameRepeatedMap.get("contributor"));
+		assertTrue(nameRepeatedMap.get("author"));
+		assertTrue(nameRepeatedMap.get("category"));
+		assertTrue(nameRepeatedMap.get("error.errors"));
+		assertTrue(nameRepeatedMap.get("subInfo.hobby"));
+		
 		System.out.println("--- testRepeated end ---");
 	}
 
