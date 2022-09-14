@@ -104,11 +104,14 @@ public class XMLContext {
 	}
 
 	public boolean addattr(Field field, Object source) throws IllegalArgumentException, IllegalAccessException, IOException {
-	  if (this.nodename!=null&&this.nodename.equals(field.getName())) {
+	  String fieldname = field.getName();
+	  if (fieldname.startsWith("_")) fieldname = fieldname.substring(1);
+	  
+	  if (this.nodename!=null&&this.nodename.equals(fieldname)) {
 		  return true;
 	  }
-  	  if (isSameNode(this.nodename,field.getName())) {
-		  String attrname = getAttr(this.nodename,field.getName());
+  	  if (isSameNode(this.nodename,fieldname)) {
+		  String attrname = getAttr(this.nodename,fieldname);
 		  String attrvalue =  ""+ field.get(source);
 		  if (attrname!=null) {
 			  attrmap.put(attrname,attrvalue);
@@ -129,6 +132,7 @@ public class XMLContext {
 			return null;
 		}
 	}
+		
 
 	public boolean isSameNode(String nodename, String nodename2) {
 		return (nodename2.indexOf(nodename)>=0)&&(nodename2.indexOf("_$")>0);
