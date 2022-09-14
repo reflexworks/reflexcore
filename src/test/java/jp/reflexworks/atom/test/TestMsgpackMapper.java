@@ -5251,6 +5251,8 @@ public class TestMsgpackMapper {
 				repeatedEmail = meta.repeated;
 			}
 		}
+		
+		// entitytempl テンプレートの email 項目は repeated(配列)ではない。
 		assertFalse(repeatedEmail);
 		System.out.println("--- testRepeated end ---");
 	}
