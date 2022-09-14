@@ -1058,9 +1058,8 @@ public class TestMsgpackMapper {
 
 	}
 
-	/* TODO xml
 	@Test
-	public void testXMLEntry() throws ParseException, JSONException {
+	public void testXMLEntry() throws ParseException, JSONException, XMLException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl,entityAcls, 30, SECRETKEY);
 
 		String json = "{\"entry\" : {\"email\" : \"email1\",\"verified_email\" : false,\"name\" : \"管理者\",\"given_name\" : \"X\",\"family_name\" : \"管理者Y\",\"error\" : {\"code\" : 100,\"message\" : \"Syntax Error\"},\"subInfo\" : {\"favorite\" : {\"food\" : \"カレー\",\"music\" : \"ポップス1\"}}}}";
@@ -1080,7 +1079,6 @@ public class TestMsgpackMapper {
 
 		assertEquals(json3, mp.toJSON(entry2));
 	}
-	*/
 	
 	/* TODO package
 	@Test
