@@ -18,7 +18,7 @@ public class XMLContext {
 	public String nodevalue;
 	
 	public void setNode(Field field,Object source) throws IllegalArgumentException, IllegalAccessException {
-		this.nodename = getNodename(field.getName());
+		this.nodename = field.getName();
     	if (this.nodename.startsWith("_")) this.nodename = this.nodename.substring(1);
 
 		if (field.get(source)!=null) {
@@ -78,13 +78,13 @@ public class XMLContext {
 				out.write(this.nodevalue);						
 			}else if (this.nodename.indexOf("$")<0)
 			{
-				out.write("<"+getNodename(this.nodename));
+				out.write("<"+this.nodename);
 				for(String key:attrmap.keySet()) {
 					out.write(" "+key+"=\""+convert(attrmap.get(key))+"\"");
 				}
 				out.write(">");
 				out.write(this.nodevalue);		
-				out.write("</"+getNodename(this.nodename)+">");									
+				out.write("</"+this.nodename+">");									
 			}
 		}
 		this.nodevalue = null;
