@@ -76,19 +76,10 @@ public class XMLDeserializer {
 			// Meta名のqueue
 			Deque<String> nameQueue = new ArrayDeque<>();
 			// 1つ前のMeta名
-			//String lastName = null;
-			//int lastLayer = 0;
-			//String lastStartName = null;
-			//int lastStartLayer = 0;
 			String lastEndName = null;
 			int lastEndLayer = 0;
 			// カッコのqueue (閉じカッコを格納)
 			Deque<String> bracketQueue = new ArrayDeque<>();
-			// 配列名のqueue
-			//Deque<String> arrayQueue = new ArrayDeque<>();
-			//Deque<String> outBracketQueue = new ArrayDeque<>();
-			//Deque<String> inBracketQueue = new ArrayDeque<>();
-			//boolean isFeed = false;
 			// text
 			String text = "";
 			// 属性を出力したかどうか
@@ -103,9 +94,6 @@ public class XMLDeserializer {
 					String name = getMetaname(tag, nameQueue);
 					nameQueue.push(name);
 					int layer = nameQueue.size();
-					//if (layer == 1 && "feed".equals(tag)) {
-					//	isFeed = true;
-					//}
 					hasAttribute = false;
 					
 					if (lastEndName != null && !name.equals(lastEndName)) {
@@ -128,9 +116,6 @@ public class XMLDeserializer {
 						json.append(":");
 						json.append("{");
 						bracketQueue.push("}");
-					//} else if ("entry".equals(name)) {	// feed.entryの場合
-					//	json.append("[{");
-					//	bracketQueue.push("}]");
 					} else {
 						Meta meta = metaMap.get(name);
 						if (meta == null) {
@@ -147,7 +132,6 @@ public class XMLDeserializer {
 								json.append(encloseDoubleQuotes(tag));
 								json.append(":");
 								json.append("[");
-								//arrayQueue.push(name);
 							}
 						} else {
 							// タグの出力
@@ -185,8 +169,6 @@ public class XMLDeserializer {
 						}
 					}
 					
-					//lastStartName = name;
-					//lastStartLayer = layer;
 					text = "";
 					
 				} else if (event.isCharacters()) {
@@ -208,7 +190,6 @@ public class XMLDeserializer {
 						Meta meta = metaMap.get(name);
 						
 						// テキストノードがあれば出力する
-						//if (!StringUtils.isBlank(text)) {
 						if (!meta.isrecord || !StringUtils.isBlank(text)) {
 							if (meta.isNumeric() || "Boolean".equals(meta.type)) {
 								// 数値かboolean
@@ -314,19 +295,15 @@ public class XMLDeserializer {
 	 * @return JSON用エスケープ
 	 */
 	private String escapeJson(String s) {
-		//return JSONObject.escape(s);
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			switch (c) {
-//				サーバからJSONで出力する場合には、バックスラッシュ自体がエスケープ文字とみなされてしまうため、「\\n」のようにバックスラッシュをエスケープする必要がある。
+				// サーバからJSONで出力する場合には、バックスラッシュ自体がエスケープ文字とみなされてしまうため、「\\n」のようにバックスラッシュをエスケープする必要がある。
 				case '"':
 					sb.append("\\\"");
 					break;
-//				case '\'':
-//					sb.append("\\\\'");
-//					break;
 				case '\\': 	// \
 					sb.append("\\\\");
 					break;
