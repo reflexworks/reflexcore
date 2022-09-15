@@ -117,6 +117,23 @@ public class XMLDeserializerTest {
 	}
 
 	@Test
+	public void testFromXmlToJson_blank() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
+		
+		String xml = getXml_blank();
+		System.out.println("---- [testFromXmlToJson_blank] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		String json = xmlDesializer.fromXmlToJson(reader, mp);
+
+		System.out.println("---- [testFromXmlToJson_blank] JSON ----");
+		System.out.println(json);
+	}
+
+	@Test
 	public void testFromXml() throws XMLException, ParseException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
 		
@@ -131,6 +148,24 @@ public class XMLDeserializerTest {
 		String json = mp.toJSON(obj);
 		
 		System.out.println("---- [testFromXml] JSON ----");
+		System.out.println(json);
+	}
+
+	@Test
+	public void testFromXml2() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);
+		
+		String xml = getXml2();
+		System.out.println("---- [testFromXml2] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		Object obj = xmlDesializer.deserialize(reader, mp);
+		String json = mp.toJSON(obj);
+		
+		System.out.println("---- [testFromXml2] JSON ----");
 		System.out.println(json);
 	}
 
@@ -157,30 +192,16 @@ public class XMLDeserializerTest {
 		return sb.toString();
 	}
 
-	@Test
-	public void testFromXml2() throws XMLException, ParseException {
-		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);
-		
-		String xml = getXml2();
-		System.out.println("---- [testFromXml2] XML ----");
-		System.out.println(xml);
-		
-		StringReader reader = new StringReader(xml);
-		
-		XMLDeserializer xmlDesializer = new XMLDeserializer();
-		Object obj = xmlDesializer.deserialize(reader, mp);
-		String json = mp.toJSON(obj);
-		
-		System.out.println("---- [testFromXml2] JSON ----");
-		System.out.println(json);
-	}
-
 	private String getXml2() {
 		return "<entry><email>email1</email><name>管理者</name><family_name>管理者Y</family_name><subInfo><favorite><food>カレー</food><music>ポップス1</music></favorite></subInfo></entry>";
 	}
 
 	private String getXml_returncode() {
 		return "<entry><title type=\"null\">return\ncode</title></entry>";
+	}
+
+	private String getXml_blank() {
+		return "<feed><entry><title></title></entry></feed>";
 	}
 
 }

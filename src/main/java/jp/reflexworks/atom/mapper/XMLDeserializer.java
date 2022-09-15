@@ -208,7 +208,8 @@ public class XMLDeserializer {
 						Meta meta = metaMap.get(name);
 						
 						// テキストノードがあれば出力する
-						if (!StringUtils.isBlank(text)) {
+						//if (!StringUtils.isBlank(text)) {
+						if (!meta.isrecord || !StringUtils.isBlank(text)) {
 							if (meta.isNumeric() || "Boolean".equals(meta.type)) {
 								// 数値かboolean
 								json.append(escapeJson(text));
