@@ -4165,7 +4165,6 @@ public class TestMsgpackMapper {
 	/**
 	 * 改行・タブ文字テスト
 	 */
-	/* TODO xml
 	@Test
 	public void testControlCharactor() throws ParseException, IOException, ClassNotFoundException, XMLStreamException, XMLException {
 		FeedTemplateMapper mapper = new FeedTemplateMapper(entitytempl3, entityAcls3, 30, SECRETKEY);
@@ -4181,15 +4180,17 @@ public class TestMsgpackMapper {
 		System.out.println("1. 本物リターンコード(\\n)");
 		entry.title = "return\ncode";
 		xml = mapper.toXML(entry);
-		entryXml = (EntryBase)mapper.fromXML(xml);
 		System.out.println(xml);
+		System.out.println(mapper.toJSON(entry));
+		
+		entryXml = (EntryBase)mapper.fromXML(xml);
 		json = "{ \"entry\":"+mapper.toJSON(entry)+"}";
 		entryJson = (EntryBase)mapper.fromJSON(json);
 		json = mapper.toJSON(entryJson);
 		msgData = mapper.toMessagePack(entry);
 		entryMsgpack = (EntryBase)mapper.fromMessagePack(msgData, false);
-		System.out.println(xml);
 		System.out.println(json);
+		System.out.println("--------");
 		System.out.println("*      before : " + entry.title);
 		System.out.println("*  (xml)after : " + entryXml.title);
 		System.out.println("* (json)after : " + entryJson.title);
@@ -4253,7 +4254,6 @@ public class TestMsgpackMapper {
 		assertEquals(entry.title, entryMsgpack.title);
 
 	}
-	*/
 
 	/**
 	 * 制御文字テスト

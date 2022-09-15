@@ -100,6 +100,23 @@ public class XMLDeserializerTest {
 	}
 
 	@Test
+	public void testFromXmlToJson_returncode() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
+		
+		String xml = getXml_returncode();
+		System.out.println("---- [testFromXmlToJson_returncode] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		String json = xmlDesializer.fromXmlToJson(reader, mp);
+
+		System.out.println("---- [testFromXmlToJson_returncode] JSON ----");
+		System.out.println(json);
+	}
+
+	@Test
 	public void testFromXml() throws XMLException, ParseException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
 		
@@ -160,6 +177,10 @@ public class XMLDeserializerTest {
 
 	private String getXml2() {
 		return "<entry><email>email1</email><name>管理者</name><family_name>管理者Y</family_name><subInfo><favorite><food>カレー</food><music>ポップス1</music></favorite></subInfo></entry>";
+	}
+
+	private String getXml_returncode() {
+		return "<entry><title type=\"null\">return\ncode</title></entry>";
 	}
 
 }

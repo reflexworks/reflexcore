@@ -158,29 +158,30 @@ public class XMLDeserializer {
 							// クラス
 							json.append("{");
 							bracketQueue.push("}");
+
+							// 属性
+							Iterator<Attribute> it = element.getAttributes();
+							if (it != null) {
+								boolean isFirst = true;
+								while (it.hasNext()) {
+									if (isFirst) {
+										isFirst = false;
+									} else {
+										json.append(",");
+									}
+									Attribute attr = it.next();
+									json.append(encloseDoubleQuotes("___" + attr.getName().getLocalPart()));
+									json.append(":");
+									json.append(encloseDoubleQuotes(escapeJson(attr.getValue())));
+								}
+								if (!isFirst) {
+									hasAttribute = true;
+								}
+							}
+
 						} else {
 							// 値
 							bracketQueue.push("");
-						}
-					}
-					
-					// 属性
-					Iterator<Attribute> it = element.getAttributes();
-					if (it != null) {
-						boolean isFirst = true;
-						while (it.hasNext()) {
-							if (isFirst) {
-								isFirst = false;
-							} else {
-								json.append(",");
-							}
-							Attribute attr = it.next();
-							json.append(encloseDoubleQuotes("___" + attr.getName().getLocalPart()));
-							json.append(":");
-							json.append(encloseDoubleQuotes(escapeJson(attr.getValue())));
-						}
-						if (!isFirst) {
-							hasAttribute = true;
 						}
 					}
 					
