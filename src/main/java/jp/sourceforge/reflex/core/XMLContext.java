@@ -80,7 +80,9 @@ public class XMLContext {
 			{
 				out.write("<"+this.nodename);
 				for(String key:attrmap.keySet()) {
-					out.write(" "+key+"=\""+convert(attrmap.get(key))+"\"");
+					if (attrmap.get(key)!=null) {
+						out.write(" "+key+"=\""+convert(attrmap.get(key))+"\"");						
+					}
 				}
 				out.write(">");
 				out.write(this.nodevalue);		
@@ -112,8 +114,8 @@ public class XMLContext {
 	  }
   	  if (isSameNode(this.nodename,fieldname)) {
 		  String attrname = getAttr(this.nodename,fieldname);
-		  String attrvalue =  ""+ field.get(source);
-		  if (attrname!=null) {
+		  String attrvalue = (String) field.get(source);
+		  if (attrname!=null&&attrvalue!=null) {
 			  attrmap.put(attrname,attrvalue);
 		  }
 		  return true;
