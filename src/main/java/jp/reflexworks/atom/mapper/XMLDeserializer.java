@@ -195,13 +195,15 @@ public class XMLDeserializer {
 								// 数値かboolean
 								json.append(escapeJson(text));
 							} else if (meta.isrecord) {
-								// テキストノード項目(______text)
-								if (hasAttribute) {
-									json.append(",");
+								if (metaMap.containsKey(name + ".$$text")) {
+									// テキストノード項目(______text)
+									if (hasAttribute) {
+										json.append(",");
+									}
+									json.append(encloseDoubleQuotes("______text"));
+									json.append(":");
+									json.append(encloseDoubleQuotes(escapeJson(text)));
 								}
-								json.append(encloseDoubleQuotes("______text"));
-								json.append(":");
-								json.append(encloseDoubleQuotes(escapeJson(text)));
 							} else {
 								// 文字列
 								json.append(encloseDoubleQuotes(escapeJson(text)));

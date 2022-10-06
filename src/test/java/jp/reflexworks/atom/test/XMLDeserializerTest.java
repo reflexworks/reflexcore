@@ -134,6 +134,40 @@ public class XMLDeserializerTest {
 	}
 
 	@Test
+	public void testFromXmlToJson_contributor() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
+		
+		String xml = getXml_contributor();
+		System.out.println("---- [testFromXmlToJson_contributor] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		String json = xmlDesializer.fromXmlToJson(reader, mp);
+
+		System.out.println("---- [testFromXmlToJson_contributor] JSON ----");
+		System.out.println(json);
+	}
+
+	@Test
+	public void testFromXmlToJson_content() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
+		
+		String xml = getXml_content();
+		System.out.println("---- [testFromXmlToJson_content] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		String json = xmlDesializer.fromXmlToJson(reader, mp);
+
+		System.out.println("---- [testFromXmlToJson_content] JSON ----");
+		System.out.println(json);
+	}
+
+	@Test
 	public void testFromXml() throws XMLException, ParseException {
 		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
 		
@@ -169,39 +203,94 @@ public class XMLDeserializerTest {
 		System.out.println(json);
 	}
 
+	@Test
+	public void testFrom_contributor() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);
+		
+		String xml = getXml_contributor();
+		System.out.println("---- [testFrom_contributor] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		Object obj = xmlDesializer.deserialize(reader, mp);
+		String json = mp.toJSON(obj);
+		
+		System.out.println("---- [testFrom_contributor] JSON ----");
+		System.out.println(json);
+	}
+
+	@Test
+	public void testFrom_content() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytempl, SECRETKEY);
+		
+		String xml = getXml_content();
+		System.out.println("---- [testFrom_content] XML ----");
+		System.out.println(xml);
+		
+		StringReader reader = new StringReader(xml);
+		
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		Object obj = xmlDesializer.deserialize(reader, mp);
+		String json = mp.toJSON(obj);
+		
+		System.out.println("---- [testFrom_content] JSON ----");
+		System.out.println(json);
+	}
+
 	private String getXml() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<feed>");
-		sb.append("<entry>");
-		sb.append("<contributor><uri>urn:vte.cx:acl:/_group/$admin,CRUD</uri></contributor>");
-		sb.append("<contributor><uri>urn:vte.cx:acl:+,R</uri></contributor>");
-		sb.append("<content type=\"text/html\">&lt;p&gt;virtual technology (test)&lt;/p&gt;</content>");
-		sb.append("<title>HTML</title>");
-		sb.append("<link href=\"/@/test.html\" rel=\"self\"/>");
-		sb.append("<link href=\"/_html/@/test.html\" rel=\"alternate\"/>");
-		sb.append("</entry>");
-		sb.append("<entry>");
-		sb.append("<link href=\"/@/test2.html\" rel=\"self\"/>");
-		sb.append("<link href=\"/_html/@/test2.html\" rel=\"alternate\"/>");
-		sb.append("<contributor><uri>urn:vte.cx:acl:/_group/$admin,CRUD</uri></contributor>");
-		sb.append("<contributor><uri>urn:vte.cx:acl:+,R</uri></contributor>");
-		sb.append("<content type=\"text/html\">&lt;p&gt;virtual technology (test2)&lt;/p&gt;</content>");
-		sb.append("<title>HTML2</title>");
-		sb.append("</entry>");
-		sb.append("</feed>");
+		sb.append(" <entry>");
+		sb.append(" <contributor><uri>urn:vte.cx:acl:/_group/$admin,CRUD</uri></contributor>");
+		sb.append(" <contributor><uri>urn:vte.cx:acl:+,R</uri></contributor>");
+		sb.append(" <content type=\"text/html\">&lt;p&gt;virtual technology (test)&lt;/p&gt;</content>");
+		sb.append(" <title>HTML</title>");
+		sb.append(" <link href=\"/@/test.html\" rel=\"self\"/>");
+		sb.append(" <link href=\"/_html/@/test.html\" rel=\"alternate\"/>");
+		sb.append(" </entry>");
+		sb.append(" <entry>");
+		sb.append(" <link href=\"/@/test2.html\" rel=\"self\"/>");
+		sb.append(" <link href=\"/_html/@/test2.html\" rel=\"alternate\"/>");
+		sb.append(" <contributor><uri>urn:vte.cx:acl:/_group/$admin,CRUD</uri></contributor>");
+		sb.append(" <contributor><uri>urn:vte.cx:acl:+,R</uri></contributor>");
+		sb.append(" <content type=\"text/html\">&lt;p&gt;virtual technology (test2)&lt;/p&gt;</content>");
+		sb.append(" <title>HTML2</title>");
+		sb.append(" </entry>");
+		sb.append(" </feed>");
 		return sb.toString();
 	}
 
 	private String getXml2() {
-		return "<entry><email>email1</email><name>管理者</name><family_name>管理者Y</family_name><subInfo><favorite><food>カレー</food><music>ポップス1</music></favorite></subInfo></entry>";
+		return "<entry> <email>email1</email> <name>管理者</name> <family_name>管理者Y</family_name> <subInfo> <favorite> <food>カレー</food> <music>ポップス1</music> </favorite> </subInfo> </entry>";
 	}
 
 	private String getXml_returncode() {
-		return "<entry><title type=\"null\">return\ncode</title></entry>";
+		return "<entry> <title type=\"null\">return\ncode</title> </entry>";
 	}
 
 	private String getXml_blank() {
-		return "<feed><entry><title></title></entry></feed>";
+		return "<feed> <entry> <title> </title> </entry> </feed>";
 	}
+
+	private String getXml_contributor() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<feed> <entry>");
+		sb.append(" <contributor> <uri>urn:vte.cx:acl:/_group/$admin,CRUD</uri> </contributor>");
+		sb.append(" <contributor> <uri>urn:vte.cx:acl:*,RE.</uri> </contributor>");
+		sb.append(" </entry> </feed>");
+		return sb.toString();
+	}
+
+	private String getXml_content() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<feed> <entry>");
+		sb.append(" <content type=\"text/javascript;charset=UTF-8\">ReflexContext.log('message');</content>");
+		sb.append(" </entry> </feed>");
+		return sb.toString();
+	}
+
+	
 
 }
