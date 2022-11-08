@@ -51,6 +51,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String CONTENT_TYPE_APPLICATION_XML = CONTENT_TYPE_APPLICATION + "xml";
 	/** Content Type : application/octet-stream (未知のバイナリ形式) */
 	public static final String CONTENT_TYPE_APPLICATION_OCTET_STREAM = CONTENT_TYPE_APPLICATION + "octet-stream";
+	/** Content Type : text/csv */
+	public static final String CONTENT_TYPE_CSV = CONTENT_TYPE_TEXT + "csv";
 
 	/** Header : Content Type */
 	public static final String HEADER_CONTENT_TYPE = "Content-Type";
@@ -87,6 +89,14 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_DISPOSITION_SPLIT = ";";
 	/** Header value : filename */
 	public static final String HEADER_VALUE_FILENAME = "filename";
+	/** Header value : attachment */
+	public static final String HEADER_VALUE_ATTACHMENT = "attachment";
+	/** Header value : doublequote */
+	public static final String DOUBLEQUOTE = "\"";
+	/** Header value : attachment filename */
+	public static final String HEADER_VALUE_ATTACHMENT_FILENAME_PREFIX = 
+			HEADER_VALUE_ATTACHMENT + HEADER_DISPOSITION_SPLIT + " " + HEADER_VALUE_FILENAME + 
+			"=" + DOUBLEQUOTE;
 	/** Response Header : X-Content-Type-Options: nosniff */
 	public static final String HEADER_CONTENT_TYPE_OPTIONS = "X-Content-Type-Options";
 	/** Response Header value : X-Content-Type-Options: nosniff */
@@ -109,8 +119,12 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_COOKIE = "Cookie";
 	/** RXIDヘッダのキー */
 	public static final String HEADER_AUTHORIZATION = "Authorization";
-	/** RXIDヘッダのキー */
+	/** RXIDヘッダの値の先頭に使用 */
 	public static final String HEADER_AUTHORIZATION_RXID = "RXID ";
+	/** アクセストークンヘッダの値の先頭に使用 */
+	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
+	/** APIKeyヘッダの値の先頭に使用 */
+	public static final String HEADER_AUTHORIZATION_APIKEY = "APIKey ";
 	/** JSESSIONID */
 	public static final String COOKIE_JSESSIONID = "JSESSIONID";
 	/** SID */
@@ -119,8 +133,6 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_PLATFORM = "X-PLATFORM";
 	/** Platform Token */
 	public static final String HEADER_PLATFORM_TOKEN = "X-PLATFORM-TOKEN";
-	/** アクセストークンヘッダの値の先頭に使用 */
-	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
 	/** Response header : ユーザ番号(UID) */
 	public static final String HEADER_X_UID = "X-UID";
 	/** Response header : RXID */
