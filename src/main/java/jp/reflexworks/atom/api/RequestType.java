@@ -174,6 +174,8 @@ public interface RequestType {
 	public static final String PARAM_SERVICEKEY = "_servicekey";
 	/** URLパラメータ : ログエントリー登録(バッチ処理などで直接登録) */
 	public static final String PARAM_LOG = "_log";
+	/** URLパラメータ : フォルダクリア */
+	public static final String PARAM_CLEARFOLDER = "_clearfolder";
 
 	/** URLパラメータ : ワイルドカード */
 	public static final String WILDCARD = "*";
