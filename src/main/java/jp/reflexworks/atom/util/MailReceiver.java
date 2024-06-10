@@ -8,8 +8,6 @@ import java.util.Properties;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
-import com.sun.mail.pop3.POP3Store;
-
 import jakarta.mail.Flags;
 import jakarta.mail.Folder;
 import jakarta.mail.Message;
@@ -17,6 +15,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.Multipart;
 import jakarta.mail.Part;
 import jakarta.mail.Session;
+import jakarta.mail.Store;
 import jakarta.mail.internet.MimeUtility;
 import jp.reflexworks.atom.api.EntryUtil;
 import jp.reflexworks.atom.entry.Content;
@@ -57,7 +56,7 @@ public class MailReceiver {
 		Session session = Session.getInstance(props);
 		// session.setDebug(debug);
 
-		POP3Store store = (POP3Store) session.getStore("pop3");
+		Store store = session.getStore("pop3");
 		store.connect(username, password);
 
 		Folder folder = store.getFolder("INBOX");
