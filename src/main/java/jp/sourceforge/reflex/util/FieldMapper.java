@@ -959,4 +959,19 @@ public class FieldMapper {
 	public String cloneString(String obj) {
 		return new StringBuilder(obj).toString();
 	}
+	
+	/**
+	 * オブジェクトに指定されたフィールドがあるかどうかチェック.
+	 * @param value オブジェクト
+	 * @param fieldName フィールド名
+	 * @return オブジェクトに指定されたフィールドがある場合true
+	 */
+	public static boolean hasField(Object value, String fieldName) {
+		try {
+			value.getClass().getField(fieldName);
+			return true;
+		} catch (NoSuchFieldException e) {
+			return false;
+		}
+	}
 }
