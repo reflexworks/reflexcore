@@ -1,15 +1,21 @@
 package jp.sourceforge.reflex.util;
 
-import java.util.regex.Pattern;
+import java.text.Normalizer;
+import java.util.Locale;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 文字操作ユーティリティ.
  */
 public class StringUtils {
-	
+
 	/** 英数字の正規表現 */
 	public static final Pattern PATTERN_ALPHANUMERIC = Pattern.compile("^[0-9a-zA-Z]*$");
+	/** 変換対象ハイフンの正規表現 */
+	public static final String REGEX_CONVERT_HYPHEN = "[\\‐\\–\\ー\\−\\－]";
+	/** 半角ハイフン */
+	public static final String HYPHEN = "－";
 
 	/**
 	 * nullの場合空文字を返却します.
@@ -177,7 +183,7 @@ public class StringUtils {
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Long.MIN_VALUE;
 				else return Long.MAX_VALUE;
-			}	
+			}
 		}
 		return def;
 	}
@@ -210,7 +216,7 @@ public class StringUtils {
 			} catch (NumberFormatException e) {
 				if (str.indexOf("-")>=0) return Float.MIN_VALUE;
 				else return Float.MAX_VALUE;
-			}	
+			}
 		}
 		return def;
 	}
@@ -361,7 +367,7 @@ public class StringUtils {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}	
+		}
 	}
 
 	/**
@@ -375,7 +381,107 @@ public class StringUtils {
 			return true;
 		} catch (Exception e) {
 			return false;
-		}	
+		}
+	}
+
+	/**
+	 * 文字列が数値(Double)かどうか判定します。
+	 * @param str 文字列
+	 * @return Doubleの場合true
+	 */
+	public static boolean isNumber(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が自然数のInteger型かどうか判定します。
+	 * @param str 文字列
+	 * @return 自然数のInteger型の場合true
+	 */
+	public static boolean isNaturalInteger(String str) {
+		try {
+			int num = Integer.parseInt(str);
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が自然数かどうか判定します。
+	 * @param str 文字列
+	 * @return 自然数の場合true
+	 */
+	public static boolean isNaturalNumber(String str) {
+		try {
+			long num = Long.parseLong(str);
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が正の数かどうか判定します。
+	 * @param str 文字列
+	 * @return 正の数の場合true
+	 */
+	public static boolean isPositiveNumber(String str) {
+		try {
+			double num = Double.parseDouble(str);
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列が正の数かどうか判定します。
+	 * @param str 文字列
+	 * @return 正の数の場合true
+	 */
+	public static boolean isPositiveNumber(double num) {
+		try {
+			if (num > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * 文字列がbooleanかどうか判定します。
+	 * @param str 文字列
+	 * @return booleanの場合true
+	 */
+	public static boolean isBoolean(String str) {
+		if (!StringUtils.isBlank(str)) {
+			String lower = str.toLowerCase(Locale.ENGLISH);
+			if ("true".equals(lower) || "false".equals(lower)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -414,14 +520,14 @@ public class StringUtils {
 	 * @return 置換結果文字列
 	 */
 	public static String replaceAll(String str, String regex, String replacement) {
-		if (!StringUtils.isBlank(str) && !StringUtils.isBlank(regex) && 
+		if (!StringUtils.isBlank(str) && !StringUtils.isBlank(regex) &&
 				replacement != null) {
 			String tmpReplacement = escapeDollar(replacement);
 			return str.replaceAll(regex, tmpReplacement);
 		}
 		return str;
 	}
-	
+
 	/**
 	 * 文字列が英数字かどうか判定します.
 	 * <p>
@@ -438,7 +544,7 @@ public class StringUtils {
 		Matcher matcher = PATTERN_ALPHANUMERIC.matcher(str);
 		return matcher.matches();
 	}
-	
+
 	/**
 	 * ゼロパディング
 	 * @param i 数値。0以上を指定する。
@@ -455,7 +561,7 @@ public class StringUtils {
 		}
 		return String.valueOf(i);
 	}
-	
+
 	/**
 	 * 文字列をInteger型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
@@ -465,7 +571,7 @@ public class StringUtils {
 	public static Integer parseInteger(String str) {
 		return parseInteger(str, null);
 	}
-	
+
 	/**
 	 * 文字列をInteger型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
@@ -483,7 +589,7 @@ public class StringUtils {
 			return def;
 		}
 	}
-	
+
 	/**
 	 * 文字列をLong型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はnullを返却します。
@@ -493,7 +599,7 @@ public class StringUtils {
 	public static Long parseLong(String str) {
 		return parseLong(str, null);
 	}
-	
+
 	/**
 	 * 文字列をInteger型に変更します.
 	 * 文字列がnullの場合、また数値に変換できない場合はデフォルト値を返却します。
@@ -511,7 +617,7 @@ public class StringUtils {
 			return def;
 		}
 	}
-	
+
 	/**
 	 * Booleanの値を文字列に変換
 	 * @param val Boolean型の値
@@ -524,7 +630,7 @@ public class StringUtils {
 		}
 		return val.toString();
 	}
-	
+
 	/**
 	 * Integerの値を文字列に変換
 	 * @param val Integer型
@@ -537,7 +643,7 @@ public class StringUtils {
 		}
 		return val.toString();
 	}
-	
+
 	/**
 	 * Longの値を文字列に変換
 	 * @param val Long型
@@ -549,6 +655,25 @@ public class StringUtils {
 			return String.valueOf(def);
 		}
 		return val.toString();
+	}
+
+	/**
+	 * 全角・半角の正規化 (Normalize).
+	 * Form.NFKD で変換。
+	 * 検索インデックスなどに使用してください。
+	 *   * 全角英数字・記号を半角英数字・記号に変換
+	 *   * 半角カナを全角カナに変換
+	 *   * 丸囲み文字、組文字を正規化
+	 * @param text 文字列
+	 * @return 編集した文字列
+	 */
+	public static String normalize(String text) {
+		if (isBlank(text)) {
+			return text;
+		}
+		String tmp = Normalizer.normalize(text, Normalizer.Form.NFKD);
+		// 全角ハイフンを半角に変換
+		return tmp.replaceAll(REGEX_CONVERT_HYPHEN, HYPHEN);
 	}
 
 }

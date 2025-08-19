@@ -1,12 +1,13 @@
 package jp.sourceforge.reflex;
 
-import java.io.Reader;
-import java.io.Writer;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
 import jp.sourceforge.reflex.exception.JSONException;
+import jp.sourceforge.reflex.exception.XMLException;
 
 
 /**
@@ -32,16 +33,18 @@ public interface IResourceMapper {
 	/**
 	 * オブジェクトをJSON文字列にシリアライズします。
 	 * @param entity オブジェクト
+	 * @param dispChildNum
 	 * @return JSON文字列
 	 */
-	public String toJSON(Object entity,boolean dispChildNum);
+	public String toJSON(Object entity, boolean dispChildNum);
 
 	/**
 	 * オブジェクトをJSON文字列にシリアライズします。
 	 * @param entity オブジェクト
 	 * @param writer JSON文字列の出力先
+	 * @param dispChildNum
 	 */
-	public void toJSON(Object entity, Writer writer,boolean dispChildNum);
+	public void toJSON(Object entity, Writer writer, boolean dispChildNum);
 
 	/**
 	 * JSON文字列からオブジェクトを作成します。
@@ -70,7 +73,7 @@ public interface IResourceMapper {
 	 * @param printns 名前空間を出力する場合trueを設定します。
 	 * @return XML文字列
 	 */
-	public String toXML(Object entity, boolean printns);
+	//public String toXML(Object entity, boolean printns);
 
 	/**
 	 * オブジェクトをXML文字列にシリアライズします。
@@ -85,21 +88,21 @@ public interface IResourceMapper {
 	 * @param writer XML文字列の出力先
 	 * @param printns 名前空間を出力する場合trueを設定します。
 	 */
-	public void toXML(Object entity, Writer writer, boolean printns);
+	//public void toXML(Object entity, Writer writer, boolean printns);
 
 	/**
 	 * XML文字列からオブジェクトを作成します。
 	 * @param xml XML文字列
 	 * @return オブジェクト
 	 */
-	public Object fromXML(String xml);
+	public Object fromXML(String xml) throws XMLException;
 
 	/**
 	 * XML文字列からオブジェクトを作成します。
 	 * @param xml XML文字列の読み込み元
 	 * @return オブジェクト
 	 */
-	public Object fromXML(Reader xml);
+	public Object fromXML(Reader xml) throws XMLException;
 
 	/**
 	 * オブジェクトをMessagePack形式にシリアライズします。
@@ -138,7 +141,7 @@ public interface IResourceMapper {
 	 * @return オブジェクト
 	 * @throws JSONException
 	 */
-	public Object fromArray(String array,boolean isFeed) throws JSONException;
+	//public Object fromArray(String array,boolean isFeed) throws JSONException;
 
 	/**
 	 * オブジェクトをArray形式にシリアライズします。
@@ -147,6 +150,6 @@ public interface IResourceMapper {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Object toArray(byte[] msg) throws IOException,ClassNotFoundException;
+	//public Object toArray(byte[] msg) throws IOException,ClassNotFoundException;
 
 }

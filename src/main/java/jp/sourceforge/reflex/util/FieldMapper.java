@@ -1,25 +1,25 @@
 package jp.sourceforge.reflex.util;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URL;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Locale;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Array;
-import java.lang.annotation.Annotation;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URL;
 
 /**
  * オブジェクトのフィールド編集クラス.
@@ -29,9 +29,9 @@ public class FieldMapper {
 	private Logger logger = Logger.getLogger(this.getClass().getName());
 	public static final String PERSISTENT = "@javax.jdo.annotations.Persistent";
 	public static final String PRIMARY_KEY = "@javax.jdo.annotations.PrimaryKey";
-	
+
 	protected boolean isReflexField;
-	
+
 	public FieldMapper(boolean isReflexField) {
 		this.isReflexField = isReflexField;
 	}
@@ -98,7 +98,7 @@ public class FieldMapper {
 	 * <ul>
 	 * <li>
 	 *     String, Integer, Long, Float, Double, Date, Short, Character, Byte, Boolean, Number,
-	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale, 
+	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale,
 	 *     Calendar, com.google.appengine.api.datastore.Text
 	 * </li>
 	 * </ul>
@@ -125,15 +125,15 @@ public class FieldMapper {
 	 *   trueの場合、プリミティブ型と以下のクラス以外はセット対象外です。
 	 *   <ul><li>
 	 *     String, Integer, Long, Float, Double, Date, Short, Character, Byte, Boolean, Number,
-	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale, 
+	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale,
 	 *     Calendar, com.google.appengine.api.datastore.Text
 	 *   </li></ul>
 	 */
-	public void setValue(Object source, Object target, boolean isCheckAnnotation, 
+	public void setValue(Object source, Object target, boolean isCheckAnnotation,
 			boolean isCheckMultiObj) {
 		setValue(source, target, isCheckAnnotation, isCheckMultiObj, 0);
 	}
-		
+
 	/**
 	 * sourceの各値を、targetの各フィールドにセットします.
 	 * <p>
@@ -149,7 +149,7 @@ public class FieldMapper {
 	 *   trueの場合、プリミティブ型と以下のクラス以外はセット対象外です。
 	 *   <ul><li>
 	 *     String, Integer, Long, Float, Double, Date, Short, Character, Byte, Boolean, Number,
-	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale, 
+	 *     BigInteger, BigDecimal, StringBuffer, URL, Timestamp, Time, java.sql,Date, File, Locale,
 	 *     Calendar, com.google.appengine.api.datastore.Text
 	 *   </li></ul>
 	 * @param level 上位クラスのコピー実施階層
@@ -161,15 +161,18 @@ public class FieldMapper {
 	 *   <li> ... </li>
 	 * </ol>
 	 */
-	public void setValue(Object source, Object target, boolean isCheckAnnotation, 
+	public void setValue(Object source, Object target, boolean isCheckAnnotation,
 			boolean isCheckMultiObj, int level) {
 		// 自クラス
-		Class targetClass = target.getClass();
-		Field[] fields = targetClass.getDeclaredFields();
+		//Class targetClass = target.getClass();
+		//Field[] fields = targetClass.getDeclaredFields();
+		Class sourceClass = source.getClass();
+		Field[] fields = sourceClass.getDeclaredFields();
 		setValue(fields, source, target, isCheckAnnotation, isCheckMultiObj);
 
 		// スーパークラス
-		Class superClass = targetClass.getSuperclass();
+		//Class superClass = targetClass.getSuperclass();
+		Class superClass = sourceClass.getSuperclass();
 		int cnt = 0;
 		while (superClass != null && !Object.class.equals(superClass) &&
 				(level <= 0 || level > cnt)) {
@@ -180,8 +183,8 @@ public class FieldMapper {
 			cnt++;
 		}
 	}
-	
-	private void setValue(Field[] fields, Object source, Object target, 
+
+	private void setValue(Field[] fields, Object source, Object target,
 			boolean isCheckAnnotation, boolean isCheckMultiObj) {
 		for (Field fld : fields) {
 
@@ -192,7 +195,7 @@ public class FieldMapper {
 
 				try {
 					Object sourcevalue = this.getValue(source, getter);
-					
+
 					if (sourcevalue != null) {
 						if (!isCheckMultiObj || !isMultipleObj(sourcevalue)) {
 							Object targetvalue = this.getValue(target, getter);
@@ -246,7 +249,7 @@ public class FieldMapper {
 		if (isCloneable(source)) {
 			return invokeClone(source);
 		}
-		
+
 		// フィールドごとに処理
 		Class targetClass = source.getClass();
 		Field[] fields = targetClass.getDeclaredFields();
@@ -264,7 +267,7 @@ public class FieldMapper {
 				this.setValue(target, fld.getType(), clone(sourcevalue), setter);
 			}
 		}
-		
+
 		// 他のクラスを継承している場合、スーパークラスの変数についてもコピーする。
 		Class superClass = targetClass.getSuperclass();
 		while (superClass != null && !Object.class.equals(superClass)) {
@@ -369,7 +372,7 @@ public class FieldMapper {
 
 		return ret;
 	}
-	
+
 	/**
 	 * インスタンスの作成
 	 * @param cls インスタンスを作成したいクラス
@@ -377,11 +380,10 @@ public class FieldMapper {
 	 */
 	public Object newInstance(Class cls) {
 		try {
-			return cls.newInstance();
-			
-		} catch (IllegalAccessException e) {
-			logger.log(Level.WARNING, e.getClass().getName(), e);
-		} catch (InstantiationException e) {
+			return cls.getDeclaredConstructor().newInstance();
+
+		} catch (IllegalAccessException | InstantiationException |
+				InvocationTargetException | NoSuchMethodException e) {
 			logger.log(Level.WARNING, e.getClass().getName(), e);
 		}
 		return null;
@@ -424,7 +426,7 @@ public class FieldMapper {
 
 		return ret;
 	}
-	
+
 	/**
 	 * プリミティブ型、GAEのText型、上記以外の"java.～"パッケージのクラスはfalseを返します。
 	 * @param obj オブジェクト
@@ -439,7 +441,7 @@ public class FieldMapper {
 				obj instanceof Float || obj instanceof Double || obj instanceof Date ||
 				obj instanceof Short || obj instanceof Character || obj instanceof Byte ||
 				obj instanceof Boolean || obj instanceof Number || obj instanceof BigInteger ||
-				obj instanceof BigDecimal || obj instanceof StringBuffer || 
+				obj instanceof BigDecimal || obj instanceof StringBuffer ||
 				obj instanceof StringBuilder || obj instanceof URL ||
 				obj instanceof Timestamp || obj instanceof Time || obj instanceof java.sql.Date ||
 				obj instanceof File || obj instanceof Locale || obj instanceof Calendar) {
@@ -449,10 +451,10 @@ public class FieldMapper {
 		if (clsname.equals("com.google.appengine.api.datastore.Text")) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * プリミティブ型、GAEのText型、上記以外の"java.～"パッケージのクラスはfalseを返します。
 	 * @param cls Class
@@ -462,18 +464,18 @@ public class FieldMapper {
 		if (cls.isPrimitive()) {
 			return false;
 		}
-		if (String.class.isAssignableFrom(cls) || Integer.class.isAssignableFrom(cls) || 
-				Long.class.isAssignableFrom(cls) || Float.class.isAssignableFrom(cls) || 
+		if (String.class.isAssignableFrom(cls) || Integer.class.isAssignableFrom(cls) ||
+				Long.class.isAssignableFrom(cls) || Float.class.isAssignableFrom(cls) ||
 				Double.class.isAssignableFrom(cls) || Date.class.isAssignableFrom(cls) ||
-				Short.class.isAssignableFrom(cls) || Character.class.isAssignableFrom(cls) || 
-				Byte.class.isAssignableFrom(cls) || Boolean.class.isAssignableFrom(cls) || 
+				Short.class.isAssignableFrom(cls) || Character.class.isAssignableFrom(cls) ||
+				Byte.class.isAssignableFrom(cls) || Boolean.class.isAssignableFrom(cls) ||
 				Number.class.isAssignableFrom(cls) || BigInteger.class.isAssignableFrom(cls) ||
-				BigDecimal.class.isAssignableFrom(cls) || 
-				StringBuffer.class.isAssignableFrom(cls) || 
+				BigDecimal.class.isAssignableFrom(cls) ||
+				StringBuffer.class.isAssignableFrom(cls) ||
 				StringBuilder.class.isAssignableFrom(cls) || URL.class.isAssignableFrom(cls) ||
-				Timestamp.class.isAssignableFrom(cls) || Time.class.isAssignableFrom(cls) || 
+				Timestamp.class.isAssignableFrom(cls) || Time.class.isAssignableFrom(cls) ||
 				java.sql.Date.class.isAssignableFrom(cls) ||
-				File.class.isAssignableFrom(cls) || Locale.class.isAssignableFrom(cls) || 
+				File.class.isAssignableFrom(cls) || Locale.class.isAssignableFrom(cls) ||
 				Calendar.class.isAssignableFrom(cls)) {
 			return false;
 		}
@@ -481,7 +483,7 @@ public class FieldMapper {
 		if (clsname.equals("com.google.appengine.api.datastore.Text")) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -578,7 +580,7 @@ public class FieldMapper {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Mapクラスを継承するクラスはtrueを返します。
 	 * @param obj オブジェクト
@@ -590,7 +592,7 @@ public class FieldMapper {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Mapクラスを継承するクラスはtrueを返します。
 	 * @param cls Class
@@ -615,10 +617,10 @@ public class FieldMapper {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * staticフィールドはtrueを返します。
 	 * @param fld Field
@@ -631,7 +633,7 @@ public class FieldMapper {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -651,10 +653,10 @@ public class FieldMapper {
 		if (obj instanceof Cloneable) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * 配列型はtrueを返します。
 	 * @param obj オブジェクト
@@ -664,7 +666,7 @@ public class FieldMapper {
 		Class cls = obj.getClass();
 		return isArray(cls);
 	}
-	
+
 	/**
 	 * 配列型はtrueを返します。
 	 * @param cls Class
@@ -841,7 +843,7 @@ public class FieldMapper {
 		}
 		return getMethodName(name, prefix);
 	}
-	
+
 	/*
 	 * Fieldからgetterを返します
 	 */
@@ -889,7 +891,7 @@ public class FieldMapper {
 	public Boolean cloneBoolean(Boolean obj) {
 		return new Boolean(obj.booleanValue());
 	}
-		
+
 	/**
 	 * Collectionを複製します。
 	 * @param obj Collection型のオブジェクト
@@ -909,7 +911,7 @@ public class FieldMapper {
 		}
 		return collection;
 	}
-	
+
 	/**
 	 * Mapを複製します。
 	 * @param obj Map型のオブジェクト
@@ -930,7 +932,7 @@ public class FieldMapper {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * 配列を複製します。
 	 * @param obj 配列型のオブジェクト
@@ -956,5 +958,20 @@ public class FieldMapper {
 	 */
 	public String cloneString(String obj) {
 		return new StringBuilder(obj).toString();
+	}
+	
+	/**
+	 * オブジェクトに指定されたフィールドがあるかどうかチェック.
+	 * @param value オブジェクト
+	 * @param fieldName フィールド名
+	 * @return オブジェクトに指定されたフィールドがある場合true
+	 */
+	public static boolean hasField(Object value, String fieldName) {
+		try {
+			value.getClass().getField(fieldName);
+			return true;
+		} catch (NoSuchFieldException e) {
+			return false;
+		}
 	}
 }

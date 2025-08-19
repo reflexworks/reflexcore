@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EmptyStackException;
-import java.util.Stack;
 import java.util.Locale;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -298,7 +298,7 @@ public class JSONContext {
 	 */
 	public void outcomma() throws IOException {
 		// if (!lastout.equals("[") && !lastout.equals("{"))
-		if (!lastout.equals("[") && !lastout.equals("{")
+		if (lastout!=null&&!lastout.equals("[") && !lastout.equals("{")
 				&& !lastout.equals(","))
 			this.outprint(",");
 	}
@@ -457,7 +457,12 @@ public class JSONContext {
 		}
 		this.outprint(this.Q + key + this.Q + " : " + value);
 	}
-	
+
+	public void outarraynull(String key) throws IOException {
+		outcomma();
+		this.outprint(this.Q + key + this.Q + " : []");
+	}
+
 	/**
 	 * xorPlural() {
 	 */

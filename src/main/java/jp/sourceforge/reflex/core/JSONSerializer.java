@@ -13,10 +13,10 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Locale;
 
 import jp.sourceforge.reflex.IResourceMapper;
 import jp.sourceforge.reflex.exception.JSONException;
@@ -151,13 +151,22 @@ public class JSONSerializer implements IResourceMapper {
         out.flush();
     	
     }else {
-      // out.append('{');
-      out.write(new char[] { '{' });
+      boolean isNotArray = true;
+      boolean isNotEntry = true;
+      if (source!=null) {
+    	  isNotArray = !source.getClass().getTypeName().equals("java.util.ArrayList");
+    	  isNotEntry = source.getClass().getTypeName().indexOf(".Entry")<0;
+    	  if (!isNotArray&&((java.util.ArrayList)source).size()==0) {
+    		  out.write(new char[] { '[',']' });
+    	  }
+      }
+      if (isNotArray&&isNotEntry) out.write(new char[] { '{' });
       JSONContext context = new JSONContext(out, this.Q,this.F,dispchildnum);
-      context.push(context.HASH);
-      marshal(context,source.getClass().getName(), source);
-      // out.append('}');
-      out.write(new char[] { '}' });
+      if (isNotArray) context.push(context.HASH);
+	  if (source!=null) {
+	      marshal(context,source.getClass().getName(), source);
+	  }
+      if (isNotArray&&isNotEntry) out.write(new char[] { '}' });
       out.flush();
     }
     } catch (IllegalArgumentException e) {
@@ -302,17 +311,23 @@ public class JSONSerializer implements IResourceMapper {
   public void marshal(JSONContext context, String nodename,Object source, boolean flgArray,Map<String,Integer> nummap) throws IOException,
       IllegalArgumentException, IllegalAccessException {
 
+    if (source!=null&&source.getClass().getTypeName().equals("java.util.ArrayList")) {
+        listobj((List) source,context,false,0,nummap,null);
+    }else {
+  
     int mode;
     if (source==null) {
       context.printNodeName(nodename);
       context.pushout();
     	
     }else {
-    
+        	
     Field[] fields = source.getClass().getFields();
     if (nodename!=null&&!nodename.equals("")) {
     	if (nodename.startsWith("_")) nodename = nodename.substring(1);
-    	context.printNodeName(nodename);
+    	if (nodename.indexOf(".Entry")<0){
+        	context.printNodeName(nodename);    		    		
+    	}
     }
     context.pushout();
 
@@ -324,7 +339,7 @@ public class JSONSerializer implements IResourceMapper {
       if (isList(fields[fn])) {
         List list = (List) fields[fn].get(source);
         
-        boolean isArray = false;
+        boolean isArray = false;	// Arrayの場合、ここに飛べば良い
         int arrayCol = 0;
 
         if (list != null) {
@@ -344,82 +359,13 @@ public class JSONSerializer implements IResourceMapper {
               }
             }
           }
-
-          for (int ln = 0; ln < list.size(); ln++) {
-
-            if (list.get(ln) instanceof String) {
-
-              context.outcomma();
-              context.out((String)list.get(ln));
-
-            } else {
-              context.outcomma();
-              if ((list.size() > 0)) {
-
-                if (isArray) {
-                  if (ln > 0) {
-                    if (ln == list.size() - 1) {
-                      if (arrayCol == 0) {
-                        mode = context.ARRAY2E0;
-                      } else if (ln % arrayCol == 0) {
-                        mode = context.ARRAY2CE;
-                      } else {
-                        mode = context.ARRAY2E;
-                      }
-                    } else {
-                      if (arrayCol == 0) {
-                        mode = context.ARRAY2;
-                      } else if (arrayCol == 1) {
-                        mode = context.ARRAY2CSE;
-                      } else if (ln % arrayCol == 0) {
-                        mode = context.ARRAY2SC;
-                      } else if (ln % arrayCol == arrayCol - 1) {
-                        mode = context.ARRAY2EC;
-                      } else {
-                        mode = context.ARRAY2;
-                      }
-                    }
-                  } else {
-                    if (list.size() == 1) {
-                      if (arrayCol == 0) {
-                        mode = context.ARRAY2SE0;
-                      } else {
-                        mode = context.ARRAY2SE;
-                      }
-                    } else if (arrayCol == 0) {
-                      mode = context.ARRAY2S0;
-                    } else if (arrayCol == 1) {
-                      mode = context.ARRAY2CS;
-                    } else {
-                      mode = context.ARRAY2S;
-                    }
-                  }
-
-                } else {
-                  if (ln > 0) {
-                    if (ln == list.size() - 1) {
-                      mode = context.ARRAYE;
-                    } else {
-                      mode = context.ARRAY;
-                    }
-                  } else {
-                    if (list.size() == 1) {
-                      mode = context.ARRAYSE;
-                    } else {
-                      mode = context.ARRAYS;
-                    }
-                  }
-                }
-              } else {
-                mode = context.HASH;
-              }
-              context.push(mode);
-              if (nummap==null) nummap = new HashMap<String,Integer>();
-              nummap.put(fields[fn].getName(), ln);
-              this.marshal(context, fields[fn].getName(),list.get(ln), isArray,nummap);
-              nummap.remove(fields[fn].getName());
-            }
+          else {
+        	  if (fields[fn]!=null&&fields[fn].getName()!=null&&!fields[fn].getName().equals("")) {
+                  context.outarraynull(fields[fn].getName());        		  
+        	  }
           }
+          listobj(list,context,isArray,arrayCol,nummap,fields[fn].getName());
+
         }
 
       } else if (isString(fields[fn])) {
@@ -476,7 +422,7 @@ public class JSONSerializer implements IResourceMapper {
         }
       }
       
-    }
+    } //
 	  if (nummap!=null&&context.dispChildNum) {
 		  for(Map.Entry<String, Integer> e : nummap.entrySet()) {
   			  context.outcomma();
@@ -486,9 +432,89 @@ public class JSONSerializer implements IResourceMapper {
 	  }
     }
 	  context.popout();
-
+    }
   }
 
+  private void listobj(List list,JSONContext context,boolean isArray,int arrayCol,Map<String,Integer> nummap,String fieldname) throws IOException, IllegalArgumentException, IllegalAccessException {
+	  int mode;
+      for (int ln = 0; ln < list.size(); ln++) {
+
+          if (list.get(ln) instanceof String) {
+
+            context.outcomma();
+            context.out((String)list.get(ln));
+
+          } else {
+            context.outcomma();
+            if ((list.size() > 0)) {
+
+              if (isArray) {
+                if (ln > 0) {
+                  if (ln == list.size() - 1) {
+                    if (arrayCol == 0) {
+                      mode = context.ARRAY2E0;
+                    } else if (ln % arrayCol == 0) {
+                      mode = context.ARRAY2CE;
+                    } else {
+                      mode = context.ARRAY2E;
+                    }
+                  } else {
+                    if (arrayCol == 0) {
+                      mode = context.ARRAY2;
+                    } else if (arrayCol == 1) {
+                      mode = context.ARRAY2CSE;
+                    } else if (ln % arrayCol == 0) {
+                      mode = context.ARRAY2SC;
+                    } else if (ln % arrayCol == arrayCol - 1) {
+                      mode = context.ARRAY2EC;
+                    } else {
+                      mode = context.ARRAY2;
+                    }
+                  }
+                } else {
+                  if (list.size() == 1) {
+                    if (arrayCol == 0) {
+                      mode = context.ARRAY2SE0;
+                    } else {
+                      mode = context.ARRAY2SE;
+                    }
+                  } else if (arrayCol == 0) {
+                    mode = context.ARRAY2S0;
+                  } else if (arrayCol == 1) {
+                    mode = context.ARRAY2CS;
+                  } else {
+                    mode = context.ARRAY2S;
+                  }
+                }
+
+              } else {
+                if (ln > 0) {
+                  if (ln == list.size() - 1) {
+                    mode = context.ARRAYE;
+                  } else {
+                    mode = context.ARRAY;
+                  }
+                } else {
+                  if (list.size() == 1) {
+                    mode = context.ARRAYSE;
+                  } else {
+                    mode = context.ARRAYS;
+                  }
+                }
+              }
+            } else {
+              mode = context.HASH;
+            }
+            context.push(mode);
+            if (nummap==null) nummap = new HashMap<String,Integer>();
+            nummap.put(fieldname, ln);
+            this.marshal(context, fieldname,list.get(ln), isArray,nummap);
+            nummap.remove(fieldname);
+          }
+        }
+	  
+  }
+  
 	private static final String TEXT = "com.google.appengine.api.datastore.Text";
 
 	public boolean isText(Class type) {

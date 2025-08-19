@@ -1,0 +1,14 @@
+{"feed":
+    {"___xmlns": "http://www.w3.org/2005/Atom",
+    "entry":[
+        {"link": [{"___href": "/@login","___rel": "self"}],
+        "id": "/@login,1"},
+        {"link": [{"___href": "/@login/_html","___rel": "self"}],
+        "id": "/@login/_html,1",
+        "title": "HTMLフォルダ",
+        "contributor": [{"uri": "urn:vte.cx:acl:0,CRUD"}, 
+            {"uri": "urn:vte.cx:acl:+,R/"}]
+        }
+    ]
+    }
+}
