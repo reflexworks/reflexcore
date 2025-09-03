@@ -863,22 +863,24 @@ public class FieldMapper {
 	 * @return 複製したNumber
 	 */
 	public Number cloneNumber(Number obj) {
-		if (obj instanceof Integer) {
-			return new Integer(obj.intValue());
-		} else if (obj instanceof Long) {
-			return new Long(obj.longValue());
-		} else if (obj instanceof Float) {
-			return new Float(obj.floatValue());
-		} else if (obj instanceof Double) {
-			return new Double(obj.doubleValue());
-		} else if (obj instanceof Byte) {
-			return new Byte(obj.byteValue());
-		} else if (obj instanceof Short) {
-			return new Short(obj.shortValue());
-		} else if (obj instanceof BigDecimal) {
-			return new BigDecimal(obj.doubleValue());
-		} else if (obj instanceof BigInteger) {
-			return new BigInteger(obj.toString());
+		if (obj != null) {
+			if (obj instanceof Integer) {
+				return obj.intValue();
+			} else if (obj instanceof Long) {
+				return obj.longValue();
+			} else if (obj instanceof Float) {
+				return obj.floatValue();
+			} else if (obj instanceof Double) {
+				return obj.doubleValue();
+			} else if (obj instanceof Byte) {
+				return obj.byteValue();
+			} else if (obj instanceof Short) {
+				return obj.shortValue();
+			} else if (obj instanceof BigDecimal) {
+				return new BigDecimal(obj.doubleValue());
+			} else if (obj instanceof BigInteger) {
+				return new BigInteger(obj.toString());
+			}
 		}
 		return null;
 	}
@@ -889,7 +891,11 @@ public class FieldMapper {
 	 * @return 複製したBoolean
 	 */
 	public Boolean cloneBoolean(Boolean obj) {
-		return new Boolean(obj.booleanValue());
+		if (obj != null) {
+			return obj.booleanValue();
+		} else {
+			return null;
+		}
 	}
 
 	/**
