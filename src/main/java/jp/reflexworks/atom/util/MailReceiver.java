@@ -5,27 +5,24 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.mail.Flags;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.Session;
-import javax.mail.internet.MimeUtility;
-
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 
+import jakarta.mail.Flags;
+import jakarta.mail.Folder;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.internet.MimeUtility;
 import jp.reflexworks.atom.api.EntryUtil;
 import jp.reflexworks.atom.entry.Content;
 import jp.reflexworks.atom.entry.EntryBase;
 import jp.reflexworks.atom.entry.FeedBase;
 import jp.reflexworks.atom.mapper.FeedTemplateMapper;
 import jp.sourceforge.reflex.util.DateUtil;
-
-import org.apache.commons.io.IOUtils;
-
-import com.sun.mail.pop3.POP3Store;
 
 public class MailReceiver {
 
@@ -59,7 +56,7 @@ public class MailReceiver {
 		Session session = Session.getInstance(props);
 		// session.setDebug(debug);
 
-		POP3Store store = (POP3Store) session.getStore("pop3");
+		Store store = session.getStore("pop3");
 		store.connect(username, password);
 
 		Folder folder = store.getFolder("INBOX");

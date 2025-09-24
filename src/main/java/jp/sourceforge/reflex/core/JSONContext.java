@@ -220,7 +220,7 @@ public class JSONContext {
 	 *            int
 	 */
 	public void push(int mode) {
-		this.stack.push(new Integer(mode));
+		this.stack.push(mode);
 	}
 
 	/**
@@ -469,7 +469,7 @@ public class JSONContext {
 	public void xorPlural() {
 		int mode = ((Integer) this.stack.pop()).intValue();
 		mode = mode ^ 0x2;
-		this.stack.push(new Integer(mode));
+		this.stack.push(mode);
 	}
 
 	private static final String[] CNTLCHRS = {

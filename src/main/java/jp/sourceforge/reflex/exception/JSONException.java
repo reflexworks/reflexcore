@@ -12,9 +12,7 @@ public class JSONException extends RuntimeException {
 
     /**
      * Constructs a JSONException with an explanatory message.
-     *
-     * @param message
-     *            Detail about the reason for the exception.
+     * @param message Detail about the reason for the exception.
      */
     public JSONException(String message) {
         super(message);
@@ -26,6 +24,16 @@ public class JSONException extends RuntimeException {
      */
     public JSONException(Throwable cause) {
         super(cause.getMessage());
+        this.cause = cause;
+    }
+
+    /**
+     * Constructs a new JSONException with the specified cause.
+     * @param message Detail about the reason for the exception.
+     * @param cause The cause.
+     */
+    public JSONException(String message, Throwable cause) {
+        super(message);
         this.cause = cause;
     }
 

@@ -1,6 +1,6 @@
 /**
 *
-*  Copyright (c) 2003-2014, Virtual Technology All Rights Reserved
+*  Copyright (c) 2025, Virtual Technology All Rights Reserved
 *  Licensed Materials - Property of Virtual Technology
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
 *  the above copyright notice, this list of conditions and the following disclaimer in
 *  the documentation and/or other materials provided with the distribution.
 *
-*  Neither the name of Reflex nor the names of its contributors may be used to endorse
+*  Neither the name of Reflex,Vtecx nor the names of its contributors may be used to endorse
 *  or promote products derived from this software without specific prior written
 *  permission.
 *

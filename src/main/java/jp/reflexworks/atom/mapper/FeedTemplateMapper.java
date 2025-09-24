@@ -2082,7 +2082,7 @@ public class FeedTemplateMapper implements IResourceMapper {
 	 * @return オブジェクト
 	 * @throws JSONException
 	 */
-	private Object parseValue(String classname,Value value) throws JSONException  {
+	private Object parseValue(String classname, Value value) throws JSONException  {
 
 		Object parent = null;
 		Class cc = null;
@@ -2194,7 +2194,12 @@ public class FeedTemplateMapper implements IResourceMapper {
 				}
 			}
 			// その他は例外を返却。
-			throw new JSONException(e);
+			StringBuilder sb = new StringBuilder();
+			sb.append("JSON parse error: classname=");
+			sb.append(classname);
+			sb.append(" ");
+			sb.append(e.getMessage());
+			throw new JSONException(sb.toString(), e);
 		}
 	}
 
@@ -2279,22 +2284,27 @@ public class FeedTemplateMapper implements IResourceMapper {
 		List<Meta> metalistprev = getMetalist(jo_packages_old, packagename);
 		List<Meta> metalistnew = getMetalist(jo_packages_new, packagename);
 
-		for(int i = 0; i < metalistnew.size(); i++) {
-			if (metalistnew.get(i).hasChild()&&isReservedWord(metalistnew.get(i).self)) {
-				throw new ParseException(metalistnew.get(i).self+" is a reserved word.",0);
+		int metalistnewSize = metalistnew.size();
+		int metalistprevSize = metalistprev.size();
+
+		for (int i = 0; i < metalistnewSize; i++) {
+			Meta metaNew = metalistnew.get(i);
+			if (metaNew.hasChild() && isReservedWord(metaNew.self)) {
+				throw new ParseException(metaNew.self+" is a reserved word.", 0);
 			}
-			if (metalistnew.get(i).hasChild()&&isUsedWord(metalistnew,i)) {
-				throw new ParseException(metalistnew.get(i).self+" is already used word as the parent.",0);
+			if (metaNew.hasChild() && isUsedWord(metalistnew,i)) {
+				throw new ParseException(metaNew.self+" is already used word as the parent.", 0);
 			}
-			int len = metalistnew.get(i).name.length();
+			int len = metaNew.name.length();
 			if (len>5) {
-				String desc = metalistnew.get(i).name.substring(len-5);
+				String desc = metaNew.name.substring(len-5);
 				if (desc.equals("_desc")) {
-					String orgname = metalistnew.get(i).name.substring(0,len-5);
+					String orgname = metaNew.name.substring(0, len-5);
 					boolean desccheck = false;
-					for(int j=0;j<metalistnew.size();j++) {
-						if (metalistnew.get(j).name.equals(orgname)) {
-							if (metalistnew.get(j).level == metalistnew.get(i).level) {
+					for (int j = 0; j < metalistnewSize; j++) {
+						Meta metaNewj = metalistnew.get(j);
+						if (metaNewj.name.equals(orgname)) {
+							if (metaNewj.level == metaNew.level) {
 								desccheck = true;
 							}
 						}
@@ -2304,23 +2314,26 @@ public class FeedTemplateMapper implements IResourceMapper {
 			}
 		}
 
-		for (int i = 0, j = 0; i < metalistnew.size()+1; i++) {
-			if (j>=metalistprev.size()) return true;	// チェック完了(OK)
-			if (i>=metalistnew.size()) return false;	// チェック完了(NG)
+		for (int i = 0, j = 0; i < metalistnewSize + 1; i++) {
+			if (j>=metalistprevSize) return true;	// チェック完了(OK)
+			if (i>=metalistnewSize) return false;	// チェック完了(NG)
+			
+			Meta metaNew = metalistnew.get(i);
+			Meta metaPrev = metalistprev.get(j);
 
 			// 同じ階層でかつ同じタイプであればOK
-			if (metalistnew.get(i).level == metalistprev.get(j).level) {
-				if (metalistnew.get(i).type.equals(metalistprev.get(j).type)){
+			if (metaNew.level == metaPrev.level) {
+				if (metaNew.type.equals(metaPrev.type)) {
 					j++;
 					continue;
 					// 違うタイプであっても親に変更（子要素の追加）であればOK
-				} else if (metalistnew.get(i).hasChild() && !metalistprev.get(j).hasChild()) {
+				} else if (metaNew.hasChild() && !metaPrev.hasChild()) {
 					j++;
 					continue;
 				}
 			}
 			// 子要素が追加されていればOK(jは+1しない）
-			if (metalistnew.get(i).level > metalistprev.get(j).level){
+			if (metaNew.level > metaPrev.level) {
 				continue;
 			}
 			return false;

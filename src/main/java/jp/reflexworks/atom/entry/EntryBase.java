@@ -316,6 +316,9 @@ public abstract class EntryBase implements Serializable {
 		String myUri = null;
 		if (link != null) {
 			for (Link childLink : link) {
+				if (childLink == null) {
+					continue;
+				}
 				if (Link.REL_SELF.equals(childLink._$rel)) {
 					myUri = childLink._$href;
 				}
@@ -363,6 +366,9 @@ public abstract class EntryBase implements Serializable {
 			link = new ArrayList<Link>();
 		}
 		for (Link childLink : link) {
+			if (childLink == null) {
+				continue;
+			}
 			if (Link.REL_SELF.equals(childLink._$rel)) {
 				childLink._$href = uri;
 				return;
@@ -390,6 +396,9 @@ public abstract class EntryBase implements Serializable {
 
 		boolean isExist = false;
 		for (Link li : link) {
+			if (li == null) {
+				continue;
+			}
 			if (Link.REL_ALTERNATE.equals(li.get$rel())
 					&& uri.equals(li.get$href())) {
 				isExist = true;
@@ -417,6 +426,9 @@ public abstract class EntryBase implements Serializable {
 
 		for (int i = 0; i < link.size(); i++) {
 			Link li = link.get(i);
+			if (li == null) {
+				continue;
+			}
 			if (Link.REL_ALTERNATE.equals(li.get$rel())
 					&& uri.equals(li.get$href())) {
 				link.remove(i);
@@ -434,6 +446,9 @@ public abstract class EntryBase implements Serializable {
 		}
 		List<String> aliases = new ArrayList<String>();
 		for (Link li : link) {
+			if (li == null) {
+				continue;
+			}
 			if (Link.REL_ALTERNATE.equals(li.get$rel()) && li._$href != null
 					&& li._$href.length() > 0) {
 				aliases.add(li.get$href());
@@ -619,11 +634,17 @@ public abstract class EntryBase implements Serializable {
 		}
 		if (link != null) {
 			for (Link l : link) {
+				if (l == null) {
+					continue;
+				}
 				l.addSvcname(svcname);
 			}
 		}
 		if (contributor != null) {
 			for (Contributor cont : contributor) {
+				if (cont == null) {
+					continue;
+				}
 				cont.addSvcname(svcname);
 			}
 		}
@@ -655,11 +676,17 @@ public abstract class EntryBase implements Serializable {
 		}
 		if (link != null) {
 			for (Link l : link) {
+				if (l == null) {
+					continue;
+				}
 				l.cutSvcname(svcname);
 			}
 		}
 		if (contributor != null) {
 			for (Contributor cont : contributor) {
+				if (cont == null) {
+					continue;
+				}
 				cont.cutSvcname(svcname);
 			}
 		}

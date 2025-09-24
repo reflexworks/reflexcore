@@ -4,8 +4,8 @@
 
   <groupId>jp.reflexworks</groupId>
   <artifactId>reflexcore</artifactId>
+  <version>9.0.0</version>
   <packaging>jar</packaging>
-  <version>8.0.0</version>
 
   <description>Reflex Core</description>
   <name>Reflex Core</name>
@@ -21,14 +21,6 @@
     <maven.compiler.target>17</maven.compiler.target>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <url>http://repo1.maven.org/maven2</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>org.msgpack</groupId>
@@ -41,25 +33,26 @@
         </exclusion>
       </exclusions>
     </dependency>
+    
     <dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
-      <version>3.29.0-GA</version>
+      <version>3.30.2-GA</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.15</version>
+      <version>1.19.0</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.5</version>
+      <version>2.20.0</version>
     </dependency>
     <dependency>
       <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.2</version>
     </dependency>
 
     <dependency>

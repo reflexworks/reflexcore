@@ -6,23 +6,26 @@ import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.codec.binary.Base64;
+
+import jp.reflexworks.servlet.ReflexServletConst;
 import jp.sourceforge.reflex.util.DateUtil;
 import jp.sourceforge.reflex.util.SHA1;
 import jp.sourceforge.reflex.util.SHA256;
 import jp.sourceforge.reflex.util.StringUtils;
 
-import org.apache.commons.codec.binary.Base64;
-
-import jp.reflexworks.servlet.ReflexServletConst;
-
+/**
+ * WSSE、RXID等認証のためのユーティリティ
+ */
 public class AuthTokenUtil implements ReflexServletConst {
 
+	/** ロガー */
 	private static Logger logger = Logger.getLogger(AuthTokenUtil.class.getName());
 
 	// リクエストヘッダの項目名
@@ -65,6 +68,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @param serviceName サービス名
 	 * @param apiKey APIKey
 	 * @return RXID文字列
 	 */
@@ -77,6 +81,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @param serviceName サービス名
 	 * @param apiKey APIKey
 	 * @param isSha1 ハッシュにSHA-1を使用する場合true
 	 * @return RXID文字列
@@ -91,6 +96,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @param serviceName サービス名
 	 * @param apiKey APIKey
 	 * @param isSha1 ハッシュにSHA-1を使用する場合true
 	 * @param nonceB nonce
@@ -186,6 +192,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * WSSE認証情報を作成します
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @return WSSE認証情報
 	 */
 	public static WsseAuth createWsseAuth(String username, String password) {
 		return createWsseAuth(username, password, false);
@@ -196,6 +203,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @param username ユーザ名
 	 * @param password パスワード
 	 * @param isSha1 ハッシュにSHA-1を使用する場合true
+	 * @return WSSE認証情報
 	 */
 	public static WsseAuth createWsseAuth(String username, String password,
 			boolean isSha1) {
@@ -206,6 +214,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * WSSE認証情報を作成します
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @param serviceName サービス名
 	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
 	 * @return WSSE認証情報
 	 */
@@ -218,6 +227,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * WSSE認証情報を作成します
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @param serviceName サービス名
 	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
 	 * @param isSha1 ハッシュにSHA-1を使用する場合true
 	 * @return WSSE認証情報
@@ -235,6 +245,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * WSSE認証情報を作成します
 	 * @param username ユーザ名
 	 * @param password パスワード
+	 * @param serviceName サービス名
 	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
 	 * @param isSha1 ハッシュにSHA-1を使用する場合true
 	 * @param pNonceB nonce
@@ -356,6 +367,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	/**
 	 * "{prefix} {認証キー}"文字列から認証キーを取り出します.
 	 * @param authorizationStr "{prefix} {認証キー}"
+	 * @param prefix 接頭辞
 	 * @return 認証キー
 	 */
 	public static String extractAuthorization(String authorizationStr, 
@@ -512,7 +524,6 @@ public class AuthTokenUtil implements ReflexServletConst {
 	/**
 	 * RXID文字列からWSSE認証情報を作成します
 	 * @param value RXID文字列
-	 * @param isRxid ワンタイム利用かどうか
 	 * @return WSSE認証情報
 	 */
 	public static WsseAuth parseRXID(String value) {
@@ -612,7 +623,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	
 	/**
 	 * RXIDのユーザ名「{ユーザ名}:{サービス名}」から、ユーザ名(0)とサービス名(1)を分割して返却します.
-	 * @param rxidname RXIDのユーザ名
+	 * @param wsseAuth WSSE認証情報
 	 * @return ユーザ名(0)とサービス名(1)を分割した文字列配列
 	 */
 	public static String[] getUsernameAndService(WsseAuth wsseAuth) {
