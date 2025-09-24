@@ -391,7 +391,7 @@ public class FieldMapper {
 
 	/**
 	 * Persistentかどうか (GAE用)
-	 * @deprecated ReflexではJDOを使用しなくなったため、Persistentアノテーションは使用しません。
+	 * @Deprecated ReflexではJDOを使用しなくなったため、Persistentアノテーションは使用しません。
 	 * @param fld Field
 	 * @return Persistentアノテーションが設定されている場合true
 	 */
@@ -410,7 +410,7 @@ public class FieldMapper {
 
 	/**
 	 * PrimaryKeyかどうか (GAE用)
-	 * @deprecated ReflexではJDOを使用しなくなったため、PrimaryKeyアノテーションは使用しません。
+	 * @Deprecated ReflexではJDOを使用しなくなったため、Persistentアノテーションは使用しません。
 	 * @param fld Field
 	 * @return PrimaryKeyアノテーションが設定されている場合true
 	 */
