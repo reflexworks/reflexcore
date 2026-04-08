@@ -72,3 +72,8 @@ Desktop.ini
 # テストで出力されるディレクトリ
 /_default
 /_mypackage
+
+# Eclipse
+.project
+.classpath
+.settings/
