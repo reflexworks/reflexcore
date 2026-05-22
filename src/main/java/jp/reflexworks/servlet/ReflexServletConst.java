@@ -123,6 +123,8 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_AUTHORIZATION_RXID = "RXID ";
 	/** アクセストークンヘッダの値の先頭に使用 */
 	public static final String HEADER_AUTHORIZATION_TOKEN = "Token ";
+	/** アクセストークンヘッダの値の先頭に使用 */
+	public static final String HEADER_AUTHORIZATION_BEARER = "Bearer ";
 	/** APIKeyヘッダの値の先頭に使用 */
 	public static final String HEADER_AUTHORIZATION_APIKEY = "APIKey ";
 	/** JSESSIONID */
