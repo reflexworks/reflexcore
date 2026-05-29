@@ -122,13 +122,13 @@ public class AuthTokenUtil implements ReflexServletConst {
 	}
 	
 	/**
-	 * アクセストークンの先頭に"Token "を付けて返却します.
+	 * アクセストークンの先頭に"Bearer "を付けて返却します.
 	 * @param accesstoken アクセストークン
-	 * @return "Token {アクセストークン}"
+	 * @return "Bearer {アクセストークン}"
 	 */
 	public static String editAccessTokenHeader(String accesstoken) {
 		if (!StringUtils.isBlank(accesstoken)) {
-			return HEADER_AUTHORIZATION_TOKEN + accesstoken;
+			return HEADER_AUTHORIZATION_BEARER + accesstoken;
 		}
 		return null;
 	}
@@ -356,12 +356,12 @@ public class AuthTokenUtil implements ReflexServletConst {
 	}
 	
 	/**
-	 * "Token {アクセストークン}"文字列からアクセストークンを取り出します.
-	 * @param authorizationStr "Token {アクセストークン}"文字列
+	 * "Bearer {アクセストークン}"文字列からアクセストークンを取り出します.
+	 * @param authorizationStr "Bearer {アクセストークン}"文字列
 	 * @return アクセストークン
 	 */
 	public static String extractAccessToken(String authorizationStr) {
-		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_TOKEN);
+		return extractAuthorization(authorizationStr, HEADER_AUTHORIZATION_BEARER);
 	}
 	
 	/**
@@ -475,8 +475,8 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @return sessionId
 	 */
 	public static String extractSessionId(Map headerMaps) {
-		if (headerMaps != null && headerMaps.containsKey("Set-Cookie")) {
-			Object obj = headerMaps.get("Set-Cookie");
+		if (headerMaps != null && headerMaps.containsKey(HEADER_SET_COOKIE)) {
+			Object obj = headerMaps.get(HEADER_SET_COOKIE);
 			if (obj instanceof String) {
 				return extractSessionId((String)obj);
 			} else {	// List<String>
