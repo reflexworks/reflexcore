@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -125,7 +127,12 @@ public class Requester implements ReflexServletConst {
 	public HttpURLConnection prepare(String urlStr, String method,
 			InputStream inputData, Map<String, String> property, int timeoutMillis)
 	throws IOException {
-		URL url = new URL(urlStr);
+		URL url = null;
+		try {
+			url = new URI(urlStr).toURL();
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		http.setRequestMethod(method);
 		if (property != null && !property.isEmpty()) {
@@ -189,7 +196,12 @@ public class Requester implements ReflexServletConst {
 	public HttpURLConnection beforeConnection(String urlStr, String method,
 			Map<String, String> property, int timeoutMillis)
 	throws IOException {
-		URL url = new URL(urlStr);
+		URL url = null;
+		try {
+			url = new URI(urlStr).toURL();
+		} catch (URISyntaxException e) {
+			throw new IOException(e);
+		}
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		http.setRequestMethod(method);
 		if (property != null && !property.isEmpty()) {
