@@ -5,16 +5,18 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
@@ -166,11 +168,15 @@ public class FileUtil {
 		InputStream inStream = null;
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 6)))) {
-			URL url = new URL(resource);
+			URL url = null;
+			try {
+				url = new URI(resource).toURL();
+			} catch (URISyntaxException e) {
+				throw new IOException(e);
+			}
 			defaultpath.set(resource.substring(0,resource.lastIndexOf("/")+1));
 
 			for (int r = 0; r <= num_retries; r++) {
-
 				try {
 					URLConnection conn = url.openConnection();
 					if (reqGZip) {
@@ -238,7 +244,12 @@ public class FileUtil {
 		InputStream inStream = null;
 		if ((resource.length() > 5 && "http:".equals(resource.substring(0, 5))) ||
 				(resource.length() > 6 && "https:".equals(resource.substring(0, 6)))) {
-			URL url = new URL(resource);
+			URL url = null;
+			try {
+				url = new URI(resource).toURL();
+			} catch (URISyntaxException e) {
+				throw new IOException(e);
+			}
 
 			for (int r = 0; r <= num_retries; r++) {
 
