@@ -18,6 +18,7 @@ import javax.xml.stream.events.XMLEvent;
 import jp.reflexworks.atom.mapper.FeedTemplateMapper.Meta;
 import jp.sourceforge.reflex.exception.XMLException;
 import jp.sourceforge.reflex.util.StringUtils;
+import jp.sourceforge.reflex.util.XmlInputFactoryUtil;
 
 /**
  * XMLデシリアライザ.
@@ -66,7 +67,7 @@ public class XMLDeserializer {
 		StringBuilder json = new StringBuilder();
 		json.append("{");
 		XMLEventReader reader = null;
-		XMLInputFactory factory = XMLInputFactory.newInstance();
+		XMLInputFactory factory = XmlInputFactoryUtil.newSecureFactory();
 		try {
 			reader = factory.createXMLEventReader(xml);
 			

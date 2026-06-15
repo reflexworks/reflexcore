@@ -211,6 +211,10 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String HEADER_FORM_DATA = "form-data";
 	/** Request header : User-Agent */
 	public static final String HEADER_USER_AGENT = "User-Agent";
+	/** Request header : Content-Security-Policy */
+	public static final String HEADER_CONTENT_SECURITY_POLICY = "Content-Security-Policy";
+	/** Request header : Strict-Transport-Security */
+	public static final String HEADER_TRANSPORT_SECURITY = "Strict-Transport-Security";
 
 	/** Schema : http */
 	public static final String SCHEMA_HTTP = "http";
@@ -255,10 +259,6 @@ public interface ReflexServletConst extends HttpStatus {
 	public static final String NEWLINE = "\n";
 	/** HTMLの空白 */
 	public static final String HTML_BLANK = "&nbsp;";
-	/** Reflexロゴ */
-	public static final String REFLEX_LOGOS = "http://reflex.sourceforge.jp/images/Reflex.gif";
-	/** Reflex Signature */
-	public static final String REFLEX_SIGNATURE = "　　ＶＩＲＴＵＡＬ ＴＥＣＨＮＯＬＯＧＹ ＩＮＣ.";
 	/** デフォルトページ */
 	public static final String DEFAULT_PAGE = "index.html";
 

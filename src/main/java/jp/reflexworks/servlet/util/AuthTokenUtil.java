@@ -1,6 +1,7 @@
 package jp.reflexworks.servlet.util;
 
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.ParseException;
@@ -276,22 +277,14 @@ public class AuthTokenUtil implements ReflexServletConst {
 				apiKeyB = apiKey.getBytes(ENCODING);
 			}
 
-			int len = nonceB.length + createdB.length + passwordB.length;
-			int apiKeyLen = 0;
-			if (apiKey != null) {
-				// APIKeyを含む
-				apiKeyLen = apiKeyB.length;
-				len += apiKeyLen;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			if (apiKeyB != null) {
+				baos.write(apiKeyB);
 			}
-			byte[] v = new byte[len];
-			if (apiKey != null) {
-				// APIKeyを含む
-				System.arraycopy(apiKeyB, 0, v, 0, apiKeyLen);
-			}
-			System.arraycopy(nonceB, 0, v, apiKeyLen, nonceB.length);
-			System.arraycopy(createdB, 0, v, apiKeyLen + nonceB.length, createdB.length);
-			System.arraycopy(passwordB, 0, v, apiKeyLen + nonceB.length + createdB.length, 
-					passwordB.length);
+			baos.write(nonceB);
+			baos.write(createdB);
+			baos.write(passwordB);
+			byte[] v = baos.toByteArray();
 
 			String passwordDigestStr = null;
 			if (isSha1) {
@@ -309,12 +302,12 @@ public class AuthTokenUtil implements ReflexServletConst {
 
 		} catch (NoSuchAlgorithmException e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}
 		return auth;
 	}
-	
+
 	/**
 	 * rotate13(簡易暗号化)
 	 * @param s
