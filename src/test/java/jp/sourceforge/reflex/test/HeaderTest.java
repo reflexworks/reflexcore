@@ -1,11 +1,12 @@
 package jp.sourceforge.reflex.test;
 
-import java.io.UnsupportedEncodingException;
-
-import jp.reflexworks.servlet.util.HeaderUtil;
 import static org.junit.Assert.*;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.Test;
+
+import jp.reflexworks.servlet.util.HeaderUtil;
 
 public class HeaderTest {
 	

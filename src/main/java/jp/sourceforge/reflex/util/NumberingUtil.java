@@ -5,12 +5,13 @@ import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 
-import jp.reflexworks.servlet.util.AuthTokenUtil;
-
 /**
  * 採番クラス
  */
 public class NumberingUtil {
+
+	/** 乱数生成のための関数 */
+	public static final String RANDOM_ALGORITHM = "SHA1PRNG";
 
 	/**
 	 * 番号を取得します.
@@ -54,7 +55,7 @@ public class NumberingUtil {
 		byte[] passB = new byte[len];
 		String pass = null;
 		try {
-			SecureRandom.getInstance(AuthTokenUtil.RANDOM_ALGORITHM).nextBytes(passB);
+			SecureRandom.getInstance(RANDOM_ALGORITHM).nextBytes(passB);
 
 			// 変換文字を生成
 			String time = String.valueOf(new Date().getTime());

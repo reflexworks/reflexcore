@@ -4,12 +4,13 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
 
-import jp.reflexworks.servlet.ReflexServletConst;
-
 /**
  * Base64エンコードの文字列から記号を除去するユーティリティ.
  */
 public class Base64Util {
+	
+	/** エンコード*/
+	public static final String ENCODING = "UTF-8";
 	
 	/** Base64に使用される記号の正規表現 (+, /, =) */
 	public static final String REGEX_BASE64_SYMBOL = "\\/|\\+|=";
@@ -42,8 +43,7 @@ public class Base64Util {
 	public static String encodeAndReplace(byte[] bytes, String regex,
 			String replacement) {
 		try {
-			String str = new String(Base64.encodeBase64(bytes), 
-					ReflexServletConst.ENCODING);
+			String str = new String(Base64.encodeBase64(bytes), ENCODING);
 			
 			// 記号を変換
 			return replace(str, regex, replacement);
