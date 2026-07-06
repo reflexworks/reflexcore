@@ -18,15 +18,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import jp.reflexworks.servlet.ReflexServletConst;
-
 /**
  * HTTPリクエストを行うクラス.
  * <p>
  * java.net.HttpURLConnectionを使用してHTTP通信を行います。
  * </p>
  */
-public class Requester implements ReflexServletConst {
+public class Requester {
+
+	/** エンコード*/
+	public static final String ENCODING = "UTF-8";
+	/** 改行コード */
+	public static final String NEWLINE = "\n";
 
 	/** ステータスのエラー判定コード */
 	private static final int ERROR_STATUS = 400;

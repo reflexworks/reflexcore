@@ -203,15 +203,15 @@ public class ZipUtil {
 	 * @param out 解凍データ出力先
 	 */
 	public void unzip(InputStream in, OutputStream out) throws IOException {
-		ZipInputStream zis = new ZipInputStream(in);
-		ZipEntry entry = null;
-		while ((entry = zis.getNextEntry()) != null) {
-			byte[] buf = new byte[BUFFER_SIZE];
-			int size = 0;
-			while ((size = zis.read(buf)) != -1) {
-				out.write(buf, 0, size);
+		try (ZipInputStream zis = new ZipInputStream(in)) {
+			while (zis.getNextEntry() != null) {
+				byte[] buf = new byte[BUFFER_SIZE];
+				int size = 0;
+				while ((size = zis.read(buf)) != -1) {
+					out.write(buf, 0, size);
+				}
+				zis.closeEntry();
 			}
-			zis.closeEntry();
 		}
 	}
 

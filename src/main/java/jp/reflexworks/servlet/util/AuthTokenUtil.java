@@ -1,6 +1,7 @@
 package jp.reflexworks.servlet.util;
 
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.ParseException;
@@ -16,7 +17,6 @@ import org.apache.commons.codec.binary.Base64;
 
 import jp.reflexworks.servlet.ReflexServletConst;
 import jp.sourceforge.reflex.util.DateUtil;
-import jp.sourceforge.reflex.util.SHA1;
 import jp.sourceforge.reflex.util.SHA256;
 import jp.sourceforge.reflex.util.StringUtils;
 
@@ -35,6 +35,12 @@ public class AuthTokenUtil implements ReflexServletConst {
 	public static final String WSSE_UPPER_LOWER = "X-Wsse";
 	/** WSSEヘッダのキー */
 	public static final String WSSE_LOWER = "x-wsse";
+	/** WSSE-APIKEYヘッダのキー */
+	public static final String WSSE_APIKEY = "X-WSSE-APIKEY";
+	/** WSSE-APIKEYヘッダのキー */
+	public static final String WSSE_APIKEY_UPPER_LOWER = "X-Wsse-Apikey";
+	/** WSSE-APIKEYヘッダのキー */
+	public static final String WSSE_APIKEY_LOWER = "x-wsse-apikey";
 	/** トークン */
 	public static final String TOKEN = "UsernameToken";
 	/** Username */
@@ -74,7 +80,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 */
 	public static String createRXIDString(String username, String password, 
 			String serviceName, String apiKey) {
-		return createRXIDString(username, password, serviceName, apiKey, false);
+		return createRXIDString(username, password, serviceName, apiKey, null);
 	}
 
 	/**
@@ -83,29 +89,12 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @param password パスワード
 	 * @param serviceName サービス名
 	 * @param apiKey APIKey
-	 * @param isSha1 ハッシュにSHA-1を使用する場合true
-	 * @return RXID文字列
-	 */
-	public static String createRXIDString(String username, String password, 
-			String serviceName, String apiKey, boolean isSha1) {
-		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey, isSha1);
-		return getRXIDString(auth);
-	}
-
-	/**
-	 * ユーザ名とパスワードとAPIKeyからRXID文字列を作成します.
-	 * @param username ユーザ名
-	 * @param password パスワード
-	 * @param serviceName サービス名
-	 * @param apiKey APIKey
-	 * @param isSha1 ハッシュにSHA-1を使用する場合true
 	 * @param nonceB nonce
 	 * @return RXID文字列
 	 */
 	public static String createRXIDString(String username, String password, 
-			String serviceName, String apiKey, boolean isSha1, byte[] nonceB) {
-		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey, isSha1,
-				nonceB);
+			String serviceName, String apiKey, byte[] nonceB) {
+		WsseAuth auth = createRxidAuth(username, password, serviceName, apiKey, nonceB);
 		return getRXIDString(auth);
 	}
 
@@ -140,19 +129,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @return RequestHeaderに設定するWSSE情報
 	 */
 	public static String createWsseHeaderValue(String username, String password) {
-		return createWsseHeaderValue(username, password, false);
-	}
-
-	/**
-	 * WSSE文字列を作成します(RequestHeader用)
-	 * @param username ユーザ名
-	 * @param password パスワード
-	 * @param isSha1 ハッシュにSHA-1を使用する場合true
-	 * @return RequestHeaderに設定するWSSE情報
-	 */
-	public static String createWsseHeaderValue(String username, String password,
-			boolean isSha1) {
-		return getWsseHeaderValue(createWsseAuth(username, password, isSha1));
+		return getWsseHeaderValue(createWsseAuth(username, password));
 	}
 
 	/**
@@ -195,19 +172,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @return WSSE認証情報
 	 */
 	public static WsseAuth createWsseAuth(String username, String password) {
-		return createWsseAuth(username, password, false);
-	}
-
-	/**
-	 * WSSE認証情報を作成します
-	 * @param username ユーザ名
-	 * @param password パスワード
-	 * @param isSha1 ハッシュにSHA-1を使用する場合true
-	 * @return WSSE認証情報
-	 */
-	public static WsseAuth createWsseAuth(String username, String password,
-			boolean isSha1) {
-		return createRxidAuth(username, password, null, null, isSha1);
+		return createRxidAuth(username, password, null, null);
 	}
 
 	/**
@@ -220,25 +185,10 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 */
 	public static WsseAuth createRxidAuth(String username, String password, 
 			String serviceName, String apiKey) {
-		return createRxidAuth(username, password, serviceName, apiKey, false);
-	}
-
-	/**
-	 * WSSE認証情報を作成します
-	 * @param username ユーザ名
-	 * @param password パスワード
-	 * @param serviceName サービス名
-	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
-	 * @param isSha1 ハッシュにSHA-1を使用する場合true
-	 * @return WSSE認証情報
-	 */
-	public static WsseAuth createRxidAuth(String username, String password, 
-			String serviceName, String apiKey, boolean isSha1) {
 		if (StringUtils.isBlank(username) || password ==  null) {
 			return null;
 		}
-		return createRxidAuth(username, password, serviceName, apiKey,
-				isSha1, null);
+		return createRxidAuth(username, password, serviceName, apiKey, null);
 	}
 
 	/**
@@ -247,12 +197,11 @@ public class AuthTokenUtil implements ReflexServletConst {
 	 * @param password パスワード
 	 * @param serviceName サービス名
 	 * @param apiKey APIKey (RXIDの場合APIKeyを指定します。)
-	 * @param isSha1 ハッシュにSHA-1を使用する場合true
 	 * @param pNonceB nonce
 	 * @return WSSE認証情報
 	 */
 	public static WsseAuth createRxidAuth(String username, String password, 
-			String serviceName, String apiKey, boolean isSha1, byte[] pNonceB) {
+			String serviceName, String apiKey, byte[] pNonceB) {
 		if (StringUtils.isBlank(username) || password ==  null) {
 			return null;
 		}
@@ -276,29 +225,16 @@ public class AuthTokenUtil implements ReflexServletConst {
 				apiKeyB = apiKey.getBytes(ENCODING);
 			}
 
-			int len = nonceB.length + createdB.length + passwordB.length;
-			int apiKeyLen = 0;
-			if (apiKey != null) {
-				// APIKeyを含む
-				apiKeyLen = apiKeyB.length;
-				len += apiKeyLen;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			if (apiKeyB != null) {
+				baos.write(apiKeyB);
 			}
-			byte[] v = new byte[len];
-			if (apiKey != null) {
-				// APIKeyを含む
-				System.arraycopy(apiKeyB, 0, v, 0, apiKeyLen);
-			}
-			System.arraycopy(nonceB, 0, v, apiKeyLen, nonceB.length);
-			System.arraycopy(createdB, 0, v, apiKeyLen + nonceB.length, createdB.length);
-			System.arraycopy(passwordB, 0, v, apiKeyLen + nonceB.length + createdB.length, 
-					passwordB.length);
+			baos.write(nonceB);
+			baos.write(createdB);
+			baos.write(passwordB);
+			byte[] v = baos.toByteArray();
 
-			String passwordDigestStr = null;
-			if (isSha1) {
-				passwordDigestStr = SHA1.hashString(v);
-			} else {
-				passwordDigestStr = SHA256.hashString(v);
-			}
+			String passwordDigestStr = hash(v);
 			String nonceStr = new String(Base64.encodeBase64(nonceB), ENCODING);
 
 			if (!StringUtils.isBlank(serviceName)) {
@@ -309,12 +245,12 @@ public class AuthTokenUtil implements ReflexServletConst {
 
 		} catch (NoSuchAlgorithmException e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (IOException e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}
 		return auth;
 	}
-	
+
 	/**
 	 * rotate13(簡易暗号化)
 	 * @param s
@@ -451,11 +387,11 @@ public class AuthTokenUtil implements ReflexServletConst {
 				StringBuilder buf = new StringBuilder();
 				buf.append(getDateTimeOfRXID(auth.created));
 				buf.append(RXID_DELIMITER);
-				buf.append(rot13(auth.nonce));
+				buf.append(editUrlSafe(auth.nonce));
 				buf.append(RXID_DELIMITER);
-				buf.append(rot13(auth.passwordDigest));
+				buf.append(editUrlSafe(auth.passwordDigest));
 				buf.append(RXID_DELIMITER);
-				buf.append(rot13(auth.username));
+				buf.append(editUrlSafe(auth.username));
 				return buf.toString();
 				
 			} catch (ParseException e) {
@@ -513,14 +449,50 @@ public class AuthTokenUtil implements ReflexServletConst {
 	}
 	
 	/**
+	 * バイト配列をハッシュ化する
+	 * @param b バイト配列
+	 * @return ハッシュ化し、Base64エンコーディングし、URLパラメータ対応変換した文字列
+	 */
+	public static String hash(byte[] b) {
+		return SHA256.hashString(b);
+	}
+
+	/**
 	 * 文字列をハッシュ化する
 	 * @param str 文字列
-	 * @return ハッシュ化し、Base64エンコーディングした文字列
+	 * @return ハッシュ化し、Base64エンコーディングし、URLパラメータ対応変換した文字列
 	 */
 	public static String hash(String str) {
 		return SHA256.hashString(str);
 	}
 	
+	/**
+	 * URLパラメータに設定しても安全な文字に変換、またはその逆を行う。
+	 * `+` → `~`
+	 * `/` → `_`
+	 * `=` → (削除)
+	 * @param s 文字列
+	 * @return 編集した文字列
+	 */
+	private static String editUrlSafe(String s) {
+		if (s == null) {
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c == '+') c = '~';
+			else if (c == '~') c = '+';
+			else if (c == '/') c = '_';
+			else if (c == '_') c = '/';
+			if (c != '=') {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * RXID文字列からWSSE認証情報を作成します
 	 * @param value RXID文字列
@@ -545,9 +517,9 @@ public class AuthTokenUtil implements ReflexServletConst {
 				p3 += p2;
 				try {
 					String createdStr = getDateTimeOfWSSE(value.substring(0, p1));
-					String nonceStr = rot13(value.substring(p1 + 1, p2));
-					String passwordDigestStr = rot13(value.substring(p2 + 1, p3)); 
-					String username = rot13(value.substring(p3 + 1)); 
+					String nonceStr = editUrlSafe(value.substring(p1 + 1, p2));
+					String passwordDigestStr = editUrlSafe(value.substring(p2 + 1, p3));
+					String username = editUrlSafe(value.substring(p3 + 1));
 					if (createdStr != null && nonceStr != null && 
 							passwordDigestStr != null && username != null) {
 						auth = new WsseAuth(username, passwordDigestStr, 
@@ -561,6 +533,7 @@ public class AuthTokenUtil implements ReflexServletConst {
 		
 		if (auth != null) {
 			auth.isRxid = true;
+			auth.useAPIKey = true;
 		}
 		return auth;
 	}

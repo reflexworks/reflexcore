@@ -23,6 +23,8 @@ public class WsseAuth implements Serializable {
 	public String password;
 	/** RXIDかどうか */
 	public boolean isRxid;
+	/** PasswordDigestの生成にAPIKeyを使用するかどうか */
+	public boolean useAPIKey;
 	/** URLパラメータへの指定かどうか */
 	public boolean isQueryString;
 	/** Cookieへの指定かどうか */

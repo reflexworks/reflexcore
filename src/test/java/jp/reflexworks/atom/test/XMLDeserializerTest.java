@@ -239,6 +239,15 @@ public class XMLDeserializerTest {
 		System.out.println(json);
 	}
 
+	@Test(expected = XMLException.class)
+	public void testFromXmlToJson_rejectDoctype() throws XMLException, ParseException {
+		FeedTemplateMapper mp = new FeedTemplateMapper(entitytemplp, SECRETKEY);
+		String xml = "<!DOCTYPE feed [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>"
+				+ "<feed><entry><title>&xxe;</title></entry></feed>";
+		XMLDeserializer xmlDesializer = new XMLDeserializer();
+		xmlDesializer.fromXmlToJson(new StringReader(xml), mp);
+	}
+
 	private String getXml() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<feed>");
